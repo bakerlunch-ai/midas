@@ -21,6 +21,14 @@ Read `docs/LESSONS_FROM_OLD_BOT.md` before starting. Do not skip the verificatio
 
 **Notes:** done manually in the DigitalOcean web UI, not through Claude Code. Claude Code does not have permission to spend money. Peter clicks the buttons.
 
+**doctl gotcha:** `doctl` 1.155+ removed the `--kubeconfig` flag on `doctl kubernetes cluster kubeconfig save`. To write into a dedicated file (rather than merging into `~/.kube/config`), set the env var on the call itself:
+
+```
+KUBECONFIG=~/.kube/config-midas doctl kubernetes cluster kubeconfig save midas-prod
+```
+
+If the file does not yet exist, doctl will create it. The context name inside the file will be `do-lon1-midas-prod`.
+
 ---
 
 ### 2. Provision managed PostgreSQL
