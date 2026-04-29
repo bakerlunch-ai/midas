@@ -1,6 +1,6 @@
-# trading-bot
+# Midas
 
-Multi-service trading bot monorepo.
+Midas is a multi-service prediction market trading bot, organized as a monorepo.
 
 ## Layout
 
