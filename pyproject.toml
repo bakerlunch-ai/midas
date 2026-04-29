@@ -1,0 +1,17 @@
+[project]
+name = "trading-bot"
+version = "0.1.0"
+description = "Multi-service trading bot monorepo"
+requires-python = ">=3.12"
+
+[tool.uv.workspace]
+members = ["packages/*", "services/*"]
+
+[tool.uv.sources]
+bot-events = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "ruff>=0.6",
+    "pytest>=8",
+]
