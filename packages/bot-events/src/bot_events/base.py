@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any, ClassVar
 from uuid import UUID, uuid4
 
@@ -19,7 +19,7 @@ class BaseEvent(BaseModel):
     event_version: ClassVar[str] = ""
 
     event_id: UUID = Field(default_factory=uuid4)
-    emitted_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    emitted_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     emitted_by: str
     correlation_id: UUID | None = None
     payload: dict[str, Any] = Field(default_factory=dict)

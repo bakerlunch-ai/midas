@@ -1,7 +1,7 @@
 .PHONY: lint test format install
 
 install:
-	uv sync
+	uv sync --all-packages
 
 lint:
 	uv run ruff check .

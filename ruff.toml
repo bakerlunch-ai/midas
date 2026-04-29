@@ -22,6 +22,9 @@ ignore = [
 "__init__.py" = ["F401"]
 "tests/**" = ["S101"]
 
+[lint.isort]
+known-first-party = ["bot_events"]
+
 [format]
 quote-style = "double"
 indent-style = "space"
