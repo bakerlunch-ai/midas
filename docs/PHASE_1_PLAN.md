@@ -29,6 +29,8 @@ KUBECONFIG=~/.kube/config-midas doctl kubernetes cluster kubeconfig save midas-p
 
 If the file does not yet exist, doctl will create it. The context name inside the file will be `do-lon1-midas-prod`.
 
+**Repo-move gotcha:** if the Midas repo is moved to a different folder (e.g. `~/midas` → `~/Desktop/midas`), the uv `.venv` will appear to still work but `uv run` will fail with `Failed to spawn` errors. This is because virtual envs hardcode absolute paths in their script shebangs and `pyvenv.cfg`. Rebuild with `rm -rf .venv && make install` after any move.
+
 ---
 
 ### 2. Provision managed PostgreSQL
