@@ -40,6 +40,8 @@ If the file does not yet exist, doctl will create it. The context name inside th
 - Each user can only see their own database (verified by attempting cross-DB access and getting denied)
 - Connection strings are saved (we'll put them in sealed-secrets in a later task)
 
+**Status (2026-04-29):** proof-of-life done with `oms_user` only — a one-shot pod inside `midas-prod` connected to `oms_db` over the VPC private host on port 25060 and ran a `SELECT`. Cross-DB denial check and the remaining user verifications (`pms_user`/`pms_db`, `reporting_user`/`reporting_db`) are deferred to Phase 2, when we wire up per-service permissions and can validate them as part of the service contract rather than a one-off probe.
+
 ---
 
 ### 3. Provision managed Redis
