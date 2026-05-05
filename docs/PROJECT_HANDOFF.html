@@ -77,9 +77,9 @@
   <h1>Midas — Project Handoff</h1>
   <div class="header-sub">Master "current state" document. Read this first when opening any new Claude chat. Updated at the end of every working session.</div>
   <div class="header-meta">
-    <span class="meta-pill">Last updated: May 4, 2026</span>
-    <span class="meta-pill green">7 commits on main</span>
-    <span class="meta-pill green">Phase 1: 3/12 tasks complete</span>
+    <span class="meta-pill">Last updated: May 4, 2026 (post-Task 4)</span>
+    <span class="meta-pill green">11 commits on main</span>
+    <span class="meta-pill green">Phase 1: 4/12 tasks complete</span>
     <span class="meta-pill">Cost: $117.45/month</span>
     <span class="meta-pill amber">Status: Building</span>
   </div>
@@ -141,8 +141,8 @@
         <tr><td><strong>GitHub</strong></td><td class="mono">github.com/bakerlunch-ai/midas (private)</td></tr>
         <tr><td><strong>Local path</strong></td><td class="mono">/Users/filippominella/Desktop/midas/</td></tr>
         <tr><td><strong>Branch</strong></td><td class="mono">main</td></tr>
-        <tr><td><strong>Latest commit</strong></td><td class="mono">b60f197 docs: write PHASE_1_PLAN</td></tr>
-        <tr><td><strong>Quality gates</strong></td><td><span class="badge badge-green">install ✓</span> <span class="badge badge-green">lint ✓</span> <span class="badge badge-green">test ✓ (5/5)</span></td></tr>
+        <tr><td><strong>Latest commit</strong></td><td class="mono">0fcac94 Phase 1 Task 4: GitHub Actions CI (#1)</td></tr>
+        <tr><td><strong>Quality gates</strong></td><td><span class="badge badge-green">install ✓</span> <span class="badge badge-green">lint ✓</span> <span class="badge badge-green">test ✓ (5/5)</span> <span class="badge badge-green">CI on every push ✓</span></td></tr>
       </tbody>
     </table></div>
 
@@ -241,8 +241,8 @@
         <tr><td><strong>1</strong></td><td>Provision Kubernetes cluster</td><td><span class="badge badge-green">DONE</span></td></tr>
         <tr><td><strong>2</strong></td><td>Provision managed PostgreSQL</td><td><span class="badge badge-green">DONE (cross-DB denial check deferred to P2)</span></td></tr>
         <tr><td><strong>3</strong></td><td>Provision managed Redis</td><td><span class="badge badge-green">DONE</span></td></tr>
-        <tr><td><strong>4</strong></td><td>GitHub Actions CI for the repo</td><td><span class="badge badge-amber">NEXT</span></td></tr>
-        <tr><td><strong>5</strong></td><td>Bootstrap midas-deploy repo (or decide against)</td><td><span class="badge badge-navy">Pending</span></td></tr>
+        <tr><td><strong>4</strong></td><td>GitHub Actions CI for the repo</td><td><span class="badge badge-green">DONE (branch protection deferred — needs Team plan)</span></td></tr>
+        <tr><td><strong>5</strong></td><td>Bootstrap midas-deploy repo (or decide against)</td><td><span class="badge badge-amber">NEXT</span></td></tr>
         <tr><td><strong>6</strong></td><td>Install Argo CD (GitOps)</td><td><span class="badge badge-navy">Pending</span></td></tr>
         <tr><td><strong>7</strong></td><td>Install sealed-secrets</td><td><span class="badge badge-navy">Pending</span></td></tr>
         <tr><td><strong>8</strong></td><td>Move credentials into sealed-secrets</td><td><span class="badge badge-navy">Pending</span></td></tr>
@@ -268,8 +268,11 @@
       </ol>
     </div>
 
-    <h4>Phase 1 Task 4 — GitHub Actions CI</h4>
-    <p>Add <code class="inline">.github/workflows/ci.yml</code> that runs <code class="inline">make install</code>, <code class="inline">make lint</code>, <code class="inline">make test</code> on every PR and push to main. Add branch protection rule on <code class="inline">main</code> requiring CI to pass before merge. Verify by opening a PR with a deliberately broken test.</p>
+    <h4>Phase 1 Task 5 — Decide on the deploy-manifests location</h4>
+    <p>Two options on the table: (a) a separate private repo <code class="inline">bakerlunch-ai/midas-deploy</code> for Kubernetes manifests (GitOps best practice — code repo and deploy repo change for different reasons; Argo CD watches the deploy repo, not the app repo), or (b) keep manifests in-tree at <code class="inline">midas/deploy/</code> (simpler, fewer moving parts). Document the decision in <code class="inline">docs/ARCHITECTURE.md</code>, then create the chosen structure (<code class="inline">clusters/prod/</code>, <code class="inline">clusters/paper/</code>, <code class="inline">infrastructure/</code>).</p>
+
+    <h4>Note on branch protection</h4>
+    <p>Task 4 is closed but the branch-protection sub-item is deferred: GitHub requires the Team plan ($16/mo) to enforce protection rules on private repos. Decision: stay on the free plan, rely on team discipline. Re-evaluate if the team grows or if broken code lands on main despite discipline.</p>
 
     <h4>Open carry items</h4>
     <ul class="bullets">
@@ -352,7 +355,7 @@ git push</div>
 </div>
 
 <div class="footer">
-  Midas · Project Handoff · Last updated May 4, 2026 · github.com/bakerlunch-ai/midas
+  Midas · Project Handoff · Last updated May 4, 2026 (post-Task 4) · github.com/bakerlunch-ai/midas
 </div>
 
 </body>

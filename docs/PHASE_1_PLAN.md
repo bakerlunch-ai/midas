@@ -77,6 +77,14 @@ If the file does not yet exist, doctl will create it. The context name inside th
 - The PR is fixed; CI passes; merge button becomes available
 - Branch protection rules on `main` require CI to pass before merge
 
+**Status (2026-05-04): DONE (with one carve-out — see below).**
+
+- `.github/workflows/ci.yml` runs `make install` / `make lint` / `make test` on every push and on PRs targeting `main`. Pinned action versions: `actions/checkout@v4`, `actions/setup-python@v5`, `astral-sh/setup-uv@v3`, `actions/upload-artifact@v4`. uv cache is keyed by `uv.lock` hash. Pytest output is uploaded as an artifact on failure for debugging.
+- Closes lesson #10 from `docs/LESSONS_FROM_OLD_BOT.md` ("the bot grew faster than its tests"). CI now gates every change.
+- **Branch protection deferred.** GitHub requires the Team plan ($16/mo) to enforce branch protection rules on private repos. Decision: stay on the free plan, rely on team discipline (don't push directly to main, use PRs, wait for green CI). Re-evaluate if (a) the team grows beyond Filippo + Peter, or (b) broken code lands on main despite discipline.
+- `uv.lock` is now tracked in version control. The stock Python `.gitignore` template excluded it, which left CI unable to reproduce the resolved dependency set or hash-key the cache. For an application monorepo (vs a library), the lockfile belongs in git. Removed the gitignore entry and committed the existing root lockfile (253 lines).
+- **Gotcha:** the `gh` CLI needs the `workflow` OAuth scope to push files under `.github/workflows/`. Default `gh auth login` doesn't include it. Add it with: `gh auth refresh -h github.com -s workflow`.
+
 ---
 
 ### 5. Bootstrap a separate `midas-deploy` repo for Kubernetes manifests

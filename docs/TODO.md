@@ -1,6 +1,6 @@
 # Midas — Living TODO
 
-> **Updated:** May 4, 2026 (mid-session 2)
+> **Updated:** May 4, 2026 (mid-session 2, post-Task 4)
 > **Format:** Living checklist. Updated at end of every session.
 > **Aligned with:**
 > - The big picture → `Bot_Architecture_v2_Professional_Grade_April26_2026.html` Section 11 (8-phase migration roadmap)
@@ -11,7 +11,7 @@
 
 ## 🎯 Right now — Next session opens here
 
-- [ ] **Phase 1 Task 4** — GitHub Actions CI for the repo (`.github/workflows/ci.yml` running `make install`, `make lint`, `make test` on PRs and pushes to main; branch protection on `main` requiring CI to pass).
+- [ ] **Phase 1 Task 5** — Decide on the deploy-manifests location: separate `bakerlunch-ai/midas-deploy` repo vs. in-tree `midas/deploy/`. Document the decision in `docs/ARCHITECTURE.md` and create the chosen structure.
 
 ---
 
@@ -20,7 +20,7 @@
 | Phase | Description | Duration estimate | Status |
 |---|---|---|---|
 | **Phase 0** | Keep the lights on (old bot paused) | ongoing | ✅ Active |
-| **Phase 1** | Infrastructure foundation | 2-4 weeks | 🟡 In progress (3/12 tasks) |
+| **Phase 1** | Infrastructure foundation | 2-4 weeks | 🟡 In progress (4/12 tasks) |
 | **Phase 2** | Core data layer (data, oms, pms services) | 3-4 weeks | ⚪ Pending |
 | **Phase 3** | First strategy end-to-end (paper) | 2-3 weeks | ⚪ Pending |
 | **Phase 4** | Go live with TIMELY only | 2-3 weeks | ⚪ Pending |
@@ -55,7 +55,7 @@
 
 ---
 
-## 🟡 Phase 1 — Infrastructure foundation (3/12 tasks complete)
+## 🟡 Phase 1 — Infrastructure foundation (4/12 tasks complete)
 
 > Goal: a functional empty cluster with all infrastructure running. No trading services yet. You can `kubectl apply` a hello-world service and see it appear in Grafana with logs and metrics.
 
@@ -91,13 +91,14 @@
 - [x] Save credentials in password manager (password reset twice after accidental chat leaks)
 - [x] Proof-of-life: ephemeral pod inside `midas-prod` ran `redis-cli ... ping` → `PONG`
 
-### ⚪ Task 4 — GitHub Actions CI (next up)
+### ✅ Task 4 — GitHub Actions CI (DONE)
 
-- [ ] Create `.github/workflows/ci.yml` running `make install`, `make lint`, `make test`
-- [ ] Add branch protection on `main` requiring CI to pass before merge
-- [ ] Verify by opening a PR with a deliberately broken test
+- [x] Create `.github/workflows/ci.yml` running `make install`, `make lint`, `make test`
+- [x] Verified green on PR #1 before squash-merging to main
+- [x] `uv.lock` now tracked in git (was in stock `.gitignore` — removed for reproducible CI builds)
+- [ ] Add branch protection on `main` requiring CI to pass before merge — **deferred**: requires GitHub Team plan ($16/mo) for private repos. Staying on free plan; relying on team discipline. Re-evaluate if team grows or if broken code lands on main.
 
-### ⚪ Task 5 — Decide on midas-deploy repo
+### ⚪ Task 5 — Decide on midas-deploy repo (next up)
 
 - [ ] Decision: separate `bakerlunch-ai/midas-deploy` for K8s manifests, OR keep in `midas/deploy/`
 - [ ] Document decision in `docs/ARCHITECTURE.md`
@@ -270,12 +271,12 @@
 
 ## 📊 By the numbers (current)
 
-- **Commits on main:** 9 (will be 10 after this push lands)
+- **Commits on main:** 11 (will be 12 after this push lands)
 - **Current phase:** Phase 1 (infrastructure foundation)
-- **Phase 1 progress:** 3 / 12 tasks complete
+- **Phase 1 progress:** 4 / 12 tasks complete
 - **Overall progress:** 0 of 7 active phases complete
 - **Cloud cost:** $117.45 / month (target: <$150)
-- **Quality gates:** 3 / 3 passing (install, lint, test)
+- **Quality gates:** 4 / 4 passing (install, lint, test, CI on every push)
 - **Tests:** 5 passing
 - **Services running:** 0 (Phase 2 work)
-- **Last session:** April 29, 2026 (~3h, 2 tasks shipped); session 2 in progress (2026-05-04)
+- **Last session:** April 29, 2026 (~3h, 2 tasks shipped); session 2 in progress (2026-05-04, Tasks 3+4 shipped)
