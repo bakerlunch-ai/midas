@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bot Architecture v2 — Professional-Grade Rebuild — April 26, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0d1b2a;
+    --navy-mid: #1a2e44;
+    --green: #00c896;
+    --green-dim: #00a87a;
+    --amber: #f5a623;
+    --red: #e05252;
+    --cream: #f7f4ef;
+    --text: #1a1a2a;
+    --text-light: #5a6072;
+    --border: #e2ddd6;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+    --serif: 'DM Serif Display', serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--cream); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.7; }
+  .header { background: var(--navy); color: white; padding: 56px 60px 48px; position: relative; overflow: hidden; }
+  .header::before { content: ''; position: absolute; top: -80px; right: -80px; width: 320px; height: 320px; border-radius: 50%; border: 1px solid rgba(0,200,150,0.15); }
+  .header::after { content: ''; position: absolute; bottom: -40px; left: 200px; width: 180px; height: 180px; border-radius: 50%; border: 1px solid rgba(0,200,150,0.08); }
+  .header-tag { font-family: var(--mono); font-size: 11px; color: var(--green); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; }
+  .header h1 { font-family: var(--serif); font-size: 42px; font-weight: 400; line-height: 1.15; margin-bottom: 10px; }
+  .header-sub { font-size: 14px; color: rgba(255,255,255,0.55); font-weight: 300; margin-bottom: 28px; max-width: 720px; }
+  .header-meta { display: flex; gap: 18px; flex-wrap: wrap; }
+  .meta-pill { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); padding: 6px 14px; border-radius: 100px; font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.7); }
+  .meta-pill.green { border-color: rgba(0,200,150,0.4); color: var(--green); }
+  .container { max-width: 1080px; margin: 0 auto; padding: 48px 40px; }
+  .alert { background: rgba(245,166,35,0.1); border: 1px solid rgba(245,166,35,0.3); border-left: 3px solid var(--amber); padding: 14px 18px; border-radius: 6px; font-size: 13px; color: #7a5010; margin-bottom: 40px; }
+  .alert strong { color: #5a3a08; }
+  .alert.green { background: rgba(0,200,150,0.06); border: 1px solid rgba(0,200,150,0.25); border-left: 3px solid var(--green); color: #155040; }
+  .alert.green strong { color: #0a3028; }
+  .section { margin-bottom: 60px; }
+  .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .section-num { font-family: var(--mono); font-size: 11px; color: var(--green-dim); background: rgba(0,200,150,0.08); border: 1px solid rgba(0,200,150,0.2); width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 600; }
+  .section h2 { font-family: var(--serif); font-size: 24px; font-weight: 400; color: var(--navy); }
+  .section h3 { font-size: 13px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin: 24px 0 8px; }
+  .section h4 { font-family: var(--serif); font-size: 19px; font-weight: 400; color: var(--navy); margin: 28px 0 10px; }
+  .section h5 { font-size: 14px; font-weight: 600; color: var(--navy); margin: 18px 0 6px; }
+  .section p { color: var(--text); margin-bottom: 12px; max-width: 820px; }
+  .section p.note { color: var(--text-light); font-style: italic; font-size: 13px; max-width: 740px; }
+  .table-wrap { overflow-x: auto; margin: 16px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { background: var(--navy); color: white; }
+  thead th { padding: 11px 14px; text-align: left; font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
+  tbody tr:nth-child(odd) { background: white; }
+  tbody tr:nth-child(even) { background: rgba(0,0,0,0.02); }
+  tbody tr:hover { background: rgba(0,200,150,0.04); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  td.mono { font-family: var(--mono); font-size: 12px; color: var(--navy-mid); }
+  td.green { color: var(--green-dim); font-weight: 600; }
+  td.amber { color: #b07010; font-weight: 500; }
+  td.red-text { color: var(--red); font-weight: 500; }
+  .bullets { list-style: none; padding: 0; margin: 10px 0; }
+  .bullets li { padding: 5px 0 5px 22px; position: relative; font-size: 13.5px; color: var(--text); border-bottom: 1px solid rgba(0,0,0,0.04); }
+  .bullets li::before { content: '→'; position: absolute; left: 0; color: var(--green-dim); font-family: var(--mono); font-size: 12px; }
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .compare-box { border-radius: 8px; padding: 16px; border: 1px solid var(--border); }
+  .compare-box.before { background: rgba(224,82,82,0.04); border-color: rgba(224,82,82,0.2); }
+  .compare-box.after { background: rgba(0,200,150,0.04); border-color: rgba(0,200,150,0.2); }
+  .compare-label { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+  .compare-box.before .compare-label { color: var(--red); }
+  .compare-box.after .compare-label { color: var(--green-dim); }
+  .compare-box ul { list-style: none; padding: 0; margin: 0; }
+  .compare-box li { font-size: 13px; padding: 3px 0 3px 16px; position: relative; color: var(--text); }
+  .compare-box.before li::before { content: '✕'; position: absolute; left: 0; color: var(--red); font-size: 10px; top: 5px; }
+  .compare-box.after li::before { content: '✓'; position: absolute; left: 0; color: var(--green-dim); font-size: 10px; top: 5px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 100px; font-family: var(--mono); font-size: 10px; font-weight: 600; }
+  .badge-green { background: rgba(0,200,150,0.12); color: var(--green-dim); border: 1px solid rgba(0,200,150,0.3); }
+  .badge-amber { background: rgba(245,166,35,0.12); color: #8a6010; border: 1px solid rgba(245,166,35,0.3); }
+  .badge-red { background: rgba(224,82,82,0.1); color: var(--red); border: 1px solid rgba(224,82,82,0.25); }
+  .badge-navy { background: rgba(13,27,42,0.08); color: var(--navy-mid); border: 1px solid rgba(13,27,42,0.15); }
+  .code-block { background: var(--navy); color: #a8d8c8; font-family: var(--mono); font-size: 12px; padding: 16px 20px; border-radius: 8px; margin: 12px 0; line-height: 1.7; overflow-x: auto; white-space: pre; }
+  .code-block .comment { color: rgba(168,216,200,0.45); }
+  .code-block .keyword { color: #f5a623; }
+  .code-block .string { color: #a8d8ff; }
+  .code-block .accent { color: #00c896; }
+  .footer { background: var(--navy); color: rgba(255,255,255,0.4); text-align: center; padding: 24px 40px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.5px; margin-top: 40px; }
+  .footer a { color: var(--green); text-decoration: none; }
+  .callout { background: rgba(0,200,150,0.05); border: 1px solid rgba(0,200,150,0.2); border-left: 3px solid var(--green); padding: 14px 18px; border-radius: 6px; font-size: 13.5px; color: var(--text); margin: 16px 0; }
+  .callout strong { color: var(--navy); }
+  .callout.red { background: rgba(224,82,82,0.04); border: 1px solid rgba(224,82,82,0.2); border-left: 3px solid var(--red); color: #602010; }
+  .callout.red strong { color: #401010; }
+  .callout.navy { background: rgba(13,27,42,0.04); border: 1px solid rgba(13,27,42,0.15); border-left: 3px solid var(--navy); color: var(--text); }
+  .callout.amber { background: rgba(245,166,35,0.06); border: 1px solid rgba(245,166,35,0.25); border-left: 3px solid var(--amber); color: #6a4810; }
+  .callout.amber strong { color: #3a2810; }
+  .toc { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 22px 28px; margin-bottom: 40px; }
+  .toc-title { font-family: var(--mono); font-size: 11px; color: var(--text-light); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; }
+  .toc ol { list-style: none; padding: 0; margin: 0; counter-reset: tocnum; }
+  .toc li { padding: 4px 0; counter-increment: tocnum; }
+  .toc li::before { content: counter(tocnum, decimal-leading-zero) "  "; font-family: var(--mono); font-size: 11px; color: var(--green-dim); margin-right: 8px; }
+  .toc a { color: var(--text); text-decoration: none; font-size: 13.5px; }
+  .toc a:hover { color: var(--green-dim); }
+  .ascii-diagram { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 18px 22px; font-family: var(--mono); font-size: 11.5px; line-height: 1.55; color: var(--text); white-space: pre; overflow-x: auto; margin: 16px 0; }
+  .ascii-diagram .accent { color: var(--green-dim); font-weight: 600; }
+  .ascii-diagram .muted { color: var(--text-light); }
+  .ascii-diagram .red { color: var(--red); }
+  .scenario { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 22px 26px; margin: 18px 0; }
+  .scenario-header { font-family: var(--serif); font-size: 19px; color: var(--navy); margin-bottom: 6px; }
+  .scenario-tag { font-family: var(--mono); font-size: 10px; color: var(--green-dim); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 14px; }
+  .step-list { list-style: none; padding: 0; margin: 12px 0; counter-reset: stepnum; }
+  .step-list li { counter-increment: stepnum; padding: 8px 0 8px 38px; position: relative; font-size: 13.5px; color: var(--text); border-bottom: 1px solid rgba(0,0,0,0.04); }
+  .step-list li::before { content: counter(stepnum, decimal-leading-zero); position: absolute; left: 0; top: 8px; font-family: var(--mono); font-size: 10px; color: var(--green-dim); background: rgba(0,200,150,0.08); border: 1px solid rgba(0,200,150,0.2); width: 26px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 600; }
+  .service-card { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 18px 22px; margin: 12px 0; }
+  .service-name { font-family: var(--serif); font-size: 17px; color: var(--navy); margin-bottom: 4px; }
+  .service-meta { font-family: var(--mono); font-size: 11px; color: var(--text-light); margin-bottom: 12px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 14px 0; }
+  kbd, code.inline { font-family: var(--mono); font-size: 12px; background: rgba(13,27,42,0.06); padding: 1px 5px; border-radius: 3px; color: var(--navy-mid); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-tag">Kalshi Bot · Architecture v2 · Professional-Grade Rebuild</div>
+  <h1>Architecture v2<br>Professional-Grade Rebuild</h1>
+  <div class="header-sub">Multi-service architecture inspired by hedge fund OMS/EMS/Risk separation, NautilusTrader's event-driven model, and modern open-source observability stacks. Built for two-person team with no time constraint, aiming as close to Tier-1 as we can reach.</div>
+  <div class="header-meta">
+    <span class="meta-pill">8 services</span>
+    <span class="meta-pill">Event-sourced ledger</span>
+    <span class="meta-pill green">NATS JetStream</span>
+    <span class="meta-pill">LGTM observability</span>
+    <span class="meta-pill">Managed Kubernetes</span>
+    <span class="meta-pill">MCP-native</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="alert green">
+    <strong>Read order.</strong> This is a long document. Sections 02 and 03 are the core argument. Section 04 names every service. Section 05 is the message bus &mdash; understand it before reading the services. Section 07 is the operational stack. Section 11 is the migration plan. If you read only four sections, read 03, 04, 05, 11.
+  </div>
+
+  <div class="alert">
+    <strong>What changed from architecture v1.</strong> The previous document recommended a modular monolith for a days-scoped build. You and Peter chose to aim higher and accept the longer build time. This document discards the monolith path and designs the system as a true distributed multi-service architecture &mdash; the architecture professional shops actually build, scaled appropriately for a serious two-person team. We are deliberately falling short of true Tier-1 hedge fund infrastructure (no co-located servers, no FPGA execution, no internal pricing engines for exotic derivatives) but adopting all the patterns that matter at our scale.
+  </div>
+
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <ol>
+      <li><a href="#s01">Why this document exists, and what changed from v1</a></li>
+      <li><a href="#s02">What hedge funds actually do &mdash; and what we'll borrow</a></li>
+      <li><a href="#s03">The architecture in one picture</a></li>
+      <li><a href="#s04">The eight services, named and explained</a></li>
+      <li><a href="#s05">The message bus &mdash; NATS JetStream and event contracts</a></li>
+      <li><a href="#s06">The data layer &mdash; PostgreSQL, ledger, projections</a></li>
+      <li><a href="#s07">The operational stack &mdash; Kubernetes, observability, secrets, CI/CD</a></li>
+      <li><a href="#s08">Five end-to-end scenarios</a></li>
+      <li><a href="#s09">Shadow bot &mdash; finally redefined as a paper environment</a></li>
+      <li><a href="#s10">MCP integration &mdash; the bot as a first-class AI-callable system</a></li>
+      <li><a href="#s11">Migration roadmap &mdash; 7 phases, ~6 months realistic</a></li>
+      <li><a href="#s12">Where we deliberately fall short of Tier-1 hedge funds</a></li>
+      <li><a href="#s13">Risks, failure modes, and what could derail this build</a></li>
+      <li><a href="#s14">Glossary</a></li>
+    </ol>
+  </div>
+
+  <!-- 01 -->
+  <div class="section" id="s01">
+    <div class="section-header"><div class="section-num">01</div><h2>Why this document exists, and what changed from v1</h2></div>
+    <p>The audit (Phases 1–6 in the synthesis document) identified a system that worked but was fragile, hard to extend, and silently broken in several places. The first architecture document recommended a modular monolith — one Python codebase, cleanly organized, fast to build. You read it and pushed back: not enough ambition. You wanted "as close to hedge fund grade as possible." Personnel is not a constraint, time is not a constraint, the goal is a serious system that can grow into something complex, strong, and profitable.</p>
+    <p>That changes the recommendation entirely. This document discards the modular monolith and replaces it with what professional shops actually build: a multi-service distributed architecture with proper separation of concerns, a real message bus, separate databases per service domain, a full observability stack, and a deployment story that supports independent service updates without taking the system down. We're going to use the same vocabulary professional firms use — OMS, EMS, Risk Engine, Portfolio Management Service — because those names map onto well-understood responsibilities, and using them anchors the design in patterns that have been proven at scale.</p>
+    <p>What you get out of this document:</p>
+    <ul class="bullets">
+      <li>A serious architectural design you can actually build, with names and choices you can defend</li>
+      <li>The specific technologies (NATS JetStream, PostgreSQL, Kubernetes, the LGTM observability stack) and why each was chosen over alternatives</li>
+      <li>End-to-end scenarios that show how the system behaves when things go right <em>and</em> when they go wrong</li>
+      <li>A migration roadmap that doesn't pretend this is a weekend project</li>
+      <li>Honest acknowledgment of where we deliberately stop short of true hedge fund infrastructure, and why</li>
+    </ul>
+  </div>
+
+  <!-- 02 -->
+  <div class="section" id="s02">
+    <div class="section-header"><div class="section-num">02</div><h2>What hedge funds actually do — and what we'll borrow</h2></div>
+    <p>Before designing anything, it's worth grounding ourselves in what professional quant operations actually look like. The vocabulary and patterns matter because they encode decades of hard-won lessons about what breaks at scale.</p>
+
+    <h4>The canonical six-component structure</h4>
+    <p>Every serious quant trading firm — from Citadel and Two Sigma down to mid-sized prop shops — separates their trading systems into roughly six layers:</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th style="width:200px">Layer</th><th>One-line responsibility</th><th>Why it's separate</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Data Engine</strong></td><td>Ingest market data, normalize, distribute to consumers</td><td>Market data is high-volume, latency-sensitive, used by many downstream consumers. Co-locating it with strategy logic creates contention.</td></tr>
+        <tr><td><strong>Strategy Engine</strong></td><td>Transform data into trade signals and position intentions</td><td>Strategies fail. Strategies get changed often. Isolating them prevents one buggy strategy from affecting others.</td></tr>
+        <tr><td><strong>Risk Engine</strong></td><td>Real-time pre-trade and post-trade risk checks; limits enforcement</td><td>Risk is the firm's last line of defense. It must be impossible to bypass. Centralizing it ensures every order goes through the same rules.</td></tr>
+        <tr><td><strong>Order Management System (OMS)</strong></td><td>Authoritative record of all orders. Lifecycle, state transitions, reconciliation.</td><td>The OMS is the system of record. It must be correct even when other components fail. Reconciliation against the broker happens here.</td></tr>
+        <tr><td><strong>Execution Management System (EMS)</strong></td><td>Routes approved orders to venues. Handles fills, partial fills, cancellations, retries.</td><td>Venue connectivity is messy. Each venue has its own quirks, rate limits, error semantics. Encapsulating that prevents the rest of the system from caring.</td></tr>
+        <tr><td><strong>Portfolio Management System (PMS)</strong></td><td>Maintains current positions, computes P&amp;L, provides state to other components.</td><td>"What do we own and what is it worth right now" is a question many components ask. One source of truth. P&amp;L attribution lives here.</td></tr>
+      </tbody>
+    </table></div>
+
+    <p>Acadian Asset Management's Multi-Strategy fund describes this as "sleeves operating almost independently" with a "centralized risk management" layer that "considers buying power and cashflows" and has "real-time sight of proposed trades, and aggregates risk to control them." That's exactly the OMS/Risk/PMS pattern.</p>
+    <p>Quantifi (a hedge fund tech vendor used by professional firms) explicitly describes its platform as "microservices architecture built up of single-purpose components allowing functionality to be consumed in ways applicable to your unique business requirements." Same idea. Single-purpose services, message bus between them.</p>
+
+    <h4>The hedge fund quality bar &mdash; what makes their systems professional</h4>
+    <p>Beyond the architectural shape, four things distinguish professional trading systems from hobby projects:</p>
+    <ul class="bullets">
+      <li><strong>Determinism.</strong> Run the same inputs, get the same outputs. Replay any decision the system made, exactly. NautilusTrader explicitly designs for this with their "deterministic time model" running across both research and live.</li>
+      <li><strong>Auditability.</strong> Every order, every state transition, every risk check is recorded with the inputs and outputs. You can answer "why did we make this trade at 11:47 last Tuesday" months later, with the actual reasoning.</li>
+      <li><strong>Testability under failure.</strong> What happens when Kalshi rate-limits us? When Claude returns malformed JSON? When the database is briefly unreachable? Every failure mode has a defined behavior, not "it crashes and we figure it out."</li>
+      <li><strong>Research-to-live parity.</strong> Strategies developed in research run unmodified in production. No "this works in paper but not in live" surprises. Same code, same execution semantics, just different config.</li>
+    </ul>
+
+    <h4>What we will borrow</h4>
+    <ul class="bullets">
+      <li><strong>The six-layer separation</strong> &mdash; Data, Strategy, Risk, OMS, EMS, PMS. Each as its own service.</li>
+      <li><strong>Event-driven communication via a message bus</strong> &mdash; services publish events, other services subscribe. No direct calls.</li>
+      <li><strong>Event sourcing for the OMS and PMS</strong> &mdash; the order log and the position log are the source of truth. Current state is derived.</li>
+      <li><strong>Strict schema versioning</strong> &mdash; events have versions. Adding a field doesn't break old consumers. Removing one is a deliberate process.</li>
+      <li><strong>Research-to-live parity via mode toggle</strong> &mdash; same services, different config, different venue adapter. Borrowed directly from Nautilus and Freqtrade.</li>
+      <li><strong>Full observability stack</strong> &mdash; metrics, logs, traces. Every event in the system observable end-to-end.</li>
+      <li><strong>Deterministic replay</strong> &mdash; record every input event, every output event. Replay any historical decision deterministically.</li>
+    </ul>
+
+    <h4>What we will deliberately not adopt</h4>
+    <p>Hedge funds at the top tier do things we genuinely do not need:</p>
+    <ul class="bullets">
+      <li><strong>Co-located servers / kernel bypass / FPGA execution.</strong> Latency at microsecond scale is irrelevant for prediction markets that resolve in days or weeks. Our latency target is "place orders within 100ms of decision," which is millions of times slower than HFT.</li>
+      <li><strong>In-house pricing libraries for exotic derivatives.</strong> Kalshi binary contracts are trivially priced. We do not need our own Black-Scholes implementation.</li>
+      <li><strong>Compliance, regulatory, and audit reporting infrastructure.</strong> We are individuals trading our own capital. The regulatory surface is small.</li>
+      <li><strong>Multi-tenant architecture.</strong> One firm, two users. We do not need RBAC for hundreds of traders.</li>
+      <li><strong>Dedicated SRE / DevOps personnel.</strong> Peter and Filippo will do everything. Architecture choices reflect this &mdash; we use managed services where possible to reduce operational load.</li>
+    </ul>
+    <p>Section 12 expands on each of these.</p>
+  </div>
+
+  <!-- 03 -->
+  <div class="section" id="s03">
+    <div class="section-header"><div class="section-num">03</div><h2>The architecture in one picture</h2></div>
+    <p>Here is the full system. Read it slowly. Each box is its own deployable service running in its own container. The arrows are messages flowing through NATS JetStream. The cylinders are state stores.</p>
+
+    <div class="ascii-diagram">  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │                                          <span class="accent">EXTERNAL WORLD</span>                                          │
+  │   <span class="muted">Kalshi · Polymarket · FRED · Anthropic API · News APIs · Telegram · External MCP Tools</span>      │
+  └─────┬─────────────────┬──────────────────┬──────────────────┬─────────────────┬──────────────┘
+        │                 │                  │                  │                 │
+   ┌────▼─────┐      ┌────▼─────┐       ┌────▼──────┐     ┌─────▼────┐      ┌────▼──────┐
+   │  Market   │      │ Account  │       │ Research  │     │  AI/NLP  │      │  External  │
+   │ Data Adp  │      │  Data    │       │  Data     │     │  Adapter │      │ MCP Tools  │
+   │ (Kalshi   │      │  Adapter │       │ (FRED,    │     │ (Claude, │      │            │
+   │  Polymkt) │      │          │       │   News)   │     │   etc.)  │      │            │
+   └────┬──────┘      └────┬─────┘       └─────┬─────┘     └─────┬────┘      └─────┬─────┘
+        │                  │                   │                 │                 │
+        └──────────────────┴─────┬─────────────┴─────────────────┴─────────────────┘
+                                 │
+                           ┌─────▼──────┐
+                           │  <span class="accent">data-svc</span>  │  ──→ publishes <span class="accent">market.tick.*</span>, <span class="accent">market.state.*</span>
+                           │ Data       │      <span class="accent">data.fundamental.*</span>, <span class="accent">data.research.*</span>
+                           │ Service    │
+                           └─────┬──────┘
+                                 │
+        ┌────────────────────────┼─────────────────────────┐
+        │                        │                         │
+  ┌─────▼─────┐           ┌──────▼─────┐            ┌──────▼─────┐
+  │ <span class="accent">strategy-</span>  │           │ <span class="accent">strategy-</span>  │            │ <span class="accent">strategy-</span>  │   <span class="muted">(N strategies, each its own pod)</span>
+  │  timely   │           │  midsel    │            │   arb      │
+  │   svc     │           │   svc      │            │   svc      │
+  └─────┬─────┘           └──────┬─────┘            └──────┬─────┘
+        │                        │                         │
+        └──────── publishes <span class="accent">order.proposed.*</span> ──────────────┘
+                                 │
+                          ┌──────▼──────┐
+                          │  <span class="accent">risk-svc</span>   │  ── reads <span class="muted">portfolio state, exposure, limits</span>
+                          │  Risk Eng   │     subscribes <span class="accent">order.proposed.*</span>
+                          │             │     publishes  <span class="accent">order.approved.*</span> / <span class="accent">order.rejected.*</span>
+                          └──────┬──────┘
+                                 │
+                          ┌──────▼──────┐
+                          │  <span class="accent">oms-svc</span>    │  ── system of record. <span class="muted">All orders.</span>
+                          │   Order Mgmt │     subscribes <span class="accent">order.approved.*</span>
+                          │   System    │     publishes  <span class="accent">order.submitted.*</span>
+                          └──────┬──────┘     event-sourced. ledger=PostgreSQL.
+                                 │
+                          ┌──────▼──────┐
+                          │  <span class="accent">ems-svc</span>    │  ── executes orders against venues
+                          │   Exec Mgmt  │     two modes: <span class="accent">live</span> | <span class="accent">paper</span>
+                          │   System    │     publishes <span class="accent">order.filled.*</span>, <span class="accent">order.rejected.*</span>
+                          └──────┬──────┘
+                                 │
+                          ┌──────▼──────┐
+                          │  <span class="accent">pms-svc</span>    │  ── positions, P&amp;L, bankroll
+                          │  Portfolio   │     subscribes <span class="accent">order.filled.*</span>, <span class="accent">market.tick.*</span>
+                          │  Mgmt Sys   │     publishes  <span class="accent">portfolio.updated</span>
+                          └──────┬──────┘     event-sourced. <span class="muted">authoritative ledger.</span>
+                                 │
+                                 │
+   ┌─────────────────────────────┼──────────────────────────────────────────────────┐
+   │                             │                                                  │
+   │     ┌───────────────────────▼─────────────────────────────────┐                │
+   │     │                                                         │                │
+   │     │              <span class="accent">NATS JetStream  message bus</span>                  │   <span class="muted">all services connect here</span>
+   │     │              + persistent streams                       │                │
+   │     │              + at-least-once delivery                   │                │
+   │     └─────────────────────────────────────────────────────────┘                │
+   │                                                                                │
+   └────────────────────────────────────────────────────────────────────────────────┘
+                                 │
+              ┌──────────────────┼──────────────────┐
+              │                  │                  │
+       ┌──────▼────────┐  ┌──────▼─────┐    ┌───────▼──────┐
+       │ reporting-svc │  │telegram-svc│    │ mcp-svc      │  ── AI agent integration
+       │ daily/weekly  │  │            │    │ (read+write) │
+       │ dashboards    │  │ alerts +   │    │              │
+       └───────────────┘  │ commands   │    │ exposes bot  │
+                          └────────────┘    │ as MCP tools │
+                                            └──────────────┘
+
+
+  <span class="muted">────────────────────────── OBSERVABILITY (cross-cutting) ───────────────────────────</span>
+
+           Prometheus (metrics) ──→ Grafana ──→ dashboards
+           Loki (logs)          ──→ Grafana ──→ log search
+           Tempo (traces)       ──→ Grafana ──→ distributed traces
+           OpenTelemetry collector receives from every service.</div>
+
+    <h4>What's important about this picture</h4>
+    <ul class="bullets">
+      <li><strong>Every service has one job.</strong> No service does multiple things. Strategy services propose orders, they don't place them. Risk service approves orders, it doesn't execute them. EMS executes, it doesn't decide.</li>
+      <li><strong>Services never call each other directly.</strong> All communication is through NATS. This is the single most important rule. It means a service can be restarted, replaced, or have a new version deployed without anyone else needing to know.</li>
+      <li><strong>State lives in the event log.</strong> The OMS and PMS are event-sourced &mdash; their PostgreSQL databases store every event that ever happened. Current state is computed from the events. This makes the Phase 2 audit bug ("bankroll only goes up") structurally impossible.</li>
+      <li><strong>Adapters wrap the messy outside world.</strong> Every external API has its own adapter that translates the venue's quirks into our clean internal event schema. A change at Kalshi only affects the Kalshi adapter.</li>
+      <li><strong>Observability is cross-cutting.</strong> Every service emits metrics, logs, and distributed traces. Every event flowing through NATS can be traced end-to-end. When something breaks at 2 AM, you can see exactly where.</li>
+    </ul>
+
+    <div class="callout">
+      <strong>The mental model.</strong> Imagine each service as a person in a small office, each with a specific job, communicating only by leaving notes on a central message board (NATS). The OMS clerk maintains the master ledger. The Risk officer reviews every proposed trade before approving it. The EMS trader executes approved trades. The PMS accountant tracks positions and P&amp;L. They don't share a brain &mdash; they share a notice board. If the trader is out sick, the office still functions: orders pile up on the notice board for them to handle when they return. If the Risk officer is replaced, nothing else changes.
+    </div>
+  </div>
+
+  <!-- 04 SERVICES -->
+  <div class="section" id="s04">
+    <div class="section-header"><div class="section-num">04</div><h2>The eight services, named and explained</h2></div>
+    <p>Eight independently-deployable services. Each runs in its own Docker container, has its own configuration, its own logs, its own metrics, and (where applicable) its own database. They communicate only through NATS.</p>
+
+    <div class="service-card">
+      <div class="service-name">data-svc</div>
+      <div class="service-meta">role: data ingestion · language: Python · state: stateless (caches in memory) · scale: 1 replica</div>
+      <p>Owns all communication with the outside world for data acquisition. Wraps Kalshi market data, Polymarket data, FRED economic indicators, news APIs, and Anthropic Claude calls for AI edge detection. Each external system has its own adapter file. The service publishes typed events to NATS subjects.</p>
+      <h5>Subjects published</h5>
+      <ul class="bullets">
+        <li><code class="inline">market.tick.kalshi.&lt;ticker&gt;</code> &mdash; price updates</li>
+        <li><code class="inline">market.state.&lt;ticker&gt;</code> &mdash; status changes (open, closed, settled)</li>
+        <li><code class="inline">data.fundamental.fred.&lt;series&gt;</code> &mdash; FRED data updates</li>
+        <li><code class="inline">data.research.edge.&lt;ticker&gt;</code> &mdash; AI-generated edge analysis (Claude output)</li>
+        <li><code class="inline">data.news.&lt;ticker&gt;</code> &mdash; news/sentiment hits</li>
+      </ul>
+      <h5>Why isolated</h5>
+      <p>External APIs change, fail, rate-limit. By isolating all external calls in one service, the rest of the system never sees a Kalshi outage as anything other than a paused stream of <code class="inline">market.tick</code> events. Strategies don't break when an API does. The service has its own retry logic, circuit breakers, and per-source health metrics.</p>
+    </div>
+
+    <div class="service-card">
+      <div class="service-name">strategy-* (one per strategy)</div>
+      <div class="service-meta">role: signal generation · language: Python · state: stateless · scale: N replicas (one per strategy)</div>
+      <p>Each strategy is its own service. <code class="inline">strategy-timely</code>, <code class="inline">strategy-midsel</code>, <code class="inline">strategy-arb</code>, plus any new strategies we add. Each one subscribes to the data events it cares about, applies its logic, and publishes <code class="inline">order.proposed.*</code> events when it wants to bet.</p>
+      <h5>Subjects subscribed</h5>
+      <ul class="bullets">
+        <li><code class="inline">market.tick.&gt;</code>, <code class="inline">market.state.&gt;</code> &mdash; from data-svc</li>
+        <li><code class="inline">data.research.edge.&gt;</code> &mdash; AI edge analysis</li>
+        <li><code class="inline">portfolio.updated</code> &mdash; from pms-svc, so strategy knows current bankroll/positions</li>
+      </ul>
+      <h5>Subjects published</h5>
+      <ul class="bullets">
+        <li><code class="inline">order.proposed.&lt;strategy_name&gt;</code> &mdash; "I want to place this bet"</li>
+        <li><code class="inline">strategy.heartbeat.&lt;strategy_name&gt;</code> &mdash; periodic alive signal</li>
+        <li><code class="inline">strategy.skipped.&lt;strategy_name&gt;</code> &mdash; markets it evaluated but chose not to bet, with reason</li>
+      </ul>
+      <h5>Why one service per strategy</h5>
+      <p>This is a deliberate design choice. Strategies fail more than any other component. Strategies need to be modified often. Strategies are added, removed, A/B tested. Putting each in its own service gives you: independent deployment, independent scaling, independent failure isolation, easy A/B testing (run two versions of TIMELY simultaneously with different parameters). Adding a new strategy is a new pod, not a code change to a shared file.</p>
+    </div>
+
+    <div class="service-card">
+      <div class="service-name">risk-svc</div>
+      <div class="service-meta">role: pre-trade risk checks · language: Python · state: reads portfolio state from pms-svc · scale: 1 replica (HA optional)</div>
+      <p>The single point through which every proposed order must pass. Implements all gates in one place: status checks, weekly loss limits, exposure caps (per-ticker, per-category, total), contradictory position checks, ticker concentration, sizing logic. Owns the half-Kelly / Bayesian-Kelly sizing calculation.</p>
+      <h5>Subjects subscribed</h5>
+      <ul class="bullets">
+        <li><code class="inline">order.proposed.&gt;</code> &mdash; from any strategy service</li>
+        <li><code class="inline">portfolio.updated</code> &mdash; from pms-svc</li>
+        <li><code class="inline">risk.limits.update</code> &mdash; manual updates to risk parameters</li>
+      </ul>
+      <h5>Subjects published</h5>
+      <ul class="bullets">
+        <li><code class="inline">order.approved.&lt;strategy_name&gt;</code> &mdash; with sized amount</li>
+        <li><code class="inline">order.rejected.&lt;strategy_name&gt;</code> &mdash; with reason</li>
+        <li><code class="inline">risk.alert.&lt;type&gt;</code> &mdash; threshold breaches, anomalies</li>
+      </ul>
+      <h5>Why isolated</h5>
+      <p>Risk is the firm's last line of defense against catastrophic loss. Centralizing it ensures every order goes through the same rules. If risk-svc is down, no orders fire &mdash; the system fails closed. If you want to change a risk rule, you change it in one place. If you need to audit "why was this trade approved at $X size," the answer is in this service's logs.</p>
+    </div>
+
+    <div class="service-card">
+      <div class="service-name">oms-svc — Order Management System</div>
+      <div class="service-meta">role: authoritative record of all orders · language: Python · state: PostgreSQL (event-sourced) · scale: 1 replica</div>
+      <p>The system of record for orders. Subscribes to <code class="inline">order.approved.*</code>, persists each one to its event log, assigns it an order ID, transitions it through states (NEW → SUBMITTED → ACKNOWLEDGED → PARTIALLY_FILLED → FILLED / CANCELLED / REJECTED), and exposes the order book to the rest of the system. Reconciliation against venues happens here.</p>
+      <h5>Subjects subscribed</h5>
+      <ul class="bullets">
+        <li><code class="inline">order.approved.&gt;</code> &mdash; from risk-svc</li>
+        <li><code class="inline">order.acknowledged</code>, <code class="inline">order.filled</code>, <code class="inline">order.rejected</code> &mdash; from ems-svc</li>
+      </ul>
+      <h5>Subjects published</h5>
+      <ul class="bullets">
+        <li><code class="inline">order.submitted.&lt;order_id&gt;</code> &mdash; signals ems-svc to actually execute</li>
+        <li><code class="inline">order.state.changed.&lt;order_id&gt;</code> &mdash; lifecycle transitions</li>
+      </ul>
+      <h5>Database</h5>
+      <p>PostgreSQL, append-only orders table with full event log. Every state transition is a row. Order's current state is computed from its history. Daily reconciliation job pulls Kalshi's order/fill records and compares against the local log; mismatches trigger alerts and auto-correction events.</p>
+    </div>
+
+    <div class="service-card">
+      <div class="service-name">ems-svc — Execution Management System</div>
+      <div class="service-meta">role: execute orders on venues · language: Python · state: stateless · scale: 1 replica per venue (or per mode)</div>
+      <p>Talks to Kalshi (and eventually Polymarket) to actually place orders. Has two modes controlled by config: <code class="inline">live</code> (real orders) and <code class="inline">paper</code> (simulated fills against current market prices). The same service binary, different config, different output stream. This is the Freqtrade <code class="inline">--dry-run</code> pattern, but at the service level.</p>
+      <h5>Subjects subscribed</h5>
+      <ul class="bullets">
+        <li><code class="inline">order.submitted.&gt;</code> &mdash; from oms-svc</li>
+      </ul>
+      <h5>Subjects published</h5>
+      <ul class="bullets">
+        <li><code class="inline">order.acknowledged.&lt;order_id&gt;</code> &mdash; venue accepted</li>
+        <li><code class="inline">order.filled.&lt;order_id&gt;</code> &mdash; with fill details</li>
+        <li><code class="inline">order.rejected.&lt;order_id&gt;</code> &mdash; venue rejected, with reason</li>
+        <li><code class="inline">venue.status.&lt;venue&gt;</code> &mdash; venue health (rate-limited, down, etc.)</li>
+      </ul>
+      <h5>Why two modes</h5>
+      <p>Paper mode is what becomes our shadow bot. Same code, same logic, no real orders. Section 09 details how this replaces the old <code class="inline">shadow_bot.py</code>.</p>
+    </div>
+
+    <div class="service-card">
+      <div class="service-name">pms-svc — Portfolio Management System</div>
+      <div class="service-meta">role: positions, P&amp;L, bankroll · language: Python · state: PostgreSQL (event-sourced) · scale: 1 replica</div>
+      <p>The authoritative state of "what we own and what is it worth." Subscribes to filled orders, market price updates, and resolution events. Maintains an event-sourced ledger of every change to positions and bankroll. Computes current state on demand. Calculates P&amp;L by strategy, category, time period.</p>
+      <h5>Subjects subscribed</h5>
+      <ul class="bullets">
+        <li><code class="inline">order.filled.&gt;</code> &mdash; from ems-svc</li>
+        <li><code class="inline">market.tick.&gt;</code> &mdash; from data-svc, for mark-to-market</li>
+        <li><code class="inline">market.state.settled.&gt;</code> &mdash; from data-svc, for resolution P&amp;L</li>
+        <li><code class="inline">deposit.recorded</code>, <code class="inline">withdrawal.recorded</code> &mdash; manual events</li>
+      </ul>
+      <h5>Subjects published</h5>
+      <ul class="bullets">
+        <li><code class="inline">portfolio.updated</code> &mdash; current bankroll, positions, exposures</li>
+        <li><code class="inline">portfolio.reconciliation.alert</code> &mdash; if drift detected vs venue truth</li>
+        <li><code class="inline">pnl.realized.&lt;strategy&gt;.&lt;category&gt;</code> &mdash; P&amp;L attribution events</li>
+      </ul>
+      <h5>Why event-sourced</h5>
+      <p>This directly fixes the Phase 2 audit bug. There is no "current bankroll" field stored anywhere. Bankroll is computed by replaying the event log: starting balance + every deposit + every win &minus; every loss &minus; every withdrawal. You cannot have a "loss path that doesn't decrement" because there is no decrement code path &mdash; there is just an event stream and a replay function. If you ever need to fix a historical error, you append a corrective event &mdash; you never edit history.</p>
+    </div>
+
+    <div class="service-card">
+      <div class="service-name">reporting-svc</div>
+      <div class="service-meta">role: dashboards, daily/weekly reports, learning analytics · language: Python · state: read-only consumer · scale: 1 replica</div>
+      <p>Consumes events from across the bus and produces human-readable outputs: daily summary, weekly P&amp;L, strategy performance attribution, learning multiplier reports, shadow vs live comparison. Pure read-only consumer. Generates HTML reports that are sent via Telegram or stored for the web dashboard.</p>
+      <h5>Why isolated</h5>
+      <p>Reports break, run slow, change format often. Isolating them means a slow report doesn't slow down the trading path. A bug in report formatting doesn't risk financial damage.</p>
+    </div>
+
+    <div class="service-card">
+      <div class="service-name">telegram-svc</div>
+      <div class="service-meta">role: human interface · language: Python · state: stateless · scale: 1 replica</div>
+      <p>The user interface for Filippo and Peter. Subscribes to events that humans care about (order placements, large losses, status changes, daily reports) and pushes them to Telegram. Receives commands from humans (<code class="inline">/portfolio</code>, <code class="inline">/pause</code>, <code class="inline">/multipliers</code>) and translates them into events on the bus.</p>
+      <p>Crucially: telegram-svc <strong>contains no business logic</strong>. It just translates events&hairsp;↔&hairsp;humans. <code class="inline">/pause</code> publishes a <code class="inline">system.pause.requested</code> event. The risk service handles it. This separation means breaking Telegram never breaks trading.</p>
+    </div>
+
+    <div class="service-card">
+      <div class="service-name">mcp-svc — Model Context Protocol server</div>
+      <div class="service-meta">role: AI agent integration · language: Python (FastAPI + MCP SDK) · state: stateless · scale: 1 replica</div>
+      <p>Exposes the bot as an MCP-compatible server. Claude in any chat can connect to this and query state, run reports, simulate bets, even (with auth) trigger pauses or strategy toggles. Section 10 details the tool surface.</p>
+      <p>This is also where the future "external MCPs the bot consumes" connector lives &mdash; if you connect an MCP tool that provides news data or a polling aggregator, mcp-svc handles the integration.</p>
+    </div>
+
+    <div class="callout">
+      <strong>Service count rationale.</strong> Eight is deliberate. Fewer would mean conflating responsibilities (e.g. merging risk into OMS would put the firm's last line of defense in the same blast radius as order tracking). More would mean operational overhead without benefit (e.g. splitting "data-svc" into one service per data source means 5 deploys when we add a new market data field). The split here matches the canonical hedge fund layers, with two additions (telegram, mcp) that are external interfaces rather than core trading logic.
+    </div>
+  </div>
+
+  <!-- 05 MESSAGE BUS -->
+  <div class="section" id="s05">
+    <div class="section-header"><div class="section-num">05</div><h2>The message bus — NATS JetStream and event contracts</h2></div>
+
+    <h4>Why NATS JetStream</h4>
+    <p>This is one of the most important technical choices. The candidates were Apache Kafka, Redis Streams, and NATS JetStream. Here is the honest comparison for our specific situation:</p>
+
+    <div class="table-wrap"><table>
+      <thead><tr><th></th><th>Kafka</th><th>Redis Streams</th><th>NATS JetStream</th></tr></thead>
+      <tbody>
+        <tr><td>Throughput at our scale</td><td class="green">More than enough</td><td class="green">More than enough</td><td class="green">More than enough</td></tr>
+        <tr><td>p99 latency</td><td>~12ms</td><td>~0.8ms</td><td>~3ms</td></tr>
+        <tr><td>Operational complexity</td><td class="red-text">High (ZooKeeper / KRaft)</td><td class="amber">Medium (memory-bound)</td><td class="green">Low (single binary)</td></tr>
+        <tr><td>Persistence / replay</td><td class="green">Excellent, weeks of retention</td><td class="amber">Memory-bound</td><td class="green">Disk-backed, replayable</td></tr>
+        <tr><td>Subject hierarchy filtering</td><td>Topic-based</td><td>Per-stream</td><td class="green">Hierarchical (e.g. <code class="inline">order.&gt;</code>)</td></tr>
+        <tr><td>Best fit for</td><td>Massive event pipelines, log aggregation</td><td>If you already run Redis</td><td class="green">Microservice messaging at our scale</td></tr>
+      </tbody>
+    </table></div>
+
+    <p><strong>NATS JetStream wins clearly for our scenario.</strong> Kafka is overkill &mdash; we are not LinkedIn. Redis Streams is fine but memory-bound and has weaker replay. NATS gives us: (1) the operational simplicity of a single Go binary, (2) durable persistent streams for replay, (3) hierarchical subject filtering that makes our event taxonomy elegant, (4) at-least-once delivery semantics, (5) sub-5ms latency which is faster than we need.</p>
+
+    <p class="note">A 2026 industry consensus: "NATS JetStream combines Kafka-like persistence with Redis-like simplicity. It's the best choice for microservice communication." For a two-person team running serious infrastructure, this is the right level of operational burden.</p>
+
+    <h4>Subject taxonomy</h4>
+    <p>NATS uses subject hierarchies with dot-separated tokens. Our taxonomy:</p>
+    <div class="code-block">market.tick.&lt;venue&gt;.&lt;ticker&gt;            <span class="comment"># price update</span>
+market.state.&lt;ticker&gt;.&lt;state&gt;          <span class="comment"># open / closed / settled</span>
+market.fill.&lt;venue&gt;.&lt;ticker&gt;           <span class="comment"># trade tick from venue</span>
+
+data.fundamental.&lt;source&gt;.&lt;series&gt;     <span class="comment"># FRED data, etc.</span>
+data.research.edge.&lt;ticker&gt;            <span class="comment"># AI edge analysis output</span>
+data.news.&lt;ticker&gt;                     <span class="comment"># news/sentiment</span>
+
+order.proposed.&lt;strategy&gt;              <span class="comment"># strategy wants to bet</span>
+order.approved.&lt;strategy&gt;              <span class="comment"># risk approved + sized</span>
+order.rejected.&lt;strategy&gt;              <span class="comment"># risk or venue rejected</span>
+order.submitted.&lt;order_id&gt;             <span class="comment"># OMS told EMS to execute</span>
+order.acknowledged.&lt;order_id&gt;          <span class="comment"># venue acked</span>
+order.filled.&lt;order_id&gt;                <span class="comment"># filled (full or partial)</span>
+order.cancelled.&lt;order_id&gt;             <span class="comment"># cancelled</span>
+order.state.changed.&lt;order_id&gt;         <span class="comment"># OMS lifecycle transition</span>
+
+portfolio.updated                      <span class="comment"># PMS state change</span>
+portfolio.reconciliation.alert         <span class="comment"># drift detected</span>
+pnl.realized.&lt;strategy&gt;.&lt;category&gt;     <span class="comment"># P&amp;L attribution event</span>
+
+risk.alert.&lt;type&gt;                      <span class="comment"># threshold breach</span>
+strategy.heartbeat.&lt;strategy&gt;          <span class="comment"># strategy alive</span>
+strategy.skipped.&lt;strategy&gt;            <span class="comment"># market evaluated, skipped</span>
+
+system.pause.requested                 <span class="comment"># human-initiated pause</span>
+system.resume.requested
+system.shutdown.requested
+
+venue.status.&lt;venue&gt;                   <span class="comment"># venue health</span></div>
+
+    <h4>Event schemas — strictly versioned</h4>
+    <p>Every event is a JSON object with a strict schema. We use <strong>JSON Schema</strong> for validation and <strong>Pydantic models</strong> in Python. Every event has these required fields:</p>
+    <div class="code-block">{
+  <span class="string">"event_id"</span>: <span class="string">"uuid"</span>,                    <span class="comment"># unique per event</span>
+  <span class="string">"event_type"</span>: <span class="string">"order.proposed"</span>,         <span class="comment"># matches subject hierarchy</span>
+  <span class="string">"event_version"</span>: <span class="string">"v1"</span>,                <span class="comment"># schema version</span>
+  <span class="string">"emitted_at"</span>: <span class="string">"2026-04-26T14:30:00Z"</span>,  <span class="comment"># UTC ISO 8601</span>
+  <span class="string">"emitted_by"</span>: <span class="string">"strategy-timely"</span>,        <span class="comment"># service that emitted</span>
+  <span class="string">"correlation_id"</span>: <span class="string">"uuid"</span>,              <span class="comment"># traces a flow across services</span>
+  <span class="string">"payload"</span>: { ... }                       <span class="comment"># type-specific data</span>
+}</div>
+
+    <p>The <code class="inline">correlation_id</code> is critical. When a strategy proposes an order, it generates a correlation_id. Every downstream event triggered by that proposal (the risk approval, the OMS submission, the EMS fill, the PMS update) carries the same correlation_id. This is what lets distributed tracing in Tempo show you "the journey of this one bet from idea to fill" as a single trace.</p>
+
+    <h4>Schema evolution rules</h4>
+    <ul class="bullets">
+      <li><strong>Adding a new optional field</strong> &mdash; allowed in any version. Old consumers ignore it.</li>
+      <li><strong>Adding a new event type</strong> &mdash; allowed. Old services don't subscribe to it.</li>
+      <li><strong>Removing a field</strong> &mdash; never. Mark deprecated, leave in place.</li>
+      <li><strong>Changing semantics of a field</strong> &mdash; requires version bump (v1 → v2). Both versions coexist for a deprecation period.</li>
+      <li><strong>All events go through a schema registry</strong> &mdash; in our case, a shared Python package <code class="inline">bot-events</code> that every service imports. Version bumps require a PR.</li>
+    </ul>
+
+    <h4>Delivery guarantees</h4>
+    <p>NATS JetStream provides <strong>at-least-once delivery</strong> with consumer acknowledgment. Every consumer service is responsible for being <strong>idempotent</strong> &mdash; processing the same event twice must not cause duplicate side effects. This is non-negotiable.</p>
+    <p>Idempotency is achieved by:</p>
+    <ul class="bullets">
+      <li>Every event has a unique <code class="inline">event_id</code></li>
+      <li>Services keep a small ring buffer (in Redis or in-memory) of recently-processed event_ids</li>
+      <li>Database operations use upserts keyed on event_id, not blind inserts</li>
+    </ul>
+  </div>
+
+  <!-- 06 DATA -->
+  <div class="section" id="s06">
+    <div class="section-header"><div class="section-num">06</div><h2>The data layer — PostgreSQL, ledger, projections</h2></div>
+
+    <h4>Database per service</h4>
+    <p>Modern microservices best practice: each service that needs persistent state has its own database. No shared databases. This prevents accidental coupling and lets each service evolve its schema independently.</p>
+
+    <div class="table-wrap"><table>
+      <thead><tr><th>Service</th><th>Database</th><th>What it stores</th></tr></thead>
+      <tbody>
+        <tr><td>oms-svc</td><td>PostgreSQL <code class="inline">oms_db</code></td><td>Append-only order events table. Every order state transition.</td></tr>
+        <tr><td>pms-svc</td><td>PostgreSQL <code class="inline">pms_db</code></td><td>Append-only portfolio events. Positions, P&amp;L, bankroll log.</td></tr>
+        <tr><td>data-svc</td><td>Redis (cache only)</td><td>FRED data cache, AI edge cache, market data short-term cache.</td></tr>
+        <tr><td>strategy-* services</td><td>None (stateless)</td><td>State derived from events on the bus.</td></tr>
+        <tr><td>risk-svc</td><td>None (stateless)</td><td>Reads portfolio state from pms-svc events. Risk parameters from config.</td></tr>
+        <tr><td>ems-svc</td><td>None (stateless)</td><td>In-flight orders are in NATS, not in EMS state.</td></tr>
+        <tr><td>reporting-svc</td><td>PostgreSQL <code class="inline">reporting_db</code></td><td>Materialized views, computed reports, cached dashboards.</td></tr>
+        <tr><td>telegram-svc</td><td>None</td><td>Conversation state in Telegram itself.</td></tr>
+        <tr><td>mcp-svc</td><td>None</td><td>Read-only access to other services via NATS.</td></tr>
+      </tbody>
+    </table></div>
+
+    <p>One PostgreSQL cluster, three logical databases. Backups, monitoring, and connection pooling at the cluster level.</p>
+
+    <h4>Event sourcing in OMS and PMS</h4>
+    <p>The two services that own truth (orders and positions) use event sourcing. Here's what that looks like concretely.</p>
+
+    <h5>OMS event log table</h5>
+    <div class="code-block"><span class="keyword">CREATE TABLE</span> order_events (
+    event_id      UUID <span class="keyword">PRIMARY KEY</span>,
+    order_id      UUID <span class="keyword">NOT NULL</span>,
+    event_type    TEXT <span class="keyword">NOT NULL</span>,    <span class="comment">-- 'created' | 'submitted' | 'acknowledged' | 'filled' | ...</span>
+    event_version TEXT <span class="keyword">NOT NULL</span>,    <span class="comment">-- 'v1', 'v2', etc.</span>
+    emitted_at    TIMESTAMPTZ <span class="keyword">NOT NULL</span>,
+    correlation_id UUID,
+    payload       JSONB <span class="keyword">NOT NULL</span>      <span class="comment">-- the event data</span>
+);
+<span class="keyword">CREATE INDEX</span> ix_order_events_order_id <span class="keyword">ON</span> order_events(order_id, emitted_at);</div>
+
+    <p>Every order's full history is the sequence of rows with that order_id, ordered by time. The order's current state is computed by replaying its events:</p>
+
+    <div class="code-block"><span class="keyword">def</span> get_order_state(order_id):
+    events = db.query(<span class="string">"SELECT * FROM order_events WHERE order_id = ? ORDER BY emitted_at"</span>, order_id)
+    state = {<span class="string">"status"</span>: <span class="string">"NEW"</span>, <span class="string">"filled_qty"</span>: 0, <span class="string">"remaining_qty"</span>: 0}
+    <span class="keyword">for</span> e <span class="keyword">in</span> events:
+        state = apply_event(state, e)
+    <span class="keyword">return</span> state</div>
+
+    <h5>PMS event log table</h5>
+    <p>Identical pattern, but for portfolio events:</p>
+
+    <div class="code-block"><span class="keyword">CREATE TABLE</span> portfolio_events (
+    event_id      UUID <span class="keyword">PRIMARY KEY</span>,
+    event_type    TEXT <span class="keyword">NOT NULL</span>,    <span class="comment">-- 'deposit' | 'withdrawal' | 'bet_placed' | 'bet_won' | 'bet_lost' | 'mark_to_market'</span>
+    event_version TEXT <span class="keyword">NOT NULL</span>,
+    emitted_at    TIMESTAMPTZ <span class="keyword">NOT NULL</span>,
+    correlation_id UUID,
+    payload       JSONB <span class="keyword">NOT NULL</span>
+);
+<span class="keyword">CREATE INDEX</span> ix_portfolio_events_emitted <span class="keyword">ON</span> portfolio_events(emitted_at);</div>
+
+    <p>To compute current bankroll: <code class="inline">SELECT SUM(payload-&gt;'delta_usd') FROM portfolio_events</code> — and you have an audit-perfect bankroll figure that <em>cannot</em> be wrong because every change is in the table. The audit's Phase 2 finding ("bankroll only goes up because there's no decrement code") is structurally impossible here. Decrement events are just events with negative deltas.</p>
+
+    <h4>Projections — the read side</h4>
+    <p>Replaying the full event log every time someone asks for current state is wasteful. We use <strong>projections</strong>: materialized read models updated as events flow in.</p>
+    <ul class="bullets">
+      <li><strong>Current positions projection</strong> &mdash; updated on every bet_placed / bet_won / bet_lost. Fast lookup of "do we own this ticker."</li>
+      <li><strong>Bankroll projection</strong> &mdash; updated on every event. Single-row table with current total.</li>
+      <li><strong>P&amp;L by strategy projection</strong> &mdash; updated on resolution events. Per-strategy P&amp;L summary.</li>
+      <li><strong>Open orders projection</strong> &mdash; updated on order events. Snapshot of all orders not yet finalized.</li>
+    </ul>
+
+    <p>Projections are derived. They can be wiped and rebuilt from the event log at any time. This is the magic of event sourcing &mdash; if you find a bug in your bankroll calculation, you fix the projection logic, run a one-time replay, and the new projection reflects reality. The events themselves are immutable history.</p>
+
+    <h4>Reconciliation — closing the loop with venues</h4>
+    <p>Once a day, oms-svc and pms-svc each run a reconciliation job:</p>
+    <ul class="bullets">
+      <li><strong>OMS reconciliation</strong>: pull all orders from Kalshi for the past 7 days. Compare to local order log. If anything is in Kalshi but not local, emit <code class="inline">order.reconciliation.missing.local</code>. If anything is local but not Kalshi, emit <code class="inline">order.reconciliation.missing.venue</code>. Either case is an alert.</li>
+      <li><strong>PMS reconciliation</strong>: pull current balance and positions from Kalshi. Compute expected balance from local event log. If delta &gt; threshold, emit <code class="inline">portfolio.reconciliation.alert</code> with the diff.</li>
+    </ul>
+    <p>This is what was missing in the old bot. The audit found that reconciliation had run exactly once, manually, four days before the audit. In the new system, it runs automatically every day, and any drift is immediately visible.</p>
+  </div>
+
+  <!-- 07 OPERATIONAL -->
+  <div class="section" id="s07">
+    <div class="section-header"><div class="section-num">07</div><h2>The operational stack — Kubernetes, observability, secrets, CI/CD</h2></div>
+
+    <h4>Where everything runs — managed Kubernetes</h4>
+    <p>For a serious distributed system on a two-person team, Kubernetes is the right answer in 2026 — <em>provided</em> you use a managed offering (EKS on AWS, GKE on GCP, or DigitalOcean Kubernetes) so you don't operate the control plane yourself. The 2026 industry consensus is clear: 92% of new container orchestration deploys are Kubernetes; Docker Swarm is stagnant and has known compatibility issues since Docker Engine v29.</p>
+
+    <p>Specifically: <strong>DigitalOcean Kubernetes (DOKS)</strong> is our recommendation. Reasons:</p>
+    <ul class="bullets">
+      <li>Free managed control plane &mdash; you only pay for worker nodes</li>
+      <li>Predictable pricing ($12/mo for a small worker, scales linearly)</li>
+      <li>Significantly simpler than AWS EKS or GCP GKE for a small operator</li>
+      <li>Includes managed PostgreSQL, managed Redis, load balancers, block storage &mdash; all the pieces we need</li>
+      <li>UK / EU regions available (preserves your VPN UK-routing requirement if needed)</li>
+    </ul>
+
+    <p class="note">Alternative for cost-sensitivity: Hetzner Cloud + self-managed K3s. ~$30/month total for a 3-node cluster. Trade-off is you operate the control plane. Reasonable for two technical people but more ops load.</p>
+
+    <h4>The full operational stack</h4>
+
+    <div class="ascii-diagram">  ┌────────────────── DigitalOcean (or equivalent managed Kubernetes) ──────────────────┐
+  │                                                                                       │
+  │   ┌──────────────── Kubernetes cluster (DOKS) ────────────────────┐                  │
+  │   │                                                                 │                  │
+  │   │   namespace: <span class="accent">trading-prod</span>     namespace: <span class="accent">trading-paper</span>           │                  │
+  │   │   ├── data-svc (1 pod)        ├── data-svc (1 pod)            │                  │
+  │   │   ├── strategy-* (N pods)     ├── strategy-* (N pods)          │                  │
+  │   │   ├── risk-svc (1 pod)        ├── risk-svc (1 pod)            │                  │
+  │   │   ├── oms-svc (1 pod)         ├── oms-svc (1 pod)             │                  │
+  │   │   ├── ems-svc (live mode)     ├── ems-svc (paper mode)         │                  │
+  │   │   ├── pms-svc (1 pod)         ├── pms-svc (1 pod)             │                  │
+  │   │   ├── reporting-svc           └── ...                          │                  │
+  │   │   ├── telegram-svc                                             │                  │
+  │   │   └── mcp-svc                                                  │                  │
+  │   │                                                                 │                  │
+  │   │   namespace: <span class="accent">infrastructure</span>                                          │                  │
+  │   │   ├── nats (3-replica cluster)                                  │                  │
+  │   │   ├── prometheus + alertmanager                                 │                  │
+  │   │   ├── grafana                                                   │                  │
+  │   │   ├── loki                                                      │                  │
+  │   │   ├── tempo                                                     │                  │
+  │   │   └── opentelemetry-collector                                   │                  │
+  │   │                                                                 │                  │
+  │   └─────────────────────────────────────────────────────────────────┘                  │
+  │                                                                                       │
+  │   Managed PostgreSQL ──── used by oms_db, pms_db, reporting_db (separate logical DBs)│
+  │   Managed Redis     ──── used by data-svc cache, idempotency rings                  │
+  │   Object storage    ──── for backups, audit archives                                 │
+  │                                                                                       │
+  └───────────────────────────────────────────────────────────────────────────────────────┘
+                                  │
+                          ┌───────┴────────┐
+                          │  CloudFlare    │   <span class="muted">edge: TLS, WAF, basic DDoS</span>
+                          │  Tunnel        │   <span class="muted">no public IP exposed on cluster</span>
+                          └───────┬────────┘
+                                  │
+                          External: Kalshi · Polymarket · FRED · Anthropic · Telegram</div>
+
+    <h4>The LGTM observability stack</h4>
+    <p>Loki (logs) + Grafana (visualization) + Tempo (traces) + Mimir/Prometheus (metrics). This is the de facto modern open-source observability stack for distributed systems in 2026. All four projects are by Grafana Labs. They integrate seamlessly. Combined data flows:</p>
+    <ul class="bullets">
+      <li><strong>Metrics</strong> &mdash; every service exposes <code class="inline">/metrics</code> in Prometheus format. Service-level metrics: orders/minute, edge detection latency, NATS publish rate. Business metrics: bankroll, open positions, daily P&amp;L.</li>
+      <li><strong>Logs</strong> &mdash; every service writes structured JSON logs to stdout. Loki ingests via Promtail, indexed by service + correlation_id.</li>
+      <li><strong>Traces</strong> &mdash; OpenTelemetry SDK in every service. Every NATS publish/subscribe creates a span with the correlation_id. Tempo stores them. In Grafana, you see "the life of a bet" as a single trace spanning all 8 services.</li>
+    </ul>
+
+    <p>What this gives you: when something breaks, you go to Grafana, find the metric anomaly, click into the relevant trace, see the full distributed call graph, and click into the logs of the specific service that failed. Total mean-time-to-diagnosis: minutes.</p>
+
+    <h4>Secrets management</h4>
+    <p>API keys, private keys, database credentials. Three options:</p>
+    <ul class="bullets">
+      <li><strong>Kubernetes Secrets + sealed-secrets</strong> &mdash; minimal extra infrastructure. Secrets stored encrypted in git, decrypted by the cluster. Good enough for our scale.</li>
+      <li><strong>HashiCorp Vault</strong> &mdash; the professional answer. Significant operational burden for our team size. Defer.</li>
+      <li><strong>Cloud-native secret managers (AWS Secrets Manager, etc.)</strong> &mdash; if we were on AWS, the right answer. On DOKS, less seamless.</li>
+    </ul>
+    <p><strong>Recommendation: sealed-secrets.</strong> Encrypted secrets in git, decrypted in cluster. Good enough for a two-person team running their own money. Vault if we ever expand.</p>
+
+    <h4>CI/CD pipeline</h4>
+    <p>The deployment loop. What happens when Peter pushes a code change.</p>
+    <ol class="step-list">
+      <li>Peter pushes a branch to GitHub. CI runs: linters, type checks, unit tests, integration tests against a local NATS + Postgres in the CI runner.</li>
+      <li>Peter opens a PR. CI runs the same suite against the PR branch.</li>
+      <li>Filippo (or Peter) reviews. Merge to main.</li>
+      <li>On merge to main: GitHub Actions builds new Docker images for any changed service, tags with git SHA, pushes to a container registry (DigitalOcean's, or GHCR).</li>
+      <li>Argo CD (running in the cluster) detects the new image tags via a sync loop. Compares to a separate <code class="inline">deployments</code> git repo that holds Kubernetes manifests.</li>
+      <li>If we want auto-deploy: Argo applies the new image. Service rolls out (Kubernetes does rolling updates by default — old pods drained, new pods come up, no downtime).</li>
+      <li>If we want manual approval (recommended for production): Argo waits for a human to click "sync" in the Argo UI.</li>
+    </ol>
+
+    <p>Total deploy time from push-to-main to running in production: ~5 minutes if auto-deploy, ~5 minutes plus human latency if manual.</p>
+
+    <h4>Three environments</h4>
+    <p>Real engineering teams have three environments. Ours:</p>
+    <ul class="bullets">
+      <li><strong>local</strong> &mdash; <code class="inline">docker-compose</code> on Peter or Filippo's laptop. Used for active development. Mock external APIs.</li>
+      <li><strong>paper</strong> &mdash; <code class="inline">trading-paper</code> namespace in production cluster. Real external data, simulated execution. This is also the bot we run continuously to validate strategies. Replaces the old <code class="inline">shadow_bot.py</code>. Section 09 explains.</li>
+      <li><strong>prod</strong> &mdash; <code class="inline">trading-prod</code> namespace. Live trading with real money.</li>
+    </ul>
+
+    <p>Code change flow: develop in <strong>local</strong>, deploy to <strong>paper</strong>, observe for ≥3 days, then promote to <strong>prod</strong>. Promotion is a config change, not a code change &mdash; the same image runs in both, with different env vars.</p>
+
+    <h4>Backup and disaster recovery</h4>
+    <ul class="bullets">
+      <li>PostgreSQL: daily snapshots via DigitalOcean managed backup (7-day retention). Plus hourly logical backups to object storage (30-day retention).</li>
+      <li>NATS JetStream streams: replicated 3x within cluster. Stream contents replayed from PostgreSQL event logs in worst case.</li>
+      <li>Kubernetes manifests: in git. Cluster fully reproducible from <code class="inline">kubectl apply -f</code>.</li>
+      <li>Configuration: in git (with sealed secrets).</li>
+      <li>Recovery objective: rebuild full system from git + last DB backup in &lt;1 hour. Tested quarterly.</li>
+    </ul>
+
+    <h4>Cost estimate</h4>
+    <p>Realistic monthly running cost for this setup on DOKS:</p>
+    <ul class="bullets">
+      <li>Kubernetes worker nodes (3× small): ~$36</li>
+      <li>Managed PostgreSQL (1GB RAM, 10GB storage): ~$15</li>
+      <li>Managed Redis (1GB): ~$15</li>
+      <li>Load balancer: ~$12</li>
+      <li>Backups + object storage: ~$5</li>
+      <li>Container registry (free tier likely sufficient): $0</li>
+      <li>CloudFlare tunnel: $0 (free tier)</li>
+      <li>Anthropic API costs (Claude calls for edge detection): variable, est. $30–100</li>
+      <li><strong>Total infrastructure: ~$100–150/month</strong>, plus Claude API usage</li>
+    </ul>
+
+    <p>This is meaningfully more than the NAS-based setup (~$0/month plus electricity). The trade-off is professional reliability, automatic backups, real observability, and the ability to scale. For a system that's targeting "as close to hedge fund grade as possible" and trading real money, this is reasonable.</p>
+  </div>
+
+  <!-- 08 SCENARIOS -->
+  <div class="section" id="s08">
+    <div class="section-header"><div class="section-num">08</div><h2>Five end-to-end scenarios</h2></div>
+
+    <p>The architecture only matters if you can <em>feel</em> how it behaves. Here are five concrete scenarios — three normal-path, two failure-path. Each one walks through what happens, naming services and events.</p>
+
+    <div class="scenario">
+      <div class="scenario-tag">Scenario 1 — normal path</div>
+      <div class="scenario-header">A market arrives, gets evaluated, the bot places a real bet</div>
+      <ol class="step-list">
+        <li><strong>data-svc</strong> on its scheduled poll fetches active markets from Kalshi. For each market, it publishes <code class="inline">market.tick.kalshi.KXFED-26JUN-50</code> with current price, volume, etc.</li>
+        <li><strong>strategy-timely</strong> subscribes to <code class="inline">market.tick.kalshi.&gt;</code>. It receives the event, applies its filters (price band, spread, resolution date). Survives the filters.</li>
+        <li><strong>strategy-timely</strong> requests an edge analysis: publishes <code class="inline">data.research.edge.request.KXFED-26JUN-50</code>.</li>
+        <li><strong>data-svc</strong> subscribes to edge requests. Calls Anthropic Claude API with the market context. Receives back JSON with edge value, recommended side, confidence, reason. Publishes <code class="inline">data.research.edge.KXFED-26JUN-50</code>.</li>
+        <li><strong>strategy-timely</strong> receives the edge analysis. Combines it with the market data, decides to bet. Generates a correlation_id <code class="inline">7f3a2c</code>. Publishes <code class="inline">order.proposed.timely</code> with payload: ticker, side, suggested amount, edge, confidence, strategy="TIMELY".</li>
+        <li><strong>risk-svc</strong> subscribes to <code class="inline">order.proposed.&gt;</code>. Receives the proposal. Reads current bankroll from local cache (kept fresh by <code class="inline">portfolio.updated</code> events). Runs gate stack: status check, weekly loss limit, exposure cap, ticker concentration, contradictory positions. All pass. Computes Kelly size. Publishes <code class="inline">order.approved.timely</code> with sized amount, same correlation_id <code class="inline">7f3a2c</code>.</li>
+        <li><strong>oms-svc</strong> subscribes to <code class="inline">order.approved.&gt;</code>. Generates an internal order_id <code class="inline">ord_abc123</code>. Writes <code class="inline">order_created</code> event to its PostgreSQL log. Publishes <code class="inline">order.submitted.ord_abc123</code> with full order details, correlation_id <code class="inline">7f3a2c</code>.</li>
+        <li><strong>ems-svc</strong> (live mode) subscribes to <code class="inline">order.submitted.&gt;</code>. Calls Kalshi <code class="inline">create_order</code> API. Kalshi responds with success and a venue order ID. Publishes <code class="inline">order.acknowledged.ord_abc123</code>.</li>
+        <li><strong>oms-svc</strong> hears the acknowledgment, writes <code class="inline">order_acknowledged</code> event, updates state.</li>
+        <li>Moments later, Kalshi sends a fill notification (or ems-svc polls for fills, depending on Kalshi capabilities). <strong>ems-svc</strong> publishes <code class="inline">order.filled.ord_abc123</code> with fill details.</li>
+        <li><strong>oms-svc</strong> records the fill event.</li>
+        <li><strong>pms-svc</strong> subscribes to <code class="inline">order.filled.&gt;</code>. Records a <code class="inline">bet_placed</code> event in its portfolio log. Updates positions projection. Publishes <code class="inline">portfolio.updated</code>.</li>
+        <li><strong>telegram-svc</strong> subscribes to <code class="inline">order.filled.&gt;</code>. Sends Filippo a Telegram message: "🎯 TIMELY placed: KXFED-26JUN-50 YES @ 22¢ for $5.00 (50 contracts)."</li>
+      </ol>
+      <p class="note">Total elapsed time: typically 2–5 seconds from market tick to filled bet. Twelve services touched. One correlation_id traces the entire flow. In Grafana Tempo you can see the whole journey as a single distributed trace.</p>
+    </div>
+
+    <div class="scenario">
+      <div class="scenario-tag">Scenario 2 — normal path</div>
+      <div class="scenario-header">A bet resolves, P&amp;L flows through the system, bankroll updates</div>
+      <p>The Phase 2 bug ("bankroll only goes up") is structurally impossible in this flow.</p>
+      <ol class="step-list">
+        <li><strong>data-svc</strong> on its 30-minute resolution check polls Kalshi for markets where we hold positions. Detects KXFED-26JUN-50 has settled YES.</li>
+        <li><strong>data-svc</strong> publishes <code class="inline">market.state.settled.KXFED-26JUN-50</code> with the final result.</li>
+        <li><strong>pms-svc</strong> subscribes to <code class="inline">market.state.settled.&gt;</code>. Looks up its open position on this ticker. We hold 50 YES contracts.</li>
+        <li><strong>pms-svc</strong> computes outcome: market settled YES, we held YES, so we won. Payout = 50 × $1.00 = $50. Original cost was $5. Net gain is $45.</li>
+        <li><strong>pms-svc</strong> appends two events to its event log: <code class="inline">position_closed</code> (removes the position), then <code class="inline">bet_won</code> (delta_usd: +$50, attributed to TIMELY strategy and the Fed-rate category).</li>
+        <li><strong>pms-svc</strong> updates projections: positions projection no longer shows the ticker; bankroll projection increases by $50; P&amp;L-by-strategy projection credits TIMELY with +$45 realized.</li>
+        <li><strong>pms-svc</strong> publishes <code class="inline">portfolio.updated</code> and <code class="inline">pnl.realized.timely.fed_rate</code>.</li>
+        <li><strong>risk-svc</strong> subscribes to <code class="inline">portfolio.updated</code>, refreshes its local cache of bankroll and exposures.</li>
+        <li><strong>reporting-svc</strong> records the resolution for the daily/weekly summary.</li>
+        <li><strong>telegram-svc</strong> sends Filippo a Telegram message: "✅ KXFED-26JUN-50 settled YES. TIMELY won +$45.00 on $5.00 stake (9.0x). New bankroll: $X."</li>
+      </ol>
+      <p class="note">For a losing bet the flow is identical, but the events are <code class="inline">bet_lost</code> with negative delta_usd. Bankroll decreases. The <strong>same single code path</strong> handles wins and losses — there's no separate "decrement" path that could be missing. There's just an event with a delta, and the delta might be positive or negative.</p>
+    </div>
+
+    <div class="scenario">
+      <div class="scenario-tag">Scenario 3 — shadow / paper mode</div>
+      <div class="scenario-header">Shadow runs in parallel, evaluates the same markets, never spends money</div>
+      <p>This replaces the old <code class="inline">shadow_bot.py</code>. There is no separate codebase. Same images, different namespace, different config.</p>
+      <ol class="step-list">
+        <li>The <code class="inline">trading-paper</code> namespace is running. Same eight services as <code class="inline">trading-prod</code>. Same docker images. Different config: <code class="inline">EMS_MODE=paper</code>, separate database (<code class="inline">pms_db_paper</code>, <code class="inline">oms_db_paper</code>), starting bankroll seeded to a configurable amount (e.g. $1,000 virtual).</li>
+        <li>Both namespaces independently fetch market data. Both run the same TIMELY strategy. Both get the same edge analysis from Claude (this is fine — paper and prod can hit the same Anthropic API).</li>
+        <li>When TIMELY in paper proposes <code class="inline">order.proposed.timely</code>, the paper risk-svc evaluates it. The paper oms-svc submits it. The <strong>paper ems-svc</strong> (in paper mode) does <em>not</em> call Kalshi's create_order. Instead it simulates a fill at the current ask price.</li>
+        <li>Paper ems-svc publishes <code class="inline">order.filled.&lt;order_id&gt;</code> with the simulated fill. Paper pms-svc records the bet against the paper bankroll.</li>
+        <li>When the market resolves (this is real — the market really did resolve), paper data-svc publishes <code class="inline">market.state.settled</code>. Paper pms-svc records the win or loss against the simulated position. Paper bankroll moves.</li>
+        <li>Each week, reporting-svc generates a comparison: live vs paper performance, side by side. Same strategies, different starting capital, different time of running. Allows direct measurement of strategy quality.</li>
+      </ol>
+      <p class="note">Crucially: the paper environment can run new strategies <em>before they go live</em>. Want to test a new strategy idea? Deploy it as <code class="inline">strategy-newidea</code> only in <code class="inline">trading-paper</code>. Watch its behavior for 2-3 weeks. Promote to prod only when paper data shows it works. The R&amp;D content currently in <code class="inline">shadow_bot.py</code> (multi-model AI consensus, Manifold/Metaculus, news sentiment) gets either promoted into separate experimental services running in paper, or archived if it isn't carrying its weight. Section 09 has more detail.</p>
+    </div>
+
+    <div class="scenario">
+      <div class="scenario-tag">Scenario 4 — adding a new strategy</div>
+      <div class="scenario-header">You want to try a new strategy idea. How does it get into the system?</div>
+      <ol class="step-list">
+        <li>Peter creates a new directory: <code class="inline">services/strategy-momentum/</code>. Copies the structure of an existing strategy service (each strategy is structurally identical — a NATS subscriber, a decision function, a NATS publisher).</li>
+        <li>Peter writes the strategy logic: subscribe to <code class="inline">market.tick.&gt;</code> and <code class="inline">data.research.edge.&gt;</code>, decide if/when to propose, publish <code class="inline">order.proposed.momentum</code>.</li>
+        <li>Peter writes unit tests against mock NATS messages. Integration tests against a local NATS + mock data-svc.</li>
+        <li>Peter pushes the branch. CI runs. PR opens. Filippo reviews. Merge to main.</li>
+        <li>GitHub Actions builds a new Docker image: <code class="inline">strategy-momentum:abc123</code>.</li>
+        <li>Peter adds a Kubernetes manifest for the new service to the deployments repo. The manifest specifies: deploy to <code class="inline">trading-paper</code> namespace only (not prod yet).</li>
+        <li>Argo CD applies the manifest. The new service starts in paper. Begins emitting heartbeats and (when conditions trigger) <code class="inline">order.proposed.momentum</code>.</li>
+        <li>Existing risk-svc, oms-svc, ems-svc (paper), pms-svc <strong>require zero changes</strong>. They were already subscribing to <code class="inline">order.proposed.&gt;</code>, which matches the new strategy's events.</li>
+        <li>For 2-3 weeks the strategy runs in paper. Peter and Filippo watch the metrics, the simulated P&amp;L, the win rate, the strategy's reasoning logs.</li>
+        <li>If results are good: update the manifest to also deploy to <code class="inline">trading-prod</code>. Argo CD picks it up. Now it's running live.</li>
+        <li>If results are bad: kill the paper deployment. The strategy never went live. Total damage: zero dollars.</li>
+      </ol>
+      <p class="note">Adding a new strategy in the old monolithic bot would require touching the scheduler, the gate stack, the bet recorder, the Telegram alerts, the reporting code. Six files. Shared state. New strategy = real risk of breaking existing strategies. In this architecture, a new strategy is <strong>one new directory and one new manifest</strong>. Zero changes to existing code. Existing strategies cannot be affected.</p>
+    </div>
+
+    <div class="scenario">
+      <div class="scenario-tag">Scenario 5 — failure path</div>
+      <div class="scenario-header">It's 2 AM. Telegram fires "Bot stopped placing bets." What do you do?</div>
+      <p>This is the 2-AM debugging story. The architecture's investment in observability pays off here.</p>
+      <ol class="step-list">
+        <li>Telegram alert fires. The alert was triggered by <strong>alertmanager</strong> based on a Prometheus rule: "if no <code class="inline">order.filled</code> events from <code class="inline">trading-prod</code> in 60 minutes during expected market hours, page."</li>
+        <li>You open Grafana on your phone. Go to the "trading-prod overview" dashboard. You see the metric: orders/minute dropped to zero at 01:43 UTC.</li>
+        <li>You look at the per-service health metrics. data-svc is healthy. strategy services are emitting heartbeats. risk-svc is healthy. oms-svc is healthy. <strong>ems-svc has a "request_failed" rate at 100%</strong>.</li>
+        <li>You click into ems-svc logs in Loki. You filter by <code class="inline">level=ERROR</code>. You see: "Kalshi API returned 503 since 01:43 UTC. Retried 47 times. Backing off."</li>
+        <li>You confirm Kalshi is genuinely down by hitting their status page. It is.</li>
+        <li>You check that the system is behaving correctly during the outage: are <code class="inline">order.approved</code> events piling up in NATS? You query the NATS dashboard. Yes — about 12 approved orders are waiting in the stream, will be replayed when ems-svc can reach Kalshi again.</li>
+        <li>You check pms-svc for accuracy: bankroll is unchanged, no positions opened during outage. Correct.</li>
+        <li>You decide: nothing to fix. Kalshi will come back. Orders will replay. Go back to bed.</li>
+        <li>4 AM. Kalshi recovers. ems-svc's circuit breaker opens. Replays the queued orders. Most still want to be placed (markets haven't moved much). A few have stale prices and are auto-cancelled by the OMS due to time-in-force expiration. Good behavior — we don't want to place orders based on 2-hour-old market data.</li>
+        <li>Morning Telegram summary: "Kalshi outage 01:43-04:12 UTC. 8 orders queued + replayed successfully, 4 auto-cancelled (stale)."</li>
+      </ol>
+      <p class="note">In the old bot, a 2-AM Kalshi outage meant: bot crashes, no events recorded, when Kalshi comes back the bot is in an unknown state, manual intervention required. In this architecture: bot pauses gracefully, queued events resume on recovery, no manual intervention needed, the whole incident is in the event log for post-mortem. <strong>This is the difference between a hobby system and a production system.</strong></p>
+    </div>
+  </div>
+
+  <!-- 09 SHADOW REDEFINED -->
+  <div class="section" id="s09">
+    <div class="section-header"><div class="section-num">09</div><h2>Shadow bot — finally redefined as a paper environment</h2></div>
+
+    <p>The audit found that <code class="inline">shadow_bot.py</code> had drifted into something incoherent. It was supposed to be a paper-trading mirror of the real bot. It became a research lab — multi-model AI consensus, Manifold/Metaculus integration, news sentiment, Google Trends, ten "risk extensions," dead Polymarket scanning. It mixed two completely different concerns into one process.</p>
+
+    <p>In the new architecture, those two concerns get cleanly separated.</p>
+
+    <h4>Concern 1 — the paper environment</h4>
+    <p>This is what shadow <em>should</em> have been. A complete mirror of the live system, running on the same code with simulated execution. Already designed: it's the <code class="inline">trading-paper</code> Kubernetes namespace from Section 07. Same images, different config, separate database. It exists for two purposes:</p>
+    <ul class="bullets">
+      <li><strong>Validating strategy changes before they go live.</strong> Any strategy change deploys to paper first. Watch for 2-3 weeks. Promote to prod when confident.</li>
+      <li><strong>Continuous comparison.</strong> Live and paper run the same logic. Differences in their results reveal whether live execution is slipping (bad fills, missed orders) versus the theoretical performance of the strategy.</li>
+    </ul>
+
+    <h4>Concern 2 — the research lab</h4>
+    <p>The genuinely experimental ideas — multi-model AI consensus, alternative probability sources, sentiment integration — these are <em>research</em>, not paper trading. They belong in a separate space.</p>
+
+    <p>Two acceptable homes for them:</p>
+    <ul class="bullets">
+      <li><strong>Experimental strategy services in paper.</strong> If the idea is "use multi-model consensus instead of single-model edge detection," that's a new strategy: <code class="inline">strategy-consensus-experimental</code>. Runs only in paper. Has its own metrics. After 2-3 weeks, you can compare its paper P&amp;L against the standard <code class="inline">strategy-timely</code> running in the same paper environment. Apples-to-apples.</li>
+      <li><strong>Offline research notebooks.</strong> Some of the audit's R&amp;D items (Google Trends data, news sentiment correlations) are statistical research, not trading logic. They belong in Jupyter notebooks reading historical event logs from the PostgreSQL ledger. No need to run them as services.</li>
+    </ul>
+
+    <h4>What happens to the existing shadow_bot.py code</h4>
+    <ul class="bullets">
+      <li><strong>Multi-model AI consensus.</strong> Becomes <code class="inline">strategy-consensus-experimental</code> in paper. Compared against single-model TIMELY. Promoted only if it actually outperforms.</li>
+      <li><strong>Manifold/Metaculus integration.</strong> Becomes a new adapter in <code class="inline">data-svc</code>: <code class="inline">manifold_client.py</code>, <code class="inline">metaculus_client.py</code>. They emit <code class="inline">data.fundamental.manifold.&lt;ticker&gt;</code> events. A future strategy can subscribe.</li>
+      <li><strong>News sentiment / Google Trends.</strong> Becomes <code class="inline">data.news.sentiment</code> events from data-svc. Strategies that want them can subscribe. Strategies that don't, ignore them.</li>
+      <li><strong>The 10 "risk extensions."</strong> Each is evaluated individually. Genuine risk improvements get folded into <code class="inline">risk-svc</code>. Speculative ones get archived in git history with a note explaining why they were considered and not adopted.</li>
+      <li><strong>Polymarket scanning.</strong> If we want it, it becomes a real adapter in <code class="inline">data-svc</code> with its own <code class="inline">strategy-arb</code> behavior. If we don't, it gets deleted.</li>
+    </ul>
+
+    <div class="callout">
+      <strong>The principle:</strong> there is no place in the new architecture for "stuff we kind of want to try, mixed in with the live trading code." Everything is either (a) running in production, (b) running in paper as a clean experiment, or (c) in research notebooks. No more "shadow as a junk drawer."
+    </div>
+  </div>
+
+  <!-- 10 MCP -->
+  <div class="section" id="s10">
+    <div class="section-header"><div class="section-num">10</div><h2>MCP integration — the bot as a first-class AI-callable system</h2></div>
+
+    <p>The Model Context Protocol (MCP) is Anthropic's standard for letting AI models discover and invoke tools. In the v1 architecture, MCP was a future consideration. In this architecture, MCP is a first-class service from day one. The bot doesn't just <em>get used by</em> AI — it <em>is</em> an AI-callable system.</p>
+
+    <h4>Two directions of MCP</h4>
+
+    <h5>Direction A — the bot exposes itself as an MCP server</h5>
+    <p><code class="inline">mcp-svc</code> exposes a set of tools that any MCP client (Claude in chat, Claude Code, future agents) can call. These tools wrap the same underlying capabilities the rest of the system uses, just with an MCP transport layer.</p>
+
+    <p>Tools the MCP server exposes:</p>
+    <ul class="bullets">
+      <li><strong>Read tools (no auth required for trusted clients):</strong></li>
+      <li><code class="inline">get_state()</code> — current bankroll, open positions, system status</li>
+      <li><code class="inline">get_recent_bets(since: datetime, limit: int)</code> — bets placed in time window</li>
+      <li><code class="inline">get_strategy_performance(strategy: str, period: str)</code> — win rate, P&amp;L</li>
+      <li><code class="inline">get_event_stream(filter: dict, limit: int)</code> — raw event log query for debugging</li>
+      <li><code class="inline">get_open_positions()</code> — current positions with mark-to-market</li>
+      <li><code class="inline">get_pnl_breakdown(by: 'strategy' | 'category' | 'time')</code> — P&amp;L attribution</li>
+      <li><strong>Read+simulate tools:</strong></li>
+      <li><code class="inline">simulate_bet(ticker, side, amount)</code> — what would the bot do? No actual placement.</li>
+      <li><strong>Write tools (require explicit auth/confirmation):</strong></li>
+      <li><code class="inline">trigger_reconciliation()</code> — manually run venue reconciliation</li>
+      <li><code class="inline">pause_strategy(strategy: str)</code> — stop a strategy from placing new orders</li>
+      <li><code class="inline">resume_strategy(strategy: str)</code> — resume a paused strategy</li>
+      <li><code class="inline">pause_all()</code> — emergency stop (all strategies, no new orders)</li>
+    </ul>
+
+    <p>Each MCP tool is a thin wrapper. <code class="inline">get_state()</code> queries pms-svc's projections. <code class="inline">pause_strategy()</code> publishes a <code class="inline">system.pause.requested</code> event with the strategy name. The MCP server itself contains no business logic — it's a translation layer between MCP requests and NATS events / database queries.</p>
+
+    <h5>Direction B — the bot consumes external MCP tools</h5>
+    <p><code class="inline">data-svc</code> can be configured to consume external MCP tools as data sources. Connect an MCP that provides news headlines? <code class="inline">data-svc</code> has an MCP client adapter. Connect an MCP that aggregates polling data? Same adapter, different config.</p>
+    <p>When external MCP tools are configured, <code class="inline">data-svc</code> emits their data through the same internal subjects as native data sources. <code class="inline">data.news.&lt;ticker&gt;</code> doesn't care whether the source was a direct API call or an MCP tool. Strategies subscribe and react identically.</p>
+
+    <h4>What this gives Filippo and Peter</h4>
+    <ul class="bullets">
+      <li><strong>"What's the bot doing right now?"</strong> Open Claude, ask. Claude calls <code class="inline">get_state()</code>, summarizes. No SSH, no copy-paste.</li>
+      <li><strong>"Why did TIMELY pass on KXFED yesterday?"</strong> Claude calls <code class="inline">get_event_stream({strategy: 'timely', subject: 'strategy.skipped'})</code> and reads back the reason logged by the strategy.</li>
+      <li><strong>"How would the bot bet on this hypothetical market?"</strong> Claude calls <code class="inline">simulate_bet()</code> with the parameters. Returns the proposed action without placing an order.</li>
+      <li><strong>"Pause everything, market's about to do something weird."</strong> Filippo asks Claude to pause. Claude calls <code class="inline">pause_all()</code> after confirming with Filippo. Risk-svc receives the event, stops approving new orders.</li>
+    </ul>
+
+    <h4>Authentication and authorization</h4>
+    <p>The MCP server has three permission tiers:</p>
+    <ul class="bullets">
+      <li><strong>Read</strong> — no auth needed for trusted local sessions; basic API key for remote.</li>
+      <li><strong>Simulate</strong> — same as read.</li>
+      <li><strong>Write (pause, trigger, etc.)</strong> — explicit human confirmation required. The MCP server prompts the calling agent to surface a confirmation prompt to the human user before executing. (This is built into the MCP protocol via the <code class="inline">elicitation</code> capability.)</li>
+    </ul>
+    <p>This means: even if a Claude session "decides" the bot should be paused, the action does not execute until Filippo or Peter clicks confirm in the chat UI. The bot cannot be controlled by an agent without human in the loop.</p>
+
+    <div class="callout">
+      <strong>Why MCP is in the design from day one and not deferred:</strong> putting MCP in later means retrofitting authentication, retrofitting tool boundaries, retrofitting the mapping from internal events to external tool surface. Building it from day one means every service was designed knowing it might be queried via MCP. The marginal cost is small. The marginal benefit is large: from day one, the bot is something Claude can reason about as a first-class system, not an opaque process.
+    </div>
+  </div>
+
+  <!-- 11 MIGRATION ROADMAP -->
+  <div class="section" id="s11">
+    <div class="section-header"><div class="section-num">11</div><h2>Migration roadmap — 7 phases, ~6 months realistic</h2></div>
+
+    <p>This is a realistic timeline. Not optimistic. Two technical people (or one technical + one supportive) working consistent evenings and weekends. Each phase delivers measurable progress and a system that is functional at that phase. Each phase ends with the existing bot still running, on the NAS, until the new system is genuinely ready.</p>
+
+    <h4>Phase 0 — keep the lights on</h4>
+    <p><strong>Duration:</strong> ongoing throughout migration. <strong>Effort:</strong> minimal.</p>
+    <p>The current bot stays paused (per the audit synthesis), or runs at a tiny scale that's safe. The migration doesn't require us to be actively trading during the build. If you do resume trading during migration, do it on the existing bot with the audit's bug fixes applied (notably the bankroll accounting fix), not on the half-built new system.</p>
+
+    <h4>Phase 1 — infrastructure foundation (2-4 weeks)</h4>
+    <ul class="bullets">
+      <li>Provision DigitalOcean Kubernetes cluster (or chosen alternative)</li>
+      <li>Deploy NATS JetStream cluster (3 replicas, persistent storage)</li>
+      <li>Deploy LGTM observability stack (Prometheus, Grafana, Loki, Tempo)</li>
+      <li>Provision managed PostgreSQL, set up <code class="inline">oms_db</code>, <code class="inline">pms_db</code>, <code class="inline">reporting_db</code></li>
+      <li>Provision managed Redis</li>
+      <li>Set up GitHub Actions CI/CD pipeline + Argo CD</li>
+      <li>Set up sealed-secrets for credentials</li>
+      <li>Set up CloudFlare tunnel</li>
+      <li>Create <code class="inline">trading-paper</code> namespace; <code class="inline">trading-prod</code> exists but empty</li>
+    </ul>
+    <p class="note"><strong>Deliverable:</strong> a functional empty cluster with all infrastructure running. No trading services yet. You can <code class="inline">kubectl apply</code> a hello-world service and see it appear in Grafana with logs and metrics.</p>
+
+    <h4>Phase 2 — core data layer (3-4 weeks)</h4>
+    <ul class="bullets">
+      <li>Build <code class="inline">data-svc</code> with Kalshi adapter only (market data + account data)</li>
+      <li>Build <code class="inline">oms-svc</code> with the event-sourced order log</li>
+      <li>Build <code class="inline">pms-svc</code> with the event-sourced portfolio log</li>
+      <li>Build the shared <code class="inline">bot-events</code> Python package (event schemas, Pydantic models)</li>
+      <li>Deploy all three services to <code class="inline">trading-paper</code> namespace</li>
+      <li>Verify end-to-end: data-svc emits market.tick events, you can see them in Grafana</li>
+      <li>Verify event-sourcing: manually inject a deposit event, verify bankroll projection updates</li>
+    </ul>
+    <p class="note"><strong>Deliverable:</strong> the data backbone works. No strategies yet, no execution yet. But you have a system that ingests market data, has working event-sourced ledgers, and is fully observable.</p>
+
+    <h4>Phase 3 — first strategy end-to-end (2-3 weeks)</h4>
+    <ul class="bullets">
+      <li>Add Anthropic adapter to <code class="inline">data-svc</code> (the AI edge detection call)</li>
+      <li>Build <code class="inline">risk-svc</code> with the gate stack from the existing bot</li>
+      <li>Build <code class="inline">strategy-timely</code> as the first strategy service</li>
+      <li>Build <code class="inline">ems-svc</code> in paper mode only (simulated fills)</li>
+      <li>Run end-to-end: a market arrives, TIMELY proposes, risk approves, OMS records, EMS simulates a fill, PMS records the bet</li>
+      <li>Watch in Grafana Tempo: see the full distributed trace of one bet</li>
+    </ul>
+    <p class="note"><strong>Deliverable:</strong> the first strategy runs end-to-end in paper. This validates the entire architecture with a real workload before any real money is involved.</p>
+
+    <h4>Phase 4 — go live with TIMELY only (2-3 weeks)</h4>
+    <ul class="bullets">
+      <li>Build <code class="inline">ems-svc</code> in live mode (real Kalshi orders)</li>
+      <li>Build <code class="inline">telegram-svc</code> with basic alerting</li>
+      <li>Set up reconciliation jobs in OMS and PMS</li>
+      <li>Deploy all services to <code class="inline">trading-prod</code> namespace</li>
+      <li>Run with <strong>tiny</strong> bankroll ($50-100) for 2-3 weeks; compare results to paper running same strategy</li>
+      <li>Monitor reconciliation alerts daily; address any drift immediately</li>
+    </ul>
+    <p class="note"><strong>Deliverable:</strong> the new architecture is live, trading real money, with TIMELY only. The old bot can be retired. This is the milestone where "we have a new bot."</p>
+
+    <h4>Phase 5 — port the remaining strategies (3-5 weeks)</h4>
+    <ul class="bullets">
+      <li><code class="inline">strategy-midsel</code> — the exit strategy</li>
+      <li><code class="inline">strategy-arb</code> — cross-platform arb (requires Polymarket adapter in data-svc first)</li>
+      <li>Add <code class="inline">reporting-svc</code> with daily/weekly reports</li>
+      <li>Add the prompt-fragment strategies (FADHYPE, NICHDOM) to the AI edge detector</li>
+      <li>Each strategy goes paper → prod through the standard flow</li>
+    </ul>
+    <p class="note"><strong>Deliverable:</strong> all of the existing bot's actual functionality is now in the new architecture, plus better observability, plus better reliability.</p>
+
+    <h4>Phase 6 — hardening and MCP (3-4 weeks)</h4>
+    <ul class="bullets">
+      <li>Build <code class="inline">mcp-svc</code> with the read tools</li>
+      <li>Add the simulate tools to MCP</li>
+      <li>Add the write tools (pause, resume) with auth</li>
+      <li>Stress-test failure scenarios: kill ems-svc during a fill, kill the database, kill NATS</li>
+      <li>Verify the system recovers correctly in each case</li>
+      <li>Write runbooks for each known failure mode</li>
+      <li>Set up alerting rules in Prometheus alertmanager</li>
+    </ul>
+    <p class="note"><strong>Deliverable:</strong> the system is genuinely production-grade. MCP exposes the bot to Claude as a first-class system. Operational practices (runbooks, alerts) are in place.</p>
+
+    <h4>Phase 7 — research and growth (ongoing)</h4>
+    <ul class="bullets">
+      <li>Move shadow R&amp;D content into experimental strategy services in paper</li>
+      <li>Begin Bayesian-Kelly sizing experiment (paper first, then prod if it outperforms)</li>
+      <li>Add new data sources as MCPs or as direct adapters</li>
+      <li>Add new strategies as new services</li>
+      <li>This phase has no end date — it's how the bot grows</li>
+    </ul>
+
+    <h4>Total realistic timeline</h4>
+    <p><strong>Phases 1–6: about 16-23 weeks of mostly evenings/weekends. Call it 5-6 months of calendar time.</strong> If Peter and Filippo can dedicate full days, it compresses to 2-3 months. The point is: this isn't a weekend project, and pretending it is would lead to an under-built system. Setting the right expectation upfront is part of doing this professionally.</p>
+
+    <div class="callout amber">
+      <strong>The risk to manage during migration:</strong> the temptation to fix bugs while porting. Resist it. <strong>Migration goal: same behavior, new architecture.</strong> Behavioral changes (new strategies, Bayesian-Kelly, modified thresholds) come <em>after</em> migration is done, in separate PRs that can be isolated and rolled back. Conflating "rebuild" with "improve" is how rewrites fail. The audit identified specific bugs (Phase 2 bankroll accounting being the worst); the architecture fixes <em>those specific bugs</em> structurally. That's not "improvement during migration" — that's "the architecture is better." But things like new strategies, new sizing methods, new prompt structures: all of that comes later.
+    </div>
+  </div>
+
+  <!-- 12 -->
+  <div class="section" id="s12">
+    <div class="section-header"><div class="section-num">12</div><h2>Where we deliberately fall short of Tier-1 hedge funds</h2></div>
+
+    <p>Honest acknowledgment of where this design stops short of what Citadel or Two Sigma would build. None of these are oversights. Each is a deliberate choice based on our scale, team size, and trading horizon.</p>
+
+    <div class="table-wrap"><table>
+      <thead><tr><th style="width:240px">What Tier-1 firms do</th><th>What we do</th><th>Why the gap is fine</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Co-located servers, kernel bypass, FPGA execution</strong></td><td>Cloud Kubernetes with sub-100ms decision-to-order latency</td><td>Prediction markets resolve over days/weeks. Microsecond latency is irrelevant to our edge.</td></tr>
+        <tr><td><strong>Custom pricing libraries for exotic derivatives</strong></td><td>Probabilities derived from Claude API + market prices</td><td>Kalshi binary contracts have trivial pricing. We don't need our own Black-Scholes implementation.</td></tr>
+        <tr><td><strong>Dedicated SRE / DevOps / SecOps teams</strong></td><td>Two people doing everything, leveraging managed services</td><td>Scale doesn't justify the headcount. Managed Kubernetes + managed Postgres + managed Redis offload most of what those teams would do.</td></tr>
+        <tr><td><strong>HashiCorp Vault for secrets</strong></td><td>Sealed-secrets in git</td><td>Vault is operationally heavy. Sealed-secrets is fine until we have multiple environments and many actors.</td></tr>
+        <tr><td><strong>Multiple cloud regions, active-active failover</strong></td><td>Single region, daily backups</td><td>1-hour RTO is acceptable for our trading horizon.</td></tr>
+        <tr><td><strong>Compliance / regulatory reporting infrastructure</strong></td><td>None</td><td>We're individuals trading our own capital. Regulatory surface is small.</td></tr>
+        <tr><td><strong>Multi-tenant architecture with RBAC</strong></td><td>One tenant (us), no RBAC</td><td>Two users, full trust. RBAC is operational overhead with no benefit.</td></tr>
+        <tr><td><strong>Internal data lakes with petabyte-scale historical data</strong></td><td>PostgreSQL event log + S3 cold storage</td><td>Our data volume is small. Postgres handles years of our event log easily.</td></tr>
+        <tr><td><strong>Custom in-house messaging built on RDMA / DPDK</strong></td><td>NATS JetStream</td><td>NATS at 3ms p99 is faster than we need. Custom messaging is a 100-engineer project.</td></tr>
+        <tr><td><strong>Quant research teams running ML pipelines on dedicated GPU clusters</strong></td><td>Claude API + Jupyter notebooks</td><td>Two-person team. Renting Anthropic's intelligence is more efficient than running our own ML.</td></tr>
+      </tbody>
+    </table></div>
+
+    <p>Net effect: <strong>we adopt the architectural patterns and operational practices that matter at our scale, and skip the ones that only matter at hedge fund scale.</strong> A knowledgeable observer looking at this system would say: "well-architected, professionally operated, sensibly scoped." That's the goal. We don't pretend to be Citadel; we don't try to be a hobby project either.</p>
+  </div>
+
+  <!-- 13 RISKS -->
+  <div class="section" id="s13">
+    <div class="section-header"><div class="section-num">13</div><h2>Risks, failure modes, and what could derail this build</h2></div>
+
+    <p>Honest assessment of what could go wrong with this plan. Not "could the bot lose money" — the audit synthesis covers that. Specifically: what could prevent us from successfully building the new system as designed.</p>
+
+    <h4>Build risks</h4>
+    <ul class="bullets">
+      <li><strong>Scope creep during migration.</strong> The biggest risk. The temptation to add new strategies, new data sources, or new sizing logic while porting is strong. Mitigation: strict rule that migration phases produce same behavior, new architecture; improvements come in separate phases after.</li>
+      <li><strong>Underestimating the time.</strong> 5-6 months is realistic for evenings/weekends. People consistently underestimate distributed systems work. Mitigation: progress measured by phase completion, not hours; willingness to extend timeline rather than ship a half-built system to prod.</li>
+      <li><strong>Operational learning curve.</strong> Kubernetes, NATS, Argo CD, observability stack are all new tools to learn well. First few weeks will feel slow. Mitigation: budget Phase 1 explicitly as "infrastructure foundation," accept that it produces no trading capability but lots of learning.</li>
+      <li><strong>Over-engineering individual services.</strong> Each service is small (~500-2000 lines of Python). Don't gold-plate them. Mitigation: code review with the question "is this complexity earning its keep?"</li>
+    </ul>
+
+    <h4>Run-time risks unique to this architecture</h4>
+    <ul class="bullets">
+      <li><strong>NATS becomes a single point of failure.</strong> If NATS is down, no service can communicate. Mitigation: 3-replica JetStream cluster; NATS is among the most operationally simple distributed systems; regular backup of stream contents.</li>
+      <li><strong>Database becomes a single point of failure.</strong> If PostgreSQL is unreachable, OMS and PMS can't write. Mitigation: managed Postgres with 99.9% SLA; daily backups; OMS and PMS gracefully degrade (refuse new orders, don't lose existing state).</li>
+      <li><strong>Event schema evolution breaks consumers.</strong> Adding a required field to an event without versioning will break every consumer of that event. Mitigation: strict schema rules from Section 05; all events versioned; CI checks for backward-incompatible schema changes.</li>
+      <li><strong>Eventual consistency confusion.</strong> Because services communicate via events, the system has eventual consistency. Strategy proposes order at time T; risk evaluates at T+50ms with portfolio state from T-200ms. Mitigation: design strategies to be tolerant of slightly stale state; risk-svc rechecks bankroll at decision time.</li>
+      <li><strong>Distributed system debugging is harder than monolithic debugging.</strong> A bug spanning 3 services is harder to reason about than a bug in one process. Mitigation: distributed tracing in Tempo with correlation_ids; structured logging in Loki; comprehensive integration tests.</li>
+    </ul>
+
+    <h4>Cost risks</h4>
+    <ul class="bullets">
+      <li><strong>Anthropic API costs.</strong> Calling Claude on every market evaluation can add up. With 14 daily TIMELY scans × 50 markets × multiple models = potentially $5-20/day. Mitigation: caching of edge analyses (within reasonable freshness windows); tiered model selection (cheap model for first-pass filtering, expensive model for shortlist); budget alerting in <code class="inline">data-svc</code>.</li>
+      <li><strong>Cluster costs creep.</strong> Adding more strategies adds more pods. More pods need more nodes. Mitigation: Kubernetes Vertical Pod Autoscaler; monthly cost review; cap on total cluster size with manual approval to expand.</li>
+      <li><strong>Data egress fees.</strong> Cloud providers charge for outbound traffic. Polling Kalshi heavily could cost $5-10/month in egress. Mitigation: monitor; cache market data; aggregate API calls.</li>
+    </ul>
+
+    <h4>What would tell us this design is wrong?</h4>
+    <p>Worth committing to ahead of time: signs that would force a redesign rather than an iteration.</p>
+    <ul class="bullets">
+      <li>Phase 1 takes &gt;6 weeks. → infrastructure complexity is too high; consider Hetzner + K3s or even a beefier NAS-based deployment.</li>
+      <li>By Phase 4, end-to-end latency is &gt;1 second. → service architecture has too many hops; consider collapsing risk + OMS into one service, or strategy + risk.</li>
+      <li>Cluster costs exceed $300/month with a single bankroll trading. → over-provisioned; reduce node count or move some services to serverless functions.</li>
+      <li>By Phase 5, deploying a new strategy still requires changes to multiple services. → boundaries are wrong; refactor before going further.</li>
+      <li>After 3 months in production (Phase 6+), more time is spent on infrastructure than on improving the trading logic. → architecture is too heavy for the team; simplify.</li>
+    </ul>
+
+    <p>None of these are prohibitions. They're checkpoints. If we hit one, it's a signal to step back and reconsider, not necessarily abandon.</p>
+  </div>
+
+  <!-- 14 GLOSSARY -->
+  <div class="section" id="s14">
+    <div class="section-header"><div class="section-num">14</div><h2>Glossary</h2></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th style="width:200px">Term</th><th>Plain English</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Microservices</strong></td><td>An architectural pattern where the system is broken into small, independently-deployable services that communicate over a network.</td></tr>
+        <tr><td><strong>OMS (Order Management System)</strong></td><td>The hedge fund component that tracks the lifecycle of every order — created, submitted, filled, cancelled. The system of record for orders.</td></tr>
+        <tr><td><strong>EMS (Execution Management System)</strong></td><td>The component that actually talks to venues to place orders. Separated from the OMS because venue connectivity is messy and venue-specific.</td></tr>
+        <tr><td><strong>PMS (Portfolio Management System)</strong></td><td>The component that tracks current positions, P&amp;L, and bankroll. Answers "what do we own and what is it worth?"</td></tr>
+        <tr><td><strong>Risk Engine</strong></td><td>The component that decides whether a proposed order is allowed to fly, applies sizing logic, enforces limits.</td></tr>
+        <tr><td><strong>Sleeve</strong></td><td>Hedge fund term for an independent strategy. Used in this document interchangeably with "strategy service."</td></tr>
+        <tr><td><strong>Event-driven architecture</strong></td><td>System design where components communicate by emitting and consuming events rather than calling each other directly.</td></tr>
+        <tr><td><strong>Event sourcing</strong></td><td>Storing every change to state as an immutable event in a log. Current state is computed by replaying events. Like an accounting ledger.</td></tr>
+        <tr><td><strong>Projection</strong></td><td>A read model derived from the event log. Bankroll is a projection. Open positions are a projection. Can be rebuilt from events at any time.</td></tr>
+        <tr><td><strong>Message bus</strong></td><td>The infrastructure that carries events between services. We use NATS JetStream.</td></tr>
+        <tr><td><strong>NATS JetStream</strong></td><td>A modern message bus, simpler than Kafka but with persistence and replay. Open source, single Go binary, designed for microservices.</td></tr>
+        <tr><td><strong>Subject (NATS)</strong></td><td>NATS's term for a topic. Hierarchical, dot-separated. <code class="inline">order.proposed.timely</code> matches the wildcard <code class="inline">order.proposed.&gt;</code>.</td></tr>
+        <tr><td><strong>Correlation ID</strong></td><td>A unique ID attached to every event in a chain. Lets you trace one bet from idea to fill across all services.</td></tr>
+        <tr><td><strong>Idempotency</strong></td><td>Property of a function such that calling it twice has the same effect as calling it once. Required for at-least-once delivery systems.</td></tr>
+        <tr><td><strong>At-least-once delivery</strong></td><td>Message bus guarantee that every message will be delivered, but might be delivered more than once. Consumers must be idempotent.</td></tr>
+        <tr><td><strong>Kubernetes / k8s</strong></td><td>Open-source platform for running containers in production. Handles deployments, scaling, networking, restarts.</td></tr>
+        <tr><td><strong>Pod (k8s)</strong></td><td>A running container (or small group of related containers) — the smallest deployable unit in Kubernetes.</td></tr>
+        <tr><td><strong>Namespace (k8s)</strong></td><td>A logical isolation boundary within a cluster. We use <code class="inline">trading-prod</code> and <code class="inline">trading-paper</code> as separate namespaces.</td></tr>
+        <tr><td><strong>DOKS</strong></td><td>DigitalOcean Kubernetes Service. Managed Kubernetes — they run the control plane, you run the workloads.</td></tr>
+        <tr><td><strong>Argo CD</strong></td><td>A GitOps deployment tool. It watches a git repo of Kubernetes manifests and applies changes to the cluster.</td></tr>
+        <tr><td><strong>LGTM stack</strong></td><td>Loki + Grafana + Tempo + Mimir. The standard open-source observability stack from Grafana Labs.</td></tr>
+        <tr><td><strong>Loki</strong></td><td>Log aggregation. Like Elasticsearch but cheaper. Indexes labels, not log content.</td></tr>
+        <tr><td><strong>Tempo</strong></td><td>Distributed tracing backend. Stores spans from OpenTelemetry. Lets you see end-to-end traces.</td></tr>
+        <tr><td><strong>Prometheus</strong></td><td>Metrics database. Scrapes <code class="inline">/metrics</code> endpoints from services. Standard in Kubernetes.</td></tr>
+        <tr><td><strong>Grafana</strong></td><td>Visualization tool. Sits on top of Prometheus, Loki, and Tempo. Where you build dashboards and explore data.</td></tr>
+        <tr><td><strong>OpenTelemetry</strong></td><td>Vendor-neutral standard for emitting metrics, logs, and traces. Each service uses the OTel SDK.</td></tr>
+        <tr><td><strong>Sealed-secrets</strong></td><td>A way to commit encrypted secrets to git, decrypted only by the cluster. Lighter alternative to Vault.</td></tr>
+        <tr><td><strong>Dry-run / paper mode</strong></td><td>Same code path as live, but execution is simulated instead of placing real orders. Inspired by Freqtrade's <code class="inline">--dry-run</code>.</td></tr>
+        <tr><td><strong>Reconciliation</strong></td><td>Comparing what the bot thinks against what the venue says. Runs daily, automatically.</td></tr>
+        <tr><td><strong>Bayesian-Kelly</strong></td><td>A version of the Kelly criterion that automatically reduces bet size when the bot's confidence in its edge is low. Mathematically defensible alternative to hardcoded "half-Kelly."</td></tr>
+        <tr><td><strong>MCP (Model Context Protocol)</strong></td><td>Anthropic's standard for AI assistants to discover and call external tools. Lets Claude (in chat) directly query and command the bot.</td></tr>
+        <tr><td><strong>NautilusTrader</strong></td><td>An open-source production-grade trading platform with Rust core + Python control plane. The closest reference architecture for what we're building.</td></tr>
+        <tr><td><strong>Freqtrade</strong></td><td>An open-source crypto trading bot. Source of the dry-run mode pattern we're borrowing.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Kalshi Trading Bot · Architecture v2 · Professional-Grade Rebuild · Generated April 26, 2026
+</div>
+
+</body>
+</html>
