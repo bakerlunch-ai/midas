@@ -77,10 +77,10 @@
   <h1>Midas — Project Handoff</h1>
   <div class="header-sub">Master "current state" document. Read this first when opening any new Claude chat. Updated at the end of every working session.</div>
   <div class="header-meta">
-    <span class="meta-pill">Last updated: April 29, 2026</span>
+    <span class="meta-pill">Last updated: May 4, 2026</span>
     <span class="meta-pill green">7 commits on main</span>
-    <span class="meta-pill green">Phase 1: 2/12 tasks complete</span>
-    <span class="meta-pill">Cost: $102.45/month</span>
+    <span class="meta-pill green">Phase 1: 3/12 tasks complete</span>
+    <span class="meta-pill">Cost: $117.45/month</span>
     <span class="meta-pill amber">Status: Building</span>
   </div>
 </div>
@@ -184,7 +184,9 @@
         <tr><td>Postgres networking</td><td>VPC-only (midas-prod allowed source)</td><td><span class="badge badge-green">Locked down</span></td><td>—</td></tr>
         <tr><td>Logical databases</td><td class="mono">oms_db, pms_db, reporting_db, defaultdb</td><td><span class="badge badge-green">Created</span></td><td>—</td></tr>
         <tr><td>Database users</td><td class="mono">oms_user, pms_user, reporting_user, doadmin</td><td><span class="badge badge-green">Created</span></td><td>—</td></tr>
-        <tr><td><strong>Total monthly cost</strong></td><td>—</td><td>—</td><td class="green">$102.45/mo</td></tr>
+        <tr><td>Managed Redis</td><td class="mono">midas-redis (LON1, Valkey 8, Basic Regular SSD 1GB/1vCPU/10GiB)</td><td><span class="badge badge-green">Online, locked to midas-prod</span></td><td>$15/mo</td></tr>
+        <tr><td>Redis cluster ID</td><td class="mono">8671e021-fe36-4354-915b-731be8dc9602</td><td>—</td><td>—</td></tr>
+        <tr><td><strong>Total monthly cost</strong></td><td>—</td><td>—</td><td class="green">$117.45/mo</td></tr>
       </tbody>
     </table></div>
 
@@ -217,7 +219,7 @@
         <tr><td>Message bus</td><td>NATS JetStream (target — not yet deployed)</td></tr>
         <tr><td>Observability</td><td>LGTM stack: Loki, Grafana, Tempo, Prometheus (target — not yet deployed)</td></tr>
         <tr><td>Database</td><td>PostgreSQL 18, one cluster, three logical databases</td></tr>
-        <tr><td>Cache</td><td>Redis (target — not yet provisioned, Phase 1 Task 3)</td></tr>
+        <tr><td>Cache</td><td>Valkey 8 (Redis-compatible), managed on DigitalOcean — provisioned 2026-05-04</td></tr>
         <tr><td>Secrets management</td><td>sealed-secrets (target — Phase 1 Task 7-8)</td></tr>
         <tr><td>GitOps deployment</td><td>Argo CD (target — Phase 1 Task 6)</td></tr>
         <tr><td>Region</td><td>London (LON1)</td></tr>
@@ -238,8 +240,8 @@
       <tbody>
         <tr><td><strong>1</strong></td><td>Provision Kubernetes cluster</td><td><span class="badge badge-green">DONE</span></td></tr>
         <tr><td><strong>2</strong></td><td>Provision managed PostgreSQL</td><td><span class="badge badge-green">DONE (cross-DB denial check deferred to P2)</span></td></tr>
-        <tr><td><strong>3</strong></td><td>Provision managed Redis</td><td><span class="badge badge-amber">NEXT</span></td></tr>
-        <tr><td><strong>4</strong></td><td>GitHub Actions CI for the repo</td><td><span class="badge badge-navy">Pending</span></td></tr>
+        <tr><td><strong>3</strong></td><td>Provision managed Redis</td><td><span class="badge badge-green">DONE</span></td></tr>
+        <tr><td><strong>4</strong></td><td>GitHub Actions CI for the repo</td><td><span class="badge badge-amber">NEXT</span></td></tr>
         <tr><td><strong>5</strong></td><td>Bootstrap midas-deploy repo (or decide against)</td><td><span class="badge badge-navy">Pending</span></td></tr>
         <tr><td><strong>6</strong></td><td>Install Argo CD (GitOps)</td><td><span class="badge badge-navy">Pending</span></td></tr>
         <tr><td><strong>7</strong></td><td>Install sealed-secrets</td><td><span class="badge badge-navy">Pending</span></td></tr>
@@ -266,12 +268,8 @@
       </ol>
     </div>
 
-    <h4>Phase 1 Task 3 — Provision managed Redis</h4>
-    <p>Same shape as Postgres. In DigitalOcean → Databases → Create Database → Valkey/Redis → smallest tier (~$15/mo) → London (LON1) → smallest plan → name <code class="inline">midas-redis</code> → project <code class="inline">midas</code>.</p>
-    <p>After provisioning: lock down network access to <code class="inline">midas-prod</code> only (same as we did for Postgres), save credentials in password manager, run a connectivity test from a pod.</p>
-
-    <h4>Then Phase 1 Task 4 — GitHub Actions CI</h4>
-    <p>Add <code class="inline">.github/workflows/ci.yml</code> that runs <code class="inline">make install</code>, <code class="inline">make lint</code>, <code class="inline">make test</code> on every PR and push to main. Add branch protection rule on <code class="inline">main</code> requiring CI to pass before merge.</p>
+    <h4>Phase 1 Task 4 — GitHub Actions CI</h4>
+    <p>Add <code class="inline">.github/workflows/ci.yml</code> that runs <code class="inline">make install</code>, <code class="inline">make lint</code>, <code class="inline">make test</code> on every PR and push to main. Add branch protection rule on <code class="inline">main</code> requiring CI to pass before merge. Verify by opening a PR with a deliberately broken test.</p>
 
     <h4>Open carry items</h4>
     <ul class="bullets">
@@ -354,7 +352,7 @@ git push</div>
 </div>
 
 <div class="footer">
-  Midas · Project Handoff · Last updated April 29, 2026 · github.com/bakerlunch-ai/midas
+  Midas · Project Handoff · Last updated May 4, 2026 · github.com/bakerlunch-ai/midas
 </div>
 
 </body>

@@ -54,6 +54,18 @@ If the file does not yet exist, doctl will create it. The context name inside th
 - `redis-cli` from your laptop can connect with TLS
 - Connection string is saved
 
+**Status (2026-05-04): DONE.**
+
+- Cluster name: `midas-redis`, region LON1, Valkey 8
+- Plan: Basic Regular SSD, 1GB RAM / 1 vCPU / 10 GiB, $15/mo
+- Cluster UUID: `8671e021-fe36-4354-915b-731be8dc9602`
+- VPC private host pattern: `private-midas-redis-do-user-36599881-0.e.db.ondigitalocean.com`
+- Port: `25061`, TLS required, username: `default`
+- Network locked: only trusted source is the `midas-prod` Kubernetes cluster
+- Proof-of-life verified: an ephemeral pod inside `midas-prod` ran `redis-cli ... ping` and got `PONG`
+- Password reset twice during the session (leaked into chat both times by accident — currently safe in Filippo's password manager)
+- Gotcha: `doctl databases user reset` requires the **cluster UUID**, not the cluster name; the name returns 404
+
 ---
 
 ### 4. Set up GitHub Actions CI for the repo

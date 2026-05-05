@@ -1,6 +1,6 @@
 # Midas — Living TODO
 
-> **Updated:** April 29, 2026 (end of session 1)
+> **Updated:** May 4, 2026 (mid-session 2)
 > **Format:** Living checklist. Updated at end of every session.
 > **Aligned with:**
 > - The big picture → `Bot_Architecture_v2_Professional_Grade_April26_2026.html` Section 11 (8-phase migration roadmap)
@@ -11,7 +11,7 @@
 
 ## 🎯 Right now — Next session opens here
 
-- [ ] **Phase 1 Task 3** — Provision managed Redis (~$15/mo, smallest tier, London, lock to VPC). Same shape as Postgres provisioning.
+- [ ] **Phase 1 Task 4** — GitHub Actions CI for the repo (`.github/workflows/ci.yml` running `make install`, `make lint`, `make test` on PRs and pushes to main; branch protection on `main` requiring CI to pass).
 
 ---
 
@@ -20,7 +20,7 @@
 | Phase | Description | Duration estimate | Status |
 |---|---|---|---|
 | **Phase 0** | Keep the lights on (old bot paused) | ongoing | ✅ Active |
-| **Phase 1** | Infrastructure foundation | 2-4 weeks | 🟡 In progress (2/12 tasks) |
+| **Phase 1** | Infrastructure foundation | 2-4 weeks | 🟡 In progress (3/12 tasks) |
 | **Phase 2** | Core data layer (data, oms, pms services) | 3-4 weeks | ⚪ Pending |
 | **Phase 3** | First strategy end-to-end (paper) | 2-3 weeks | ⚪ Pending |
 | **Phase 4** | Go live with TIMELY only | 2-3 weeks | ⚪ Pending |
@@ -55,7 +55,7 @@
 
 ---
 
-## 🟡 Phase 1 — Infrastructure foundation (2/12 tasks complete)
+## 🟡 Phase 1 — Infrastructure foundation (3/12 tasks complete)
 
 > Goal: a functional empty cluster with all infrastructure running. No trading services yet. You can `kubectl apply` a hello-world service and see it appear in Grafana with logs and metrics.
 
@@ -84,14 +84,14 @@
 - [x] Proof-of-life: pod connects to Postgres over VPC, runs `SELECT 1` ✅
 - [ ] Cross-DB denial check (oms_user → pms_db should fail) — **deferred to Phase 2** when service permissions are wired
 
-### ⚪ Task 3 — Managed Redis (next up)
+### ✅ Task 3 — Managed Redis (DONE)
 
-- [ ] Provision `midas-redis`: smallest tier (~$15/mo), London, in same VPC
-- [ ] Lock down network access — only `midas-prod` allowed
-- [ ] Save credentials in password manager
-- [ ] Proof-of-life: pod connects to Redis, sets and reads a key
+- [x] Provision `midas-redis`: Valkey 8, Basic Regular SSD, 1GB / 1vCPU / 10 GiB, $15/mo, London
+- [x] Lock down network access — only `midas-prod` allowed
+- [x] Save credentials in password manager (password reset twice after accidental chat leaks)
+- [x] Proof-of-life: ephemeral pod inside `midas-prod` ran `redis-cli ... ping` → `PONG`
 
-### ⚪ Task 4 — GitHub Actions CI
+### ⚪ Task 4 — GitHub Actions CI (next up)
 
 - [ ] Create `.github/workflows/ci.yml` running `make install`, `make lint`, `make test`
 - [ ] Add branch protection on `main` requiring CI to pass before merge
@@ -270,12 +270,12 @@
 
 ## 📊 By the numbers (current)
 
-- **Commits on main:** 7 (will be 8 after this push lands)
+- **Commits on main:** 9 (will be 10 after this push lands)
 - **Current phase:** Phase 1 (infrastructure foundation)
-- **Phase 1 progress:** 2 / 12 tasks complete
+- **Phase 1 progress:** 3 / 12 tasks complete
 - **Overall progress:** 0 of 7 active phases complete
-- **Cloud cost:** $102.45 / month (target: <$150)
+- **Cloud cost:** $117.45 / month (target: <$150)
 - **Quality gates:** 3 / 3 passing (install, lint, test)
 - **Tests:** 5 passing
 - **Services running:** 0 (Phase 2 work)
-- **Last session:** April 29, 2026 (~3h, 2 tasks shipped)
+- **Last session:** April 29, 2026 (~3h, 2 tasks shipped); session 2 in progress (2026-05-04)
