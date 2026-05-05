@@ -2,84 +2,133 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Midas Project Handoff — Current State</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<title>Midas — Project Handoff</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --navy: #0d1b2a;
-    --navy-mid: #1a2e44;
-    --green: #00c896;
-    --green-dim: #00a87a;
-    --amber: #f5a623;
-    --red: #e05252;
-    --cream: #f7f4ef;
-    --text: #1a1a2a;
-    --text-light: #5a6072;
-    --border: #e2ddd6;
-    --mono: 'IBM Plex Mono', monospace;
-    --sans: 'DM Sans', sans-serif;
-    --serif: 'DM Serif Display', serif;
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f7f4ef;
+    color: #0d1b2a;
+    line-height: 1.55;
+    padding: 0 0 80px 0;
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: var(--cream); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.7; }
-  .header { background: var(--navy); color: white; padding: 56px 60px 48px; position: relative; overflow: hidden; }
-  .header::before { content: ''; position: absolute; top: -80px; right: -80px; width: 320px; height: 320px; border-radius: 50%; border: 1px solid rgba(0,200,150,0.15); }
-  .header-tag { font-family: var(--mono); font-size: 11px; color: var(--green); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; }
-  .header h1 { font-family: var(--serif); font-size: 40px; font-weight: 400; line-height: 1.15; margin-bottom: 10px; }
-  .header-sub { font-size: 14px; color: rgba(255,255,255,0.55); font-weight: 300; margin-bottom: 28px; max-width: 720px; }
-  .header-meta { display: flex; gap: 12px; flex-wrap: wrap; }
-  .meta-pill { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); padding: 6px 14px; border-radius: 100px; font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.7); }
-  .meta-pill.green { border-color: rgba(0,200,150,0.4); color: var(--green); }
-  .meta-pill.amber { border-color: rgba(245,166,35,0.4); color: var(--amber); }
-  .container { max-width: 1080px; margin: 0 auto; padding: 48px 40px; }
-  .alert { background: rgba(0,200,150,0.06); border: 1px solid rgba(0,200,150,0.25); border-left: 3px solid var(--green); padding: 14px 18px; border-radius: 6px; font-size: 13px; color: #155040; margin-bottom: 40px; }
-  .alert strong { color: #0a3028; }
-  .alert.amber { background: rgba(245,166,35,0.08); border: 1px solid rgba(245,166,35,0.3); border-left: 3px solid var(--amber); color: #6a4810; }
-  .alert.amber strong { color: #3a2810; }
+  .header {
+    background: #0d1b2a;
+    color: #f7f4ef;
+    padding: 56px 64px 48px 64px;
+  }
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 48px;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+  .header-sub { font-size: 17px; opacity: 0.85; max-width: 800px; margin-bottom: 24px; }
+  .header-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+  .meta-pill {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .meta-pill.green { background: rgba(0,200,150,0.18); border-color: rgba(0,200,150,0.4); color: #00c896; }
+  .meta-pill.amber { background: rgba(255,180,80,0.15); border-color: rgba(255,180,80,0.35); color: #ffb450; }
+  .container { max-width: 1080px; margin: 0 auto; padding: 48px 32px 0 32px; }
   .section { margin-bottom: 48px; }
-  .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-  .section-num { font-family: var(--mono); font-size: 11px; color: var(--green-dim); background: rgba(0,200,150,0.08); border: 1px solid rgba(0,200,150,0.2); width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 600; }
-  .section h2 { font-family: var(--serif); font-size: 24px; font-weight: 400; color: var(--navy); }
-  .section h3 { font-size: 13px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin: 24px 0 8px; }
-  .section h4 { font-family: var(--serif); font-size: 18px; font-weight: 400; color: var(--navy); margin: 20px 0 8px; }
-  .section p { color: var(--text); margin-bottom: 12px; max-width: 820px; }
-  .table-wrap { overflow-x: auto; margin: 12px 0; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  thead tr { background: var(--navy); color: white; }
-  thead th { padding: 11px 14px; text-align: left; font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
-  tbody tr:nth-child(odd) { background: white; }
-  tbody tr:nth-child(even) { background: rgba(0,0,0,0.02); }
-  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
-  td.mono { font-family: var(--mono); font-size: 12px; color: var(--navy-mid); }
-  td.green { color: var(--green-dim); font-weight: 600; }
-  td.amber { color: #b07010; font-weight: 600; }
-  .bullets { list-style: none; padding: 0; margin: 8px 0; }
-  .bullets li { padding: 5px 0 5px 22px; position: relative; font-size: 13.5px; color: var(--text); border-bottom: 1px solid rgba(0,0,0,0.04); }
-  .bullets li::before { content: '→'; position: absolute; left: 0; color: var(--green-dim); font-family: var(--mono); font-size: 12px; }
-  .badge { display: inline-block; padding: 2px 8px; border-radius: 100px; font-family: var(--mono); font-size: 10px; font-weight: 600; }
-  .badge-green { background: rgba(0,200,150,0.12); color: var(--green-dim); border: 1px solid rgba(0,200,150,0.3); }
-  .badge-amber { background: rgba(245,166,35,0.12); color: #8a6010; border: 1px solid rgba(245,166,35,0.3); }
-  .badge-navy { background: rgba(13,27,42,0.08); color: var(--navy-mid); border: 1px solid rgba(13,27,42,0.15); }
-  .code-block { background: var(--navy); color: #a8d8c8; font-family: var(--mono); font-size: 12px; padding: 16px 20px; border-radius: 8px; margin: 12px 0; line-height: 1.6; overflow-x: auto; white-space: pre; }
-  .callout { background: rgba(0,200,150,0.05); border: 1px solid rgba(0,200,150,0.2); border-left: 3px solid var(--green); padding: 14px 18px; border-radius: 6px; font-size: 13.5px; color: var(--text); margin: 16px 0; }
-  .callout strong { color: var(--navy); }
-  .callout.navy { background: rgba(13,27,42,0.04); border: 1px solid rgba(13,27,42,0.15); border-left: 3px solid var(--navy); color: var(--text); }
-  .callout.amber { background: rgba(245,166,35,0.06); border: 1px solid rgba(245,166,35,0.25); border-left: 3px solid var(--amber); color: #6a4810; }
-  .footer { background: var(--navy); color: rgba(255,255,255,0.4); text-align: center; padding: 24px 40px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.5px; margin-top: 40px; }
-  code.inline { font-family: var(--mono); font-size: 12px; background: rgba(13,27,42,0.06); padding: 1px 5px; border-radius: 3px; color: var(--navy-mid); }
+  .section-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+  .section-num {
+    font-family: 'IBM Plex Mono', monospace;
+    background: #0d1b2a; color: #00c896;
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 15px;
+  }
+  .section h2 { font-family: 'DM Serif Display', serif; font-size: 30px; }
+  .section p, .section ul, .section ol { margin-bottom: 14px; }
+  .section h3 { font-family: 'DM Serif Display', serif; font-size: 22px; margin-top: 24px; margin-bottom: 12px; }
+  .section h4 { font-size: 17px; font-weight: 600; margin-top: 20px; margin-bottom: 8px; }
+  ul.bullets { padding-left: 22px; }
+  ul.bullets li { margin-bottom: 8px; }
+  .table-wrap { overflow-x: auto; margin: 16px 0; }
+  table {
+    width: 100%; border-collapse: collapse; background: white;
+    border-radius: 10px; overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  thead { background: #0d1b2a; color: #f7f4ef; }
+  th, td {
+    padding: 12px 16px; text-align: left;
+    border-bottom: 1px solid #ece8e0;
+    font-size: 14px; vertical-align: top;
+  }
+  tbody tr:nth-child(even) { background: #faf8f4; }
+  tbody tr:last-child td { border-bottom: none; }
+  .mono { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; }
+  code.inline {
+    font-family: 'IBM Plex Mono', monospace;
+    background: #ece8e0; padding: 2px 6px;
+    border-radius: 4px; font-size: 13px;
+  }
+  .badge {
+    display: inline-block; padding: 3px 10px;
+    border-radius: 999px; font-size: 12px;
+    font-weight: 600; letter-spacing: 0.3px;
+  }
+  .badge-green { background: rgba(0,200,150,0.18); color: #007a5c; }
+  .badge-amber { background: rgba(255,180,80,0.2); color: #a36100; }
+  .badge-red { background: rgba(220,80,80,0.18); color: #a02020; }
+  .badge-navy { background: rgba(13,27,42,0.1); color: #0d1b2a; }
+  .v2-ref {
+    display: inline-block;
+    background: rgba(74, 144, 226, 0.1);
+    color: #2c6db8;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    margin: 0 2px;
+  }
+  .callout {
+    background: white;
+    border-left: 4px solid #00c896;
+    padding: 16px 20px;
+    border-radius: 6px;
+    margin: 16px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .callout-journey {
+    background: white;
+    border-left: 4px solid #4a90e2;
+    padding: 18px 22px;
+    border-radius: 6px;
+    margin: 16px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .green { color: #007a5c; font-weight: 600; }
+  .footer {
+    text-align: center;
+    padding: 40px 32px;
+    color: #888; font-size: 13px;
+    margin-top: 60px;
+    border-top: 1px solid #e6e1d8;
+  }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-tag">Midas · Project Handoff · Current State</div>
   <h1>Midas — Project Handoff</h1>
   <div class="header-sub">Master "current state" document. Read this first when opening any new Claude chat. Updated at the end of every working session.</div>
   <div class="header-meta">
-    <span class="meta-pill">Last updated: May 4, 2026 (post-Task 5)</span>
-    <span class="meta-pill green">12 commits on main</span>
-    <span class="meta-pill green">Phase 1: 5/12 tasks complete</span>
+    <span class="meta-pill">Last updated: May 4, 2026 (post-session 2)</span>
+    <span class="meta-pill green">14 commits on main</span>
+    <span class="meta-pill green">Phase 1: 6/12 tasks complete</span>
     <span class="meta-pill">Cost: $117.45/month</span>
     <span class="meta-pill amber">Status: Building</span>
   </div>
@@ -87,146 +136,140 @@
 
 <div class="container">
 
-  <div class="alert">
-    <strong>If you're a new Claude chat reading this:</strong> Midas is a multi-service prediction market trading bot being built from scratch. Read this entire document plus <code class="inline">docs/LESSONS_FROM_OLD_BOT.md</code> and <code class="inline">docs/PHASE_1_PLAN.md</code> before suggesting anything. The team will tell you when to stop — never ask them if they want to stop.
-  </div>
-
   <div class="section">
     <div class="section-header"><div class="section-num">01</div><h2>What Midas is</h2></div>
-    <p>Midas is a from-scratch rebuild of a Kalshi prediction-market trading bot. The previous bot (in <code class="inline">~/Desktop/...kalshi-bot/</code>, paused) reached ~5,300 lines in one Python file with multiple structural bugs (bankroll only goes up, dead reconciliation, dead strategies). The audit synthesis documented those failures. The architecture v2 document ("Bot Architecture v2 — Professional Grade Rebuild") committed to a multi-service event-driven system inspired by hedge fund OMS/EMS/Risk separation.</p>
+    <p>Midas is a from-scratch rebuild of the Kalshi prediction-market trading bot. The legacy bot was audited in April 2026 and found to have structural bugs (bankroll only goes up, dead reconciliation, dead strategies, magic numbers, no test coverage). The architecture v2 document committed to a multi-service event-driven system inspired by hedge-fund OMS/EMS/Risk separation. Midas is being built deliberately, slowly, and well — explicitly avoiding the patterns that broke the legacy bot.</p>
+    <p>The goal is "as close to hedge-fund-grade as a two-person team can build" — not literally Citadel, but a system that a knowledgeable observer would call professional work.</p>
+    <p>The legacy bot remains paused. If trading resumes during the Midas build, it does so on the legacy bot with audit fixes applied — not on the half-built new system.</p>
 
-    <p>Midas is being built deliberately, slowly, and well — explicitly avoiding the patterns that broke the old bot. The 10 lessons from <code class="inline">docs/LESSONS_FROM_OLD_BOT.md</code> are binding constraints, not suggestions.</p>
-
-    <h4>Eventual architecture (target state, not current)</h4>
-    <ul class="bullets">
-      <li><strong>data-svc</strong> — ingest market data, FRED, news, Claude AI edge analysis</li>
-      <li><strong>strategy-* services</strong> — one per strategy (TIMELY, MIDSEL, ARB, etc.), independent deploys</li>
-      <li><strong>risk-svc</strong> — single point for all risk gates and Kelly sizing</li>
-      <li><strong>oms-svc</strong> — order lifecycle, event-sourced ledger, daily reconciliation</li>
-      <li><strong>ems-svc</strong> — execution against venues, two modes: live and paper</li>
-      <li><strong>pms-svc</strong> — positions, P&amp;L, bankroll, event-sourced</li>
-      <li><strong>reporting-svc</strong> — dashboards and reports</li>
-      <li><strong>telegram-svc</strong> — human interface (alerts, commands)</li>
-      <li><strong>mcp-svc</strong> — exposes the bot as an MCP-compatible server for AI agents</li>
-    </ul>
-    <p>All services communicate via NATS JetStream. Two PostgreSQL event-sourced ledgers (orders, portfolio). LGTM observability stack (Loki, Grafana, Tempo, Prometheus). Managed Kubernetes (DOKS).</p>
+    <div class="callout-journey">
+      <strong>For the narrative arc — why each phase exists, what it enables, why the order matters — see <code class="inline">docs/JOURNEY.md</code>.</strong> This handoff document tells you the <em>what</em> and <em>where</em>; the journey document tells you the <em>why</em>.
+    </div>
   </div>
 
   <div class="section">
     <div class="section-header"><div class="section-num">02</div><h2>Team and working style</h2></div>
+
     <div class="table-wrap"><table>
       <thead><tr><th>Person</th><th>Role</th><th>Working style</th></tr></thead>
       <tbody>
-        <tr><td><strong>Filippo</strong></td><td>Business + finance lead</td><td>Plain English; analogies preferred over jargon; gets confused with too much technical detail at once; pushes back when sessions drift</td></tr>
-        <tr><td><strong>Peter</strong></td><td>Technical lead</td><td>Writes code, runs Claude Code, handles infrastructure; can take exact code/commands directly</td></tr>
+        <tr>
+          <td><strong>Filippo</strong></td>
+          <td>Business and finance lead</td>
+          <td>Plain English, analogies preferred. Drives DigitalOcean web UI. Makes the calls. Tells Claude when to stop — never the other way around.</td>
+        </tr>
+        <tr>
+          <td><strong>Peter</strong></td>
+          <td>Technical lead</td>
+          <td>Operates Claude Code, handles git, runs commands. Can take exact code/commands directly. (Not present in session 2.)</td>
+        </tr>
       </tbody>
     </table></div>
-    <h4>Behavioral rules for Claude (must follow)</h4>
-    <ul class="bullets">
-      <li><strong>Never ask if the team wants to stop.</strong> They will tell you. Asking is annoying.</li>
-      <li><strong>Decide things inline, don't pause for planning.</strong> Filippo prefers fast forward motion to deliberation, but flag significant decisions/risks before they execute.</li>
-      <li><strong>Push back when the team proposes a shortcut</strong> that violates one of the 10 lessons. Explain which lesson, what the alternative is, ask whether they want to proceed anyway. Don't refuse outright — they own every call.</li>
-      <li><strong>Re-raise security/safety items at the natural moment</strong> (don't drop them after one decline; re-surface when the absence becomes load-bearing).</li>
-      <li><strong>Verify before committing.</strong> Claude Code may ask you to verify drafts before commit; do it.</li>
-      <li><strong>Don't paste passwords or tokens into chat.</strong> They go in Filippo's password manager.</li>
-    </ul>
+
+    <h4>Working agreements</h4>
+    <ol class="bullets" style="padding-left: 22px;">
+      <li>Filippo says when to stop. Claude does not ask "should we stop?"</li>
+      <li>Claude pushes back on shortcuts that violate the 10 binding constraints. Names the constraint, suggests the alternative, asks whether to proceed.</li>
+      <li>Decisions inline; documents follow. Move forward fast, document afterward.</li>
+      <li>Verify before commit. Claude Code may ask for review before commit/push.</li>
+      <li><strong>Never paste passwords or tokens into chat.</strong> Credentials live in Filippo's password manager only.</li>
+      <li>One visible win per week minimum.</li>
+      <li>The 10 lessons are binding — not suggestions.</li>
+      <li>Migration goal: same behavior, new architecture. Don't fix bugs while porting; behavioral changes come AFTER migration is done.</li>
+      <li><strong>Rotate credentials via CLI, not UI</strong> (added session 2). UI rotation forms have failure modes.</li>
+      <li><strong>For interactive prompts, use real Mac Terminal</strong> (added session 2). Claude Code's <code class="inline">!</code> prefix breaks password prompts.</li>
+    </ol>
   </div>
 
   <div class="section">
     <div class="section-header"><div class="section-num">03</div><h2>Current system state</h2></div>
 
-    <h4>Code repository</h4>
+    <h4>Repository &amp; toolchain</h4>
     <div class="table-wrap"><table>
       <tbody>
         <tr><td><strong>GitHub</strong></td><td class="mono">github.com/bakerlunch-ai/midas (private)</td></tr>
         <tr><td><strong>Local path</strong></td><td class="mono">/Users/filippominella/Desktop/midas/</td></tr>
         <tr><td><strong>Branch</strong></td><td class="mono">main</td></tr>
-        <tr><td><strong>Latest commit</strong></td><td class="mono">0fcac94 Phase 1 Task 4: GitHub Actions CI (#1)</td></tr>
-        <tr><td><strong>Quality gates</strong></td><td><span class="badge badge-green">install ✓</span> <span class="badge badge-green">lint ✓</span> <span class="badge badge-green">test ✓ (5/5)</span> <span class="badge badge-green">CI on every push ✓</span></td></tr>
+        <tr><td><strong>Latest commit</strong></td><td class="mono">6b07ba4 feat(deploy): hello-world smoke test for Argo CD</td></tr>
+        <tr><td><strong>Commits on main</strong></td><td>14 (after this session-close commit)</td></tr>
+        <tr><td><strong>Quality gates</strong></td><td><span class="badge badge-green">install ✓</span> <span class="badge badge-green">lint ✓</span> <span class="badge badge-green">test ✓ (5/5)</span> <span class="badge badge-green">CI on every push ✓</span> <span class="badge badge-green">GitOps deploys ✓</span></td></tr>
       </tbody>
     </table></div>
 
-    <h4>Repo structure</h4>
-    <div class="code-block">midas/
-├── packages/
-│   └── bot-events/                          # Shared Pydantic event schemas
-│       ├── src/bot_events/
-│       │   ├── __init__.py
-│       │   └── base.py                      # BaseEvent, ClassVar enforcement
-│       ├── tests/test_base.py               # 5 passing tests
-│       └── pyproject.toml
-├── services/                                # Empty (.gitkeep)
-├── deploy/                                  # Empty (.gitkeep)
-├── docs/
-│   ├── README.md
-│   ├── ARCHITECTURE.md                      # Placeholder, fills out as services come online
-│   ├── LESSONS_FROM_OLD_BOT.md              # 10 binding constraints
-│   ├── PHASE_1_PLAN.md                      # 12-task infrastructure plan
-│   ├── PROJECT_HANDOFF.html                 # This document
-│   ├── SESSION_REPORT_2026-04-29.html       # First session record
-│   └── TODO.md                              # Living checklist
-├── pyproject.toml                           # uv workspace config
-├── .python-version                          # 3.12
-├── ruff.toml                                # Lint + format config
-├── Makefile                                 # install, lint, format, test
-└── .gitignore</div>
-
-    <h4>Cloud infrastructure</h4>
+    <h4>Cloud infrastructure <span class="v2-ref">v2 §6, §7</span></h4>
     <div class="table-wrap"><table>
-      <thead><tr><th>Resource</th><th>Identifier</th><th>Status</th><th>Cost</th></tr></thead>
+      <thead><tr><th>Resource</th><th>Identifier</th><th>Status</th><th>Cost/mo</th></tr></thead>
       <tbody>
-        <tr><td>DigitalOcean account</td><td class="mono">bakerlunch@gmail.com (org: bakerlunch-ai)</td><td><span class="badge badge-green">Active, 2FA on</span></td><td>—</td></tr>
-        <tr><td>Project</td><td class="mono">midas</td><td><span class="badge badge-green">Active</span></td><td>—</td></tr>
-        <tr><td>Billing alert</td><td>$150/month</td><td><span class="badge badge-green">Set</span></td><td>—</td></tr>
-        <tr><td>Kubernetes cluster</td><td class="mono">midas-prod (LON1, K8s 1.35.1-do.3)</td><td><span class="badge badge-green">3 nodes Ready</span></td><td>$72/mo</td></tr>
-        <tr><td>Cluster ID</td><td class="mono">eed7e999-e2e2-4321-9379-a13f7ac72093</td><td>—</td><td>—</td></tr>
-        <tr><td>Managed PostgreSQL</td><td class="mono">midas-postgres (LON1, PG 18.3)</td><td><span class="badge badge-green">Healthy</span></td><td>$30.45/mo</td></tr>
-        <tr><td>Postgres networking</td><td>VPC-only (midas-prod allowed source)</td><td><span class="badge badge-green">Locked down</span></td><td>—</td></tr>
+        <tr><td>Kubernetes cluster <span class="v2-ref">v2 §7</span></td><td class="mono">midas-prod (LON1, 3× Premium Intel nodes, K8s 1.35.1-do.3)</td><td><span class="badge badge-green">Online</span></td><td>$72.00</td></tr>
+        <tr><td>Cluster UUID</td><td class="mono">eed7e999-e2e2-4321-9379-a13f7ac72093</td><td>—</td><td>—</td></tr>
+        <tr><td>Managed Postgres <span class="v2-ref">v2 §6</span></td><td class="mono">midas-postgres (LON1, PG18, Regular SSD, 1 vCPU / 2 GB / 30 GiB)</td><td><span class="badge badge-green">Online, locked to midas-prod</span></td><td>$30.45</td></tr>
+        <tr><td>Postgres cluster ID</td><td class="mono">f1c361f7-4e4c-4f4e-a7b6-3ee6f81cbd7d</td><td>—</td><td>—</td></tr>
         <tr><td>Logical databases</td><td class="mono">oms_db, pms_db, reporting_db, defaultdb</td><td><span class="badge badge-green">Created</span></td><td>—</td></tr>
         <tr><td>Database users</td><td class="mono">oms_user, pms_user, reporting_user, doadmin</td><td><span class="badge badge-green">Created</span></td><td>—</td></tr>
-        <tr><td>Managed Redis</td><td class="mono">midas-redis (LON1, Valkey 8, Basic Regular SSD 1GB/1vCPU/10GiB)</td><td><span class="badge badge-green">Online, locked to midas-prod</span></td><td>$15/mo</td></tr>
+        <tr><td>Managed Valkey (Redis) <span class="v2-ref">v2 §6</span></td><td class="mono">midas-redis (LON1, Valkey 8, Basic Regular SSD 1GB/1vCPU/10GiB)</td><td><span class="badge badge-green">Online, locked to midas-prod</span></td><td>$15.00</td></tr>
         <tr><td>Redis cluster ID</td><td class="mono">8671e021-fe36-4354-915b-731be8dc9602</td><td>—</td><td>—</td></tr>
         <tr><td><strong>Total monthly cost</strong></td><td>—</td><td>—</td><td class="green">$117.45/mo</td></tr>
       </tbody>
     </table></div>
 
-    <h4>Local toolchain (on Filippo's MacBook)</h4>
+    <h4>In-cluster components <span class="v2-ref">v2 §7</span></h4>
     <div class="table-wrap"><table>
+      <thead><tr><th>Component</th><th>Version</th><th>Namespace</th><th>Status</th></tr></thead>
       <tbody>
-        <tr><td><strong>Python</strong></td><td class="mono">3.12.3 (system)</td></tr>
-        <tr><td><strong>uv</strong></td><td class="mono">0.11.8 (in ~/.local/bin)</td></tr>
-        <tr><td><strong>kubectl</strong></td><td class="mono">v1.36.0</td></tr>
-        <tr><td><strong>doctl</strong></td><td class="mono">1.155.0 (authenticated)</td></tr>
-        <tr><td><strong>gh CLI</strong></td><td>installed and authenticated as bakerlunch-ai (HTTPS, gist+repo+read:org scopes)</td></tr>
-        <tr><td><strong>kubeconfig</strong></td><td class="mono">~/.kube/config-midas</td></tr>
-        <tr><td><strong>Active context</strong></td><td class="mono">do-lon1-midas-prod</td></tr>
+        <tr><td>Argo CD (GitOps controller)</td><td>v3.3.9</td><td><code class="inline">argocd</code></td><td><span class="badge badge-green">7/7 pods Ready</span></td></tr>
+        <tr><td>Argo CD Application: hello-world</td><td>—</td><td><code class="inline">argocd</code></td><td><span class="badge badge-green">Synced, Healthy</span></td></tr>
+        <tr><td>nginx (smoke test)</td><td>1.27-alpine</td><td><code class="inline">hello-world</code></td><td><span class="badge badge-green">1/1 Running</span></td></tr>
       </tbody>
     </table></div>
+
+    <h4>Local toolchain (Filippo's laptop)</h4>
+    <div class="table-wrap"><table>
+      <tbody>
+        <tr><td><strong>kubectl</strong></td><td class="mono">v1.36.0</td></tr>
+        <tr><td><strong>doctl</strong></td><td class="mono">v1.155.0</td></tr>
+        <tr><td><strong>argocd CLI</strong></td><td class="mono">v3.3.9 (matches server)</td></tr>
+        <tr><td><strong>uv</strong></td><td class="mono">v0.11.8</td></tr>
+        <tr><td><strong>gh CLI</strong></td><td class="mono">authenticated, workflow scope enabled</td></tr>
+        <tr><td><strong>kubeconfig</strong></td><td class="mono">~/.kube/config-midas (context: do-lon1-midas-prod)</td></tr>
+      </tbody>
+    </table></div>
+
+    <h4>Credentials (in password manager — never in chat or git)</h4>
+    <ul class="bullets">
+      <li>DigitalOcean account (2FA on)</li>
+      <li>DigitalOcean API token <code class="inline">midas-laptop</code> — expires ~July 27, 2026</li>
+      <li>Postgres users: <code class="inline">doadmin</code>, <code class="inline">oms_user</code>, <code class="inline">pms_user</code>, <code class="inline">reporting_user</code></li>
+      <li>Redis: <code class="inline">default</code> user</li>
+      <li>Argo CD admin (rotated successfully via CLI 2026-05-04)</li>
+      <li>GitHub PAT <code class="inline">midas-argocd-readonly</code> — fine-grained, Contents: Read-only on <code class="inline">bakerlunch-ai/midas</code>, expires ~August 2, 2026</li>
+    </ul>
   </div>
 
   <div class="section">
     <div class="section-header"><div class="section-num">04</div><h2>Decisions on record</h2></div>
+
     <div class="table-wrap"><table>
-      <thead><tr><th>Topic</th><th>Decision</th></tr></thead>
+      <thead><tr><th>Decision</th><th>Reasoning</th></tr></thead>
       <tbody>
         <tr><td>Cloud provider</td><td>DigitalOcean Kubernetes (DOKS)</td></tr>
         <tr><td>Repo structure</td><td>Monorepo</td></tr>
-        <tr><td>K8s manifest location</td><td>In-tree at <code class="inline">deploy/</code> in this repo — no separate <code class="inline">midas-deploy</code> repo. Reasoning in <code class="inline">docs/PHASE_1_PLAN.md</code> Task 5. Re-evaluate if team grows or ops/eng permission boundary is needed.</td></tr>
+        <tr><td>K8s manifest location</td><td>In-tree at <code class="inline">deploy/</code> in this repo — no separate <code class="inline">midas-deploy</code> repo. Two-person team, Peter handles both code and deploys, no permission boundary needed. Splitting later is easy; merging back is painful.</td></tr>
         <tr><td>Python version</td><td>3.12</td></tr>
         <tr><td>Package manager</td><td>uv (with workspaces)</td></tr>
         <tr><td>Linter/formatter</td><td>ruff (replaces flake8, isort, black)</td></tr>
         <tr><td>Test framework</td><td>pytest</td></tr>
-        <tr><td>Schema library</td><td>Pydantic v2</td></tr>
-        <tr><td>Message bus</td><td>NATS JetStream (target — not yet deployed)</td></tr>
-        <tr><td>Observability</td><td>LGTM stack: Loki, Grafana, Tempo, Prometheus (target — not yet deployed)</td></tr>
-        <tr><td>Database</td><td>PostgreSQL 18, one cluster, three logical databases</td></tr>
-        <tr><td>Cache</td><td>Valkey 8 (Redis-compatible), managed on DigitalOcean — provisioned 2026-05-04</td></tr>
+        <tr><td>Lockfile tracking</td><td><code class="inline">uv.lock</code> committed to git (correct for application monorepo, not library)</td></tr>
+        <tr><td>CI provider</td><td>GitHub Actions (free for private repo)</td></tr>
+        <tr><td>Branch protection on main</td><td>DEFERRED — requires GitHub Team plan ($16/mo). Discipline-based for now. Re-evaluate if team grows.</td></tr>
+        <tr><td>GitOps deployment tool <span class="v2-ref">v2 §7</span></td><td>Argo CD v3.3.9, watches <code class="inline">deploy/</code> in this repo via PAT</td></tr>
+        <tr><td>Argo CD password rotation</td><td>Use CLI (<code class="inline">argocd account update-password</code>), NOT the UI form. UI form has typo and PM-drift failure modes. CLI is reliable.</td></tr>
+        <tr><td>Message bus <span class="v2-ref">v2 §7</span></td><td>NATS JetStream (target — Phase 1 Task 9)</td></tr>
+        <tr><td>Observability <span class="v2-ref">v2 §8</span></td><td>LGTM stack: Loki, Grafana, Tempo, Prometheus (target — Phase 1 Task 10)</td></tr>
+        <tr><td>Database <span class="v2-ref">v2 §6</span></td><td>PostgreSQL 18, one cluster, three logical databases</td></tr>
+        <tr><td>Cache <span class="v2-ref">v2 §6</span></td><td>Valkey 8 (Redis-compatible), managed on DigitalOcean — provisioned 2026-05-04</td></tr>
         <tr><td>Secrets management</td><td>sealed-secrets (target — Phase 1 Task 7-8)</td></tr>
-        <tr><td>GitOps deployment</td><td>Argo CD (target — Phase 1 Task 6)</td></tr>
-        <tr><td>Region</td><td>London (LON1)</td></tr>
+        <tr><td>Region</td><td>London (LON1) for all resources</td></tr>
         <tr><td>HA control plane</td><td>NO — saves $40/mo, not needed at our scale</td></tr>
-        <tr><td>Node CPU type</td><td>Basic Premium Intel (NVMe)</td></tr>
-        <tr><td>Postgres CPU type</td><td>Basic Regular SSD (cheaper, sufficient for our scale)</td></tr>
         <tr><td>Postgres standby</td><td>NO — single primary, daily backups</td></tr>
         <tr><td>Cadence target</td><td>One visible win per week minimum</td></tr>
       </tbody>
@@ -234,25 +277,43 @@
   </div>
 
   <div class="section">
-    <div class="section-header"><div class="section-num">05</div><h2>Phase 1 progress</h2></div>
+    <div class="section-header"><div class="section-num">05</div><h2>Phase progress (8-phase journey)</h2></div>
 
+    <p>The full migration roadmap is <span class="v2-ref">v2 §11</span>. The narrative arc — why each phase exists and what it enables — is in <code class="inline">docs/JOURNEY.md</code>.</p>
+
+    <div class="table-wrap"><table>
+      <thead><tr><th>Phase</th><th>What it builds</th><th>v2 ref</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Phase 0</strong></td><td>Keep the legacy bot paused; no half-deployed states</td><td><span class="v2-ref">§11</span></td><td><span class="badge badge-green">Active</span></td></tr>
+        <tr><td><strong>Phase 1</strong></td><td>Infrastructure foundation (cluster, DB, cache, GitOps, CI, observability)</td><td><span class="v2-ref">§6, §7, §8, §11</span></td><td><span class="badge badge-amber">In progress (6/12)</span></td></tr>
+        <tr><td><strong>Phase 2</strong></td><td>Core data layer: data-svc, oms-svc, pms-svc with event-sourced ledgers</td><td><span class="v2-ref">§5, §9, §10, §11</span></td><td><span class="badge badge-navy">Pending</span></td></tr>
+        <tr><td><strong>Phase 3</strong></td><td>First strategy end-to-end (TIMELY) in paper mode + risk-svc + ems-svc</td><td><span class="v2-ref">§11, §12</span></td><td><span class="badge badge-navy">Pending</span></td></tr>
+        <tr><td><strong>Phase 4</strong></td><td>Go live with TIMELY only — small bankroll cap circuit breaker</td><td><span class="v2-ref">§11</span></td><td><span class="badge badge-navy">Pending</span></td></tr>
+        <tr><td><strong>Phase 5</strong></td><td>Port remaining strategies (MIDSEL, arb); retire legacy bot</td><td><span class="v2-ref">§11</span></td><td><span class="badge badge-navy">Pending</span></td></tr>
+        <tr><td><strong>Phase 6</strong></td><td>Hardening (failure stress tests, runbooks) + MCP integration (mcp-svc)</td><td><span class="v2-ref">§11, §13</span></td><td><span class="badge badge-navy">Pending</span></td></tr>
+        <tr><td><strong>Phase 7</strong></td><td>Research &amp; growth (no end date)</td><td><span class="v2-ref">§11, §14</span></td><td><span class="badge badge-navy">Pending</span></td></tr>
+      </tbody>
+    </table></div>
+
+    <h4>Phase 1 task detail (current phase)</h4>
     <div class="table-wrap"><table>
       <thead><tr><th>Task</th><th>Description</th><th>Status</th></tr></thead>
       <tbody>
         <tr><td><strong>1</strong></td><td>Provision Kubernetes cluster</td><td><span class="badge badge-green">DONE</span></td></tr>
-        <tr><td><strong>2</strong></td><td>Provision managed PostgreSQL</td><td><span class="badge badge-green">DONE (cross-DB denial check deferred to P2)</span></td></tr>
+        <tr><td><strong>2</strong></td><td>Provision managed PostgreSQL</td><td><span class="badge badge-green">DONE</span> (cross-DB denial check deferred to P2)</td></tr>
         <tr><td><strong>3</strong></td><td>Provision managed Redis</td><td><span class="badge badge-green">DONE</span></td></tr>
-        <tr><td><strong>4</strong></td><td>GitHub Actions CI for the repo</td><td><span class="badge badge-green">DONE (branch protection deferred — needs Team plan)</span></td></tr>
-        <tr><td><strong>5</strong></td><td>Bootstrap midas-deploy repo (or decide against)</td><td><span class="badge badge-green">DONE — decided in-tree at deploy/</span></td></tr>
-        <tr><td><strong>6</strong></td><td>Install Argo CD (GitOps)</td><td><span class="badge badge-amber">NEXT</span></td></tr>
-        <tr><td><strong>7</strong></td><td>Install sealed-secrets</td><td><span class="badge badge-navy">Pending</span></td></tr>
+        <tr><td><strong>4</strong></td><td>GitHub Actions CI for the repo</td><td><span class="badge badge-green">DONE</span> (branch protection deferred — needs Team plan)</td></tr>
+        <tr><td><strong>5</strong></td><td>Bootstrap midas-deploy repo (or decide against)</td><td><span class="badge badge-green">DONE</span> — decided in-tree at <code class="inline">deploy/</code></td></tr>
+        <tr><td><strong>6</strong></td><td>Install Argo CD (GitOps)</td><td><span class="badge badge-green">DONE</span> — repo connected, hello-world deployed end-to-end</td></tr>
+        <tr><td><strong>7</strong></td><td>Install sealed-secrets</td><td><span class="badge badge-amber">NEXT</span></td></tr>
         <tr><td><strong>8</strong></td><td>Move credentials into sealed-secrets</td><td><span class="badge badge-navy">Pending</span></td></tr>
         <tr><td><strong>9</strong></td><td>Deploy NATS JetStream cluster</td><td><span class="badge badge-navy">Pending</span></td></tr>
         <tr><td><strong>10</strong></td><td>Deploy LGTM observability stack</td><td><span class="badge badge-navy">Pending</span></td></tr>
-        <tr><td><strong>11</strong></td><td>Hello-world end-to-end deploy (proof of life)</td><td><span class="badge badge-navy">Pending</span></td></tr>
+        <tr><td><strong>11</strong></td><td>Hello-world end-to-end deploy (proof of life)</td><td><span class="badge badge-green">EFFECTIVELY DONE</span> via Task 6 smoke test</td></tr>
         <tr><td><strong>12</strong></td><td>Document the runbook</td><td><span class="badge badge-navy">Pending</span></td></tr>
       </tbody>
     </table></div>
+    <p>50% of Phase 1 complete after session 2. On track for the 2–4 week phase estimate (3 work-sessions in, 2–4 more probably needed).</p>
   </div>
 
   <div class="section">
@@ -262,35 +323,43 @@
       <strong>Open the next session by:</strong>
       <ol style="margin: 8px 0 0 22px;">
         <li>Reading this document</li>
+        <li>Reading <code class="inline">docs/JOURNEY.md</code> (narrative arc) — newly added 2026-05-04</li>
         <li>Reading <code class="inline">docs/LESSONS_FROM_OLD_BOT.md</code></li>
         <li>Reading <code class="inline">docs/TODO.md</code> for the live checklist</li>
-        <li>Running <code class="inline">cd ~/midas && git pull</code> to ensure laptop is up to date</li>
+        <li>Running <code class="inline">cd ~/Desktop/midas && git pull</code></li>
         <li>Confirming <code class="inline">KUBECONFIG=~/.kube/config-midas kubectl get nodes</code> returns 3 Ready nodes</li>
+        <li>Confirming the Argo CD <code class="inline">hello-world</code> Application is still <span class="badge badge-green">Healthy / Synced</span> (sanity check that infra survived the gap)</li>
       </ol>
     </div>
 
-    <h4>Phase 1 Task 6 — Install Argo CD (GitOps)</h4>
-    <p>Install the Argo CD controller into the <code class="inline">midas-prod</code> cluster, point it at <code class="inline">deploy/</code> in this repo (per the Task 5 decision), and confirm the dashboard is reachable via <code class="inline">kubectl port-forward</code>. No public IP yet. Configure RBAC. After this lands, every deployment is "git commit → Argo applies → service updated" — no <code class="inline">kubectl apply</code> from a laptop.</p>
+    <h4>Phase 1 Task 7 — Install sealed-secrets <span class="v2-ref">v2 §7</span></h4>
+    <p>Sealed-secrets is the controller that lets us commit encrypted secrets to git, decrypted only by the cluster. Once installed, we can stop carrying credentials in the password manager only — they live in <code class="inline">deploy/</code> as <code class="inline">SealedSecret</code> resources, encrypted, safe to commit, and Argo CD applies them just like any other manifest.</p>
+    <p>Steps: install the controller via Helm or upstream manifest, save the controller's keypair securely (this is the master key — losing it means losing all sealed secrets), install the <code class="inline">kubeseal</code> CLI on Filippo's laptop, verify a test secret can be sealed → committed to <code class="inline">deploy/</code> → automatically decrypted by the cluster after Argo CD syncs it.</p>
 
-    <h4>Note on branch protection</h4>
-    <p>Task 4 is closed but the branch-protection sub-item is deferred: GitHub requires the Team plan ($16/mo) to enforce protection rules on private repos. Decision: stay on the free plan, rely on team discipline. Re-evaluate if the team grows or if broken code lands on main despite discipline.</p>
+    <h4>Then Phase 1 Task 8 — Move credentials into sealed-secrets</h4>
+    <p>Take Postgres + Redis connection strings out of the password manager and into <code class="inline">deploy/secrets/</code> as sealed secrets. After this lands, future Phase 2 services can read credentials via <code class="inline">envFrom: secretRef</code> without manual handoffs.</p>
 
     <h4>Open carry items</h4>
     <ul class="bullets">
-      <li>DigitalOcean API token expires ~July 27, 2026 — set calendar reminder to rotate</li>
-      <li>Cross-DB denial check deferred to Phase 2 (when service permissions are wired)</li>
+      <li>DigitalOcean API token expires ~July 27, 2026 — set calendar reminder</li>
+      <li>GitHub PAT expires ~August 2, 2026 — set calendar reminder</li>
+      <li>Cross-DB denial check on Postgres deferred to Phase 2</li>
       <li>Connection strings still only in password manager; will move to sealed-secrets in Task 8</li>
-      <li>Decision recorded 2026-05-04: K8s manifests live in-tree at <code class="inline">deploy/</code> — no separate <code class="inline">midas-deploy</code> repo. See decisions table.</li>
+      <li>Argo CD admin password also still PM-only — should be backed up to sealed-secrets when Task 7 lands</li>
+      <li>Branch protection on main deferred (paid plan)</li>
+      <li>PHASE_1_PLAN Tasks 6–11 still reference "midas-deploy repo" — read as <code class="inline">deploy/</code> in this repo until each task is rewritten in its own session</li>
+      <li>Decide whether to remove or keep <code class="inline">hello-world</code> Application as a permanent smoke test marker</li>
+      <li>Session-close automation improvements (added 2026-05-04) — see TODO.md "Session-close workflow" section</li>
     </ul>
   </div>
 
   <div class="section">
     <div class="section-header"><div class="section-num">07</div><h2>The 10 binding constraints</h2></div>
-    <p>From <code class="inline">docs/LESSONS_FROM_OLD_BOT.md</code>. If a proposal violates one of these, push back, name the lesson, suggest the alternative, ask before proceeding.</p>
-    <ol style="margin-left: 22px;">
+    <p>From <code class="inline">docs/LESSONS_FROM_OLD_BOT.md</code>, captured in <span class="v2-ref">v2 §4</span>. Not suggestions. If a proposal violates one of them, push back.</p>
+    <ol class="bullets" style="padding-left: 22px;">
       <li>Bankroll only goes up — use event sourcing, not mutable balance fields</li>
       <li>Reconciliation never ran — must be on a scheduler</li>
-      <li>Strategies as strings — use ClassVar + __init_subclass__ enforcement</li>
+      <li>Strategies as strings — use ClassVar + <code class="inline">__init_subclass__</code> enforcement</li>
       <li>Eight strategies, two of which were dead code — delete what isn't deployed</li>
       <li>Risk gates duplicated in eight places — one canonical implementation only</li>
       <li>Shadow drifted into research lab — paper environment ≠ research</li>
@@ -302,53 +371,60 @@
   </div>
 
   <div class="section">
-    <div class="section-header"><div class="section-num">08</div><h2>Common commands reference</h2></div>
+    <div class="section-header"><div class="section-num">08</div><h2>Common commands</h2></div>
 
-    <h4>From the laptop</h4>
-    <div class="code-block">cd ~/midas
-make install                    # Install all workspace deps
-make test                       # Run all tests
-make lint                       # Run ruff
-make format                     # Auto-format code
-
+    <h4>Day-to-day cluster check</h4>
+    <pre style="background:#0d1b2a; color:#f7f4ef; padding:14px; border-radius:8px; font-family:'IBM Plex Mono', monospace; font-size:13px; overflow-x:auto; line-height:1.6;"><code>cd ~/Desktop/midas && git pull
 KUBECONFIG=~/.kube/config-midas kubectl get nodes
-KUBECONFIG=~/.kube/config-midas kubectl get pods --all-namespaces
-KUBECONFIG=~/.kube/config-midas kubectl cluster-info
+KUBECONFIG=~/.kube/config-midas kubectl get pods -A</code></pre>
 
-doctl kubernetes cluster list
-doctl databases list
+    <h4>Open Argo CD UI</h4>
+    <pre style="background:#0d1b2a; color:#f7f4ef; padding:14px; border-radius:8px; font-family:'IBM Plex Mono', monospace; font-size:13px; overflow-x:auto; line-height:1.6;"><code># Background terminal:
+KUBECONFIG=~/.kube/config-midas kubectl port-forward svc/argocd-server -n argocd 8080:443
 
-git status
-git log --oneline -10
-git push</div>
+# Browser: https://localhost:8080
+# Login: admin / password from PM "Argo CD admin (midas-prod)"</code></pre>
 
-    <h4>Ports and hostnames</h4>
-    <div class="table-wrap"><table>
-      <tbody>
-        <tr><td><strong>Postgres port</strong></td><td class="mono">25060</td></tr>
-        <tr><td><strong>Postgres VPC host</strong></td><td>(in password manager — VPC private host entry)</td></tr>
-        <tr><td><strong>Postgres public host</strong></td><td>(in password manager — but blocked by trusted sources)</td></tr>
-      </tbody>
-    </table></div>
+    <h4>Argo CD CLI login</h4>
+    <pre style="background:#0d1b2a; color:#f7f4ef; padding:14px; border-radius:8px; font-family:'IBM Plex Mono', monospace; font-size:13px; overflow-x:auto; line-height:1.6;"><code># Copy password from PM to clipboard, then:
+PW=$(pbpaste); argocd login localhost:8080 --username admin --password "$PW" --insecure; unset PW</code></pre>
+
+    <h4>Run quality gates locally</h4>
+    <pre style="background:#0d1b2a; color:#f7f4ef; padding:14px; border-radius:8px; font-family:'IBM Plex Mono', monospace; font-size:13px; overflow-x:auto; line-height:1.6;"><code>cd ~/Desktop/midas
+make install
+make lint
+make test</code></pre>
+
+    <h4>Repo move (if ever needed)</h4>
+    <pre style="background:#0d1b2a; color:#f7f4ef; padding:14px; border-radius:8px; font-family:'IBM Plex Mono', monospace; font-size:13px; overflow-x:auto; line-height:1.6;"><code># After moving the repo directory, rebuild .venv:
+rm -rf .venv && make install
+# uv venvs hardcode absolute paths in shebangs</code></pre>
   </div>
 
   <div class="section">
-    <div class="section-header"><div class="section-num">09</div><h2>Glossary for new chats</h2></div>
+    <div class="section-header"><div class="section-num">09</div><h2>Glossary</h2></div>
+
     <div class="table-wrap"><table>
       <tbody>
-        <tr><td><strong>Midas</strong></td><td>The new bot we are building. Kalshi prediction-market trading.</td></tr>
-        <tr><td><strong>The old bot</strong></td><td>The previous Kalshi bot, now paused. Audit findings drove the Midas rebuild.</td></tr>
+        <tr><td><strong>Midas</strong></td><td>The new bot we're building from scratch.</td></tr>
+        <tr><td><strong>Legacy bot</strong></td><td>The old <code class="inline">bot.py</code> / <code class="inline">shadow_bot.py</code> codebase. Paused. Audit findings drove the Midas rebuild.</td></tr>
+        <tr><td><strong>v2 architecture</strong></td><td>The master technical blueprint: <code class="inline">Bot_Architecture_v2_Professional_Grade_April26_2026.html</code>. References like <span class="v2-ref">v2 §7</span> point to specific sections.</td></tr>
+        <tr><td><strong>Journey</strong></td><td>The narrative arc connecting the 8 phases. Lives in <code class="inline">docs/JOURNEY.md</code>. Tells you the <em>why</em>; this handoff doc tells you the <em>what</em>.</td></tr>
         <tr><td><strong>DOKS</strong></td><td>DigitalOcean Kubernetes Service. Where Midas runs.</td></tr>
         <tr><td><strong>midas-prod</strong></td><td>The production Kubernetes cluster (LON1, 3 nodes).</td></tr>
         <tr><td><strong>midas-postgres</strong></td><td>Managed PostgreSQL holding oms_db, pms_db, reporting_db.</td></tr>
-        <tr><td><strong>NATS JetStream</strong></td><td>Message bus for inter-service events. Will be deployed in Task 9.</td></tr>
-        <tr><td><strong>LGTM stack</strong></td><td>Loki + Grafana + Tempo + Prometheus. Observability. Will be deployed in Task 10.</td></tr>
-        <tr><td><strong>Sealed-secrets</strong></td><td>Way to commit encrypted secrets to git. Will be installed in Task 7.</td></tr>
-        <tr><td><strong>Argo CD</strong></td><td>GitOps controller. Watches a repo and applies manifests to the cluster. Will be installed in Task 6.</td></tr>
-        <tr><td><strong>Phase 0</strong></td><td>Repo bootstrap (DONE).</td></tr>
-        <tr><td><strong>Phase 1</strong></td><td>Infrastructure foundation (12 tasks). Currently 2/12 complete.</td></tr>
-        <tr><td><strong>Phase 2</strong></td><td>Core data services (data-svc, oms-svc, pms-svc, bot-events package extension). After Phase 1.</td></tr>
-        <tr><td><strong>Phase 3+</strong></td><td>Strategy services, risk service, EMS, etc. See architecture v2 doc.</td></tr>
+        <tr><td><strong>midas-redis</strong></td><td>Managed Valkey 8 (Redis-compatible). Will hold short-lived state, rate limits, queue locks.</td></tr>
+        <tr><td><strong>NATS JetStream</strong></td><td>Message bus for inter-service events. Will be deployed in Task 9. <span class="v2-ref">v2 §7</span></td></tr>
+        <tr><td><strong>LGTM stack</strong></td><td>Loki + Grafana + Tempo + Prometheus. Observability. Task 10. <span class="v2-ref">v2 §8</span></td></tr>
+        <tr><td><strong>Sealed-secrets</strong></td><td>Way to commit encrypted secrets to git. Task 7.</td></tr>
+        <tr><td><strong>Argo CD</strong></td><td>GitOps controller. Watches the repo and applies manifests to the cluster. Live as of session 2. <span class="v2-ref">v2 §7</span></td></tr>
+        <tr><td><strong>GitOps</strong></td><td>The pattern: "what's in git is what's running." A change is a commit, not a kubectl apply.</td></tr>
+        <tr><td><strong>PAT</strong></td><td>Personal Access Token. GitHub credential used by Argo CD to read the repo.</td></tr>
+        <tr><td><strong>Event sourcing</strong></td><td>Storing state as an append-only log of events, computing current state by replay. Closes <span class="v2-ref">Lesson #1</span>. <span class="v2-ref">v2 §5</span></td></tr>
+        <tr><td><strong>Phase 0</strong></td><td>Repo bootstrap and legacy paused (DONE).</td></tr>
+        <tr><td><strong>Phase 1</strong></td><td>Infrastructure foundation (12 tasks). Currently 6/12 complete.</td></tr>
+        <tr><td><strong>Phase 2</strong></td><td>Core data services (data-svc, oms-svc, pms-svc, bot-events package extension).</td></tr>
+        <tr><td><strong>Phase 3+</strong></td><td>Strategy services, risk service, EMS, etc. See <code class="inline">docs/JOURNEY.md</code> for narrative.</td></tr>
       </tbody>
     </table></div>
   </div>
@@ -356,7 +432,7 @@ git push</div>
 </div>
 
 <div class="footer">
-  Midas · Project Handoff · Last updated May 4, 2026 (post-Task 5) · github.com/bakerlunch-ai/midas
+  Midas · Project Handoff · Last updated May 4, 2026 (post-session 2) · github.com/bakerlunch-ai/midas
 </div>
 
 </body>

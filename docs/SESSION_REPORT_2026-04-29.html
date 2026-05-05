@@ -2,175 +2,278 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Midas Session Report — April 29, 2026</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<title>Midas — Session Report — April 29, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --navy: #0d1b2a;
-    --navy-mid: #1a2e44;
-    --green: #00c896;
-    --green-dim: #00a87a;
-    --amber: #f5a623;
-    --red: #e05252;
-    --cream: #f7f4ef;
-    --text: #1a1a2a;
-    --text-light: #5a6072;
-    --border: #e2ddd6;
-    --mono: 'IBM Plex Mono', monospace;
-    --sans: 'DM Sans', sans-serif;
-    --serif: 'DM Serif Display', serif;
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f7f4ef;
+    color: #0d1b2a;
+    line-height: 1.55;
+    padding: 0 0 80px 0;
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: var(--cream); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.7; }
-  .header { background: var(--navy); color: white; padding: 56px 60px 48px; position: relative; overflow: hidden; }
-  .header::before { content: ''; position: absolute; top: -80px; right: -80px; width: 320px; height: 320px; border-radius: 50%; border: 1px solid rgba(0,200,150,0.15); }
-  .header-tag { font-family: var(--mono); font-size: 11px; color: var(--green); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; }
-  .header h1 { font-family: var(--serif); font-size: 40px; font-weight: 400; line-height: 1.15; margin-bottom: 10px; }
-  .header-sub { font-size: 14px; color: rgba(255,255,255,0.55); font-weight: 300; margin-bottom: 28px; max-width: 720px; }
-  .header-meta { display: flex; gap: 12px; flex-wrap: wrap; }
-  .meta-pill { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); padding: 6px 14px; border-radius: 100px; font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.7); }
-  .meta-pill.green { border-color: rgba(0,200,150,0.4); color: var(--green); }
-  .container { max-width: 1080px; margin: 0 auto; padding: 48px 40px; }
+  .header {
+    background: #0d1b2a;
+    color: #f7f4ef;
+    padding: 56px 64px 48px 64px;
+  }
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 48px;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+  .header-sub { font-size: 17px; opacity: 0.85; max-width: 800px; margin-bottom: 24px; }
+  .header-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+  .meta-pill {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .meta-pill.green { background: rgba(0,200,150,0.18); border-color: rgba(0,200,150,0.4); color: #00c896; }
+  .meta-pill.amber { background: rgba(255,180,80,0.15); border-color: rgba(255,180,80,0.35); color: #ffb450; }
+  .container { max-width: 1080px; margin: 0 auto; padding: 48px 32px 0 32px; }
   .section { margin-bottom: 48px; }
-  .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-  .section-num { font-family: var(--mono); font-size: 11px; color: var(--green-dim); background: rgba(0,200,150,0.08); border: 1px solid rgba(0,200,150,0.2); width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 600; }
-  .section h2 { font-family: var(--serif); font-size: 24px; font-weight: 400; color: var(--navy); }
-  .section h3 { font-size: 13px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin: 24px 0 8px; }
-  .section h4 { font-family: var(--serif); font-size: 18px; font-weight: 400; color: var(--navy); margin: 20px 0 8px; }
-  .section p { color: var(--text); margin-bottom: 12px; max-width: 820px; }
-  .table-wrap { overflow-x: auto; margin: 12px 0; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  thead tr { background: var(--navy); color: white; }
-  thead th { padding: 11px 14px; text-align: left; font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
-  tbody tr:nth-child(odd) { background: white; }
-  tbody tr:nth-child(even) { background: rgba(0,0,0,0.02); }
-  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
-  td.mono { font-family: var(--mono); font-size: 12px; color: var(--navy-mid); }
-  td.green { color: var(--green-dim); font-weight: 600; }
-  .bullets { list-style: none; padding: 0; margin: 8px 0; }
-  .bullets li { padding: 5px 0 5px 22px; position: relative; font-size: 13.5px; color: var(--text); border-bottom: 1px solid rgba(0,0,0,0.04); }
-  .bullets li::before { content: '→'; position: absolute; left: 0; color: var(--green-dim); font-family: var(--mono); font-size: 12px; }
-  .badge { display: inline-block; padding: 2px 8px; border-radius: 100px; font-family: var(--mono); font-size: 10px; font-weight: 600; }
-  .badge-green { background: rgba(0,200,150,0.12); color: var(--green-dim); border: 1px solid rgba(0,200,150,0.3); }
-  .badge-amber { background: rgba(245,166,35,0.12); color: #8a6010; border: 1px solid rgba(245,166,35,0.3); }
-  .badge-navy { background: rgba(13,27,42,0.08); color: var(--navy-mid); border: 1px solid rgba(13,27,42,0.15); }
-  .code-block { background: var(--navy); color: #a8d8c8; font-family: var(--mono); font-size: 12px; padding: 16px 20px; border-radius: 8px; margin: 12px 0; line-height: 1.6; overflow-x: auto; white-space: pre; }
-  .callout { background: rgba(0,200,150,0.05); border: 1px solid rgba(0,200,150,0.2); border-left: 3px solid var(--green); padding: 14px 18px; border-radius: 6px; font-size: 13.5px; color: var(--text); margin: 16px 0; }
-  .callout strong { color: var(--navy); }
-  .callout.amber { background: rgba(245,166,35,0.06); border: 1px solid rgba(245,166,35,0.25); border-left: 3px solid var(--amber); color: #6a4810; }
-  .callout.amber strong { color: #3a2810; }
-  .footer { background: var(--navy); color: rgba(255,255,255,0.4); text-align: center; padding: 24px 40px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.5px; margin-top: 40px; }
-  code.inline { font-family: var(--mono); font-size: 12px; background: rgba(13,27,42,0.06); padding: 1px 5px; border-radius: 3px; color: var(--navy-mid); }
+  .section-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+  .section-num {
+    font-family: 'IBM Plex Mono', monospace;
+    background: #0d1b2a; color: #00c896;
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 15px;
+  }
+  .section h2 { font-family: 'DM Serif Display', serif; font-size: 30px; }
+  .section p, .section ul, .section ol { margin-bottom: 14px; }
+  .section h3 { font-family: 'DM Serif Display', serif; font-size: 22px; margin-top: 24px; margin-bottom: 12px; }
+  .section h4 { font-size: 17px; font-weight: 600; margin-top: 20px; margin-bottom: 8px; }
+  ul.bullets { padding-left: 22px; }
+  ul.bullets li { margin-bottom: 8px; }
+  .table-wrap { overflow-x: auto; margin: 16px 0; }
+  table {
+    width: 100%; border-collapse: collapse; background: white;
+    border-radius: 10px; overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  thead { background: #0d1b2a; color: #f7f4ef; }
+  th, td {
+    padding: 12px 16px; text-align: left;
+    border-bottom: 1px solid #ece8e0;
+    font-size: 14px; vertical-align: top;
+  }
+  tbody tr:nth-child(even) { background: #faf8f4; }
+  tbody tr:last-child td { border-bottom: none; }
+  .mono { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; }
+  code.inline {
+    font-family: 'IBM Plex Mono', monospace;
+    background: #ece8e0; padding: 2px 6px;
+    border-radius: 4px; font-size: 13px;
+  }
+  .badge {
+    display: inline-block; padding: 3px 10px;
+    border-radius: 999px; font-size: 12px;
+    font-weight: 600; letter-spacing: 0.3px;
+  }
+  .badge-green { background: rgba(0,200,150,0.18); color: #007a5c; }
+  .callout-why {
+    background: #fff;
+    border-left: 4px solid #4a90e2;
+    padding: 20px 24px;
+    border-radius: 6px;
+    margin: 16px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .callout-why-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #4a90e2;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .v2-ref {
+    display: inline-block;
+    background: rgba(74, 144, 226, 0.1);
+    color: #2c6db8;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    margin: 0 4px;
+  }
+  .backfill-note {
+    background: #fff8e6;
+    border-left: 4px solid #ffb450;
+    padding: 14px 20px;
+    border-radius: 6px;
+    margin: 0 0 32px 0;
+    font-size: 14px;
+  }
+  .footer {
+    text-align: center;
+    padding: 40px 32px;
+    color: #888; font-size: 13px;
+    margin-top: 60px;
+    border-top: 1px solid #e6e1d8;
+  }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-tag">Midas · Session Report · April 29, 2026</div>
-  <h1>Session Report<br>April 29, 2026</h1>
-  <div class="header-sub">First build session for Midas. Repo bootstrapped, Phase 1 begun, Kubernetes cluster and PostgreSQL database provisioned and verified.</div>
+  <h1>Midas — Session Report</h1>
+  <div class="header-sub">April 29, 2026 · Session 1 · Filippo + Peter together</div>
   <div class="header-meta">
-    <span class="meta-pill">Duration: ~3h</span>
-    <span class="meta-pill green">7 commits</span>
-    <span class="meta-pill green">Phase 1 Task 1 complete</span>
-    <span class="meta-pill green">Phase 1 Task 2 complete</span>
-    <span class="meta-pill">Cluster live</span>
-    <span class="meta-pill">Postgres live</span>
+    <span class="meta-pill green">2 tasks shipped + repo bootstrap</span>
+    <span class="meta-pill green">Phase 1: 0/12 → 2/12</span>
+    <span class="meta-pill">Cost: $0 → $102.45/mo</span>
+    <span class="meta-pill green">7 commits on main</span>
+    <span class="meta-pill amber">~3 hours</span>
   </div>
 </div>
 
 <div class="container">
 
-  <div class="section">
-    <div class="section-header"><div class="section-num">01</div><h2>Where we started</h2></div>
-    <p>The session opened with the v2 architecture document signed off and the team ready to begin building. Filippo and Peter were working from a single laptop (Filippo's MacBook). The user explicitly chose to skip planning and start Phase 1 immediately, with inline decisions instead of an upfront planning document.</p>
-    <p>The starting state of Midas was: nothing existed. No repo, no infrastructure, no code. The architecture document and the audit synthesis were the only artifacts.</p>
+  <div class="backfill-note">
+    <strong>Backfill note (added May 4, 2026):</strong> The "Why this matters" section below was added retroactively as part of the journey-mapping documentation effort in session 2. The original session 1 report from April 29 captured the <em>what</em> but not the <em>why</em>. This version fixes that.
   </div>
 
   <div class="section">
-    <div class="section-header"><div class="section-num">02</div><h2>Decisions made inline</h2></div>
-    <p>Seven decisions were made during this session, all recorded here for permanent reference:</p>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Decision</th><th>Choice</th><th>Reason</th></tr></thead>
-      <tbody>
-        <tr><td>Cloud provider</td><td>DigitalOcean Kubernetes (DOKS)</td><td>Free managed control plane, managed Postgres/Redis available, simpler than AWS/GCP for a small team</td></tr>
-        <tr><td>Repo structure</td><td>Monorepo</td><td>Eight services share schemas and deploy together; monorepo is dramatically simpler at our scale</td></tr>
-        <tr><td>Stack</td><td>Python 3.12, Pydantic v2, ruff + black, uv, pytest</td><td>Modern Python defaults; uv replaces pip/poetry; ruff replaces flake8/isort</td></tr>
-        <tr><td>GitHub</td><td>Organization <code class="inline">bakerlunch-ai</code>, repo <code class="inline">midas</code> (private)</td><td>Private trading code should not be public; org account allows multi-user access later</td></tr>
-        <tr><td>Database topology</td><td>One Postgres cluster, three logical databases</td><td>Cheaper than three separate clusters, isolation preserved at credentials/schema level</td></tr>
-        <tr><td>Claude Code environment</td><td>Filippo's laptop, talks to cluster via kubectl</td><td>Cloud resources provisioned manually through DO web UI; limits Claude Code blast radius</td></tr>
-        <tr><td>Cadence</td><td>One visible win per week minimum</td><td>Prevents loss of momentum on long infrastructure projects</td></tr>
-      </tbody>
-    </table></div>
+    <div class="section-header"><div class="section-num">01</div><h2>Why this session matters</h2></div>
+
+    <div class="callout-why">
+      <div class="callout-why-label">⊹ Connection to the v2 architecture and the journey</div>
+      <p>This session was <strong>laying the foundation</strong> — both literally (cluster + database) and culturally (the discipline document, the strict event base class, the test setup, the structured handoff system).</p>
+      <p>The two big technical wins (cluster + Postgres) get most of the headlines, but the more important outputs of this session are the things that aren't infrastructure at all:</p>
+      <ul class="bullets" style="margin-top: 8px;">
+        <li><strong>The 10 binding constraints</strong> in <code class="inline">LESSONS_FROM_OLD_BOT.md</code> — explicit, named, written-down rules from the audit. The legacy bot's worst failures all started as "reasonable shortcuts." Writing them down makes them refusable.</li>
+        <li><strong>The strict <code class="inline">BaseEvent</code> class</strong> with <code class="inline">ClassVar</code> + <code class="inline">__init_subclass__</code> enforcement — this directly closes <span class="v2-ref">Lesson #3</span> (strategies as strings). Python now refuses to load a malformed event subclass.</li>
+        <li><strong>The four-document handoff system</strong> — the discipline that makes 5-6 month projects survive the "I forgot what we were doing" gap between sessions.</li>
+      </ul>
+      <p>In v2 architecture terms, this session covered: <span class="v2-ref">Section 6</span> (data stores — Postgres provisioned), <span class="v2-ref">Section 7</span> (operational stack — Kubernetes cluster live), and the foundational discipline that <span class="v2-ref">Section 4</span> demands (no magic numbers, no schemaless state, tests not optional).</p>
+      <p>What this session did NOT yet enable: any service can actually be deployed to the cluster. That came in session 2 with Argo CD. April 29 built the cluster; May 4 built the way to use it.</p>
+      <p>For the full narrative arc, see <code class="inline">docs/JOURNEY.md</code>.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">02</div><h2>Where we started</h2></div>
+    <p>Opening this session, Midas existed only as a plan in <code class="inline">Bot_Architecture_v2_Professional_Grade_April26_2026.html</code>. No repo, no cluster, no infrastructure, no code. Just an ambitious blueprint and a decision to rebuild from scratch.</p>
+    <p>The legacy bot was paused following the April 26 audit, which had identified 10 structural problems serious enough to warrant a full rebuild rather than incremental fixes.</p>
+    <p>Plan going in: spend the session making 7 foundational decisions (cloud provider, repo structure, Python toolchain, GitHub setup, database topology, Claude Code environment, cadence rule), then do as much of Phase 1 as energy allowed.</p>
   </div>
 
   <div class="section">
     <div class="section-header"><div class="section-num">03</div><h2>Tasks completed</h2></div>
 
-    <h4>Repo bootstrap (Phase 0)</h4>
+    <h3>✅ Repo bootstrap (pre-Phase 1)</h3>
     <ul class="bullets">
-      <li>Created monorepo at <code class="inline">/Users/filippominella/midas/</code></li>
-      <li>Set up uv workspace with <code class="inline">packages/bot-events/</code> as the first shared package</li>
-      <li>Built <code class="inline">BaseEvent</code> Pydantic v2 class with strict subclass enforcement using <code class="inline">ClassVar[str]</code> and <code class="inline">__init_subclass__</code></li>
-      <li>5 unit tests covering: valid subclass, missing fields raise TypeError, immutability, extra-field forbidden, JSON serialization</li>
-      <li>Configured ruff, pytest, Makefile (install/lint/format/test); all three quality gates green</li>
-      <li>Initialized git, created GitHub repo <code class="inline">bakerlunch-ai/midas</code> (private), pushed all commits</li>
-      <li>Authenticated <code class="inline">gh</code> CLI, set up <code class="inline">doctl</code>, installed kubectl</li>
+      <li>Created monorepo at <code class="inline">/Users/filippominella/midas/</code> (later moved to <code class="inline">~/Desktop/midas/</code>)</li>
+      <li>Set up uv workspace with <code class="inline">packages/bot-events/</code></li>
+      <li>Built <code class="inline">BaseEvent</code> Pydantic v2 class with <code class="inline">ClassVar</code> + <code class="inline">__init_subclass__</code> enforcement — closes <span class="v2-ref">Lesson #3</span></li>
+      <li>5 unit tests for <code class="inline">BaseEvent</code>, all passing</li>
+      <li>Configured ruff, pytest, Makefile (install/lint/format/test)</li>
+      <li>Created <code class="inline">github.com/bakerlunch-ai/midas</code> private repo</li>
+      <li>Authenticated <code class="inline">gh</code> and <code class="inline">doctl</code> CLIs</li>
+      <li>Wrote <code class="inline">docs/LESSONS_FROM_OLD_BOT.md</code> — the 10 binding constraints document</li>
+      <li>Wrote <code class="inline">docs/PHASE_1_PLAN.md</code> — the 12-task plan for Phase 1</li>
+      <li>Saved Claude Code feedback memory for future sessions</li>
     </ul>
+    <p style="font-size: 13px; color: #666; margin-top: 6px;"><strong>Why it matters:</strong> The 10 lessons document and the strict <code class="inline">BaseEvent</code> are the cultural and technical foundations. The legacy bot grew without rules; Midas refuses to. Every event class has to declare itself correctly or Python literally won't load the file.</p>
 
-    <h4>Foundational documents</h4>
+    <h3>✅ Phase 1 Task 1 — Kubernetes cluster <span class="v2-ref">v2 §7</span></h3>
     <ul class="bullets">
-      <li>Wrote <code class="inline">docs/LESSONS_FROM_OLD_BOT.md</code> — explicit list of 10 mistakes from the old bot we will not repeat. Pinned in repo as binding constraints.</li>
-      <li>Wrote <code class="inline">docs/PHASE_1_PLAN.md</code> — concrete sequence of 12 tasks for the infrastructure foundation, with acceptance criteria per task</li>
-      <li>Saved Claude Code feedback memory: future Midas sessions treat lessons doc as binding constraints, push back on shortcuts that violate the 10 lessons</li>
+      <li>Created DigitalOcean account (<code class="inline">bakerlunch@gmail.com</code>, project <code class="inline">midas</code>)</li>
+      <li>Set $150/month billing alert, enabled 2FA</li>
+      <li>Provisioned <code class="inline">midas-prod</code>: 3 nodes, Premium Intel, $24/node, London (LON1), K8s 1.35.1-do.3</li>
+      <li>Skipped HA control plane (saves $40/mo, not needed at our scale)</li>
+      <li>Installed kubectl, doctl, uv on Filippo's MacBook</li>
+      <li>Saved kubeconfig at <code class="inline">~/.kube/config-midas</code></li>
+      <li>Verified <code class="inline">kubectl get nodes</code> returns 3 Ready nodes</li>
     </ul>
+    <p style="font-size: 13px; color: #666; margin-top: 6px;"><strong>Why it matters:</strong> The cluster is the substrate. Every service in the v2 architecture (data-svc, oms-svc, pms-svc, risk-svc, ems-svc, strategy services, mcp-svc) will run as pods in this cluster. Without it, there's nowhere for any of them to live.</p>
 
-    <h4>Phase 1 Task 1 — Kubernetes cluster</h4>
+    <h3>✅ Phase 1 Task 2 — Managed PostgreSQL <span class="v2-ref">v2 §6</span></h3>
     <ul class="bullets">
-      <li>Created DigitalOcean account (email <code class="inline">bakerlunch@gmail.com</code>, project named <code class="inline">midas</code>)</li>
-      <li>Set $150/month billing alert</li>
-      <li>Two-factor authentication enabled (initially declined, then enabled later in session)</li>
-      <li>Provisioned <code class="inline">midas-prod</code> cluster: 3 nodes, Basic Premium Intel, $24/month per node, London (LON1), Kubernetes 1.35.1-do.3</li>
-      <li>HA control plane skipped (saves $40/month, not needed at our scale)</li>
-      <li>Installed <code class="inline">uv</code>, <code class="inline">kubectl</code>, <code class="inline">doctl</code> on Filippo's laptop</li>
-      <li>Authenticated doctl with API token, saved kubeconfig at <code class="inline">~/.kube/config-midas</code></li>
-      <li>Verified: <code class="inline">kubectl get nodes</code> returns 3 Ready nodes, cluster API reachable</li>
-    </ul>
-
-    <h4>Phase 1 Task 2 — Managed PostgreSQL</h4>
-    <ul class="bullets">
-      <li>Provisioned <code class="inline">midas-postgres</code>: PostgreSQL 18, Basic Regular SSD, $24/month, 1 vCPU / 2 GB RAM, 30 GiB storage with autoscale enabled at 90% threshold, London (LON1)</li>
-      <li>No standby node (single primary, daily backups handle DR for our scale)</li>
-      <li>Total cost: ~$30.45/month (plan + storage)</li>
-      <li>Network access locked down: only <code class="inline">midas-prod</code> cluster allowed as trusted source</li>
+      <li>Provisioned <code class="inline">midas-postgres</code>: PG18, Regular SSD, $24/mo, 30 GiB, London</li>
+      <li>Skipped standby node (single primary, daily backups)</li>
+      <li>Enabled storage autoscaling (90% threshold, +10 GiB increments)</li>
+      <li>Locked down network access — only <code class="inline">midas-prod</code> allowed (VPC trusted source)</li>
       <li>Created three logical databases: <code class="inline">oms_db</code>, <code class="inline">pms_db</code>, <code class="inline">reporting_db</code></li>
-      <li>Created three users: <code class="inline">oms_user</code>, <code class="inline">pms_user</code>, <code class="inline">reporting_user</code> (plus the default <code class="inline">doadmin</code>)</li>
-      <li>All credentials saved in Filippo's password manager (host, port 25060, user, password, db, plus VPC private host)</li>
-      <li>Proof-of-life test passed: pod in midas-prod connected to midas-postgres over the VPC private hostname, authenticated as oms_user, ran <code class="inline">SELECT 1</code> against oms_db successfully</li>
+      <li>Created three users: <code class="inline">oms_user</code>, <code class="inline">pms_user</code>, <code class="inline">reporting_user</code> (database-per-service pattern at the schema/credentials level)</li>
+      <li>Saved credentials in password manager</li>
+      <li>Proof-of-life: pod inside <code class="inline">midas-prod</code> connected to Postgres over VPC, ran <code class="inline">SELECT 1</code> — success</li>
+      <li>Cross-DB denial check (<code class="inline">oms_user → pms_db</code> should fail) deferred to Phase 2 when service permissions are wired</li>
     </ul>
+    <p style="font-size: 13px; color: #666; margin-top: 6px;"><strong>Why it matters:</strong> Postgres is where Midas's truth lives. The OMS event log, the PMS event log, the reporting tables — all in this database. Event sourcing (the core architectural choice that prevents <span class="v2-ref">Lesson #1</span>'s bankroll-only-goes-up bug) requires a reliable, consistent store. Postgres 18 delivers that.</p>
   </div>
 
   <div class="section">
-    <div class="section-header"><div class="section-num">04</div><h2>Issues discovered along the way</h2></div>
+    <div class="section-header"><div class="section-num">04</div><h2>Decisions made</h2></div>
+
+    <p>Seven foundational decisions made inline during the session, all to avoid stumbling into them later as urgent questions:</p>
 
     <div class="table-wrap"><table>
-      <thead><tr><th>Issue</th><th>Resolution</th></tr></thead>
+      <thead><tr><th>Decision</th><th>Choice</th></tr></thead>
       <tbody>
-        <tr><td>uv not installed on laptop; Makefile depends on it</td><td>Installed via official curl installer; works from <code class="inline">~/.local/bin</code></td></tr>
-        <tr><td><code class="inline">uv sync</code> didn't install workspace members</td><td>Changed Makefile to <code class="inline">uv sync --all-packages</code></td></tr>
-        <tr><td>ruff flagged <code class="inline">timezone.utc</code> as outdated</td><td>Switched to <code class="inline">datetime.UTC</code> (Python 3.12 native)</td></tr>
-        <tr><td>ruff isort grouped <code class="inline">bot_events</code> import wrong</td><td>Added <code class="inline">[lint.isort] known-first-party = ["bot_events"]</code> in ruff.toml</td></tr>
-        <tr><td>doctl 1.155+ removed the <code class="inline">--kubeconfig</code> flag</td><td>Use <code class="inline">KUBECONFIG=~/.kube/config-midas doctl ...</code> prefix instead. Documented in PHASE_1_PLAN.md.</td></tr>
-        <tr><td><code class="inline">doctl auth init</code> fails inside Claude Code shell ("unknown terminal")</td><td>Run in regular Mac Terminal app instead; doctl stores token in its config</td></tr>
-        <tr><td>Region change reset machine type and node plan</td><td>Always re-verify all dropdown values after any change in DigitalOcean UI</td></tr>
-        <tr><td>Postgres plan defaulted to $48 (overkill) when first created</td><td>Manually re-selected $24 tier; Premium Intel forced 50 GiB minimum so reverted to Regular SSD ($24)</td></tr>
+        <tr><td>Cloud provider</td><td>DigitalOcean Kubernetes (DOKS) — managed control plane is free, predictable pricing, simpler than AWS for a small team</td></tr>
+        <tr><td>Repo structure</td><td>Monorepo (<code class="inline">services/</code>, <code class="inline">packages/</code>, <code class="inline">deploy/</code>, <code class="inline">docs/</code> all in one repo)</td></tr>
+        <tr><td>Stack</td><td>Python 3.12, Pydantic v2, ruff + black (replaced by ruff alone), uv as package manager, pytest</td></tr>
+        <tr><td>GitHub</td><td>bakerlunch-ai org account (already existed)</td></tr>
+        <tr><td>Database topology</td><td>One Postgres cluster, three logical databases (<code class="inline">oms_db</code>, <code class="inline">pms_db</code>, <code class="inline">reporting_db</code>) — cheaper than three separate clusters at this scale</td></tr>
+        <tr><td>Claude Code environment</td><td>Filippo's laptop with kubectl access; cloud resources provisioned by Filippo manually through DigitalOcean web UI</td></tr>
+        <tr><td>Cadence rule</td><td>One visible win per week minimum</td></tr>
       </tbody>
     </table></div>
   </div>
 
   <div class="section">
-    <div class="section-header"><div class="section-num">05</div><h2>Commits pushed to GitHub</h2></div>
+    <div class="section-header"><div class="section-num">05</div><h2>Issues discovered &amp; resolutions</h2></div>
+
+    <div class="table-wrap"><table>
+      <thead><tr><th>Issue</th><th>Resolution</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code class="inline">uv</code> not installed initially; <code class="inline">make install</code> failed</td>
+          <td>Installed via official curl script, sourced shell config, retry succeeded</td>
+        </tr>
+        <tr>
+          <td><code class="inline">uv sync</code> didn't pick up workspace members initially</td>
+          <td>Changed Makefile to use <code class="inline">uv sync --all-packages</code></td>
+        </tr>
+        <tr>
+          <td><code class="inline">datetime.timezone.utc</code> was the old form</td>
+          <td>Updated to Python 3.12's native <code class="inline">datetime.UTC</code></td>
+        </tr>
+        <tr>
+          <td>Ruff isort wasn't recognizing local <code class="inline">bot_events</code> package as first-party</td>
+          <td>Added explicit first-party declaration in <code class="inline">ruff.toml</code></td>
+        </tr>
+        <tr>
+          <td>Repo started in <code class="inline">~/midas/</code>, Filippo wanted it on Desktop</td>
+          <td>Moved to <code class="inline">~/Desktop/midas/</code>; <code class="inline">.venv</code> had to be rebuilt because uv venvs hardcode absolute paths in shebangs. Documented for future repo moves.</td>
+        </tr>
+        <tr>
+          <td><code class="inline">doctl 1.155+</code> removed the <code class="inline">--kubeconfig</code> flag</td>
+          <td>Use <code class="inline">KUBECONFIG=...</code> environment variable prefix instead. Documented.</td>
+        </tr>
+        <tr>
+          <td>2FA on DigitalOcean initially declined; flagged again before high-trust operations</td>
+          <td>Enabled before any sensitive cloud work. Lesson: re-raise security items at natural moments.</td>
+        </tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">06</div><h2>Commits pushed</h2></div>
 
     <div class="table-wrap"><table>
       <thead><tr><th>SHA</th><th>Message</th></tr></thead>
@@ -181,64 +284,59 @@
         <tr><td class="mono">823283e</td><td>chore: rename project to Midas</td></tr>
         <tr><td class="mono">058968a</td><td>docs: write LESSONS_FROM_OLD_BOT — explicit list of patterns we will not repeat</td></tr>
         <tr><td class="mono">b60f197</td><td>docs: write PHASE_1_PLAN — concrete sequence for infrastructure foundation</td></tr>
-        <tr><td class="mono">(pending)</td><td>docs: note Phase 1 Task 2 partial completion + add session report and handoff</td></tr>
+        <tr><td class="mono">6205e2d</td><td>docs: add session report, project handoff, and TODO; note Phase 1 Task 1 + 2 carry items</td></tr>
       </tbody>
     </table></div>
+    <p>Commits on main: <strong>0 → 7</strong>.</p>
   </div>
 
   <div class="section">
-    <div class="section-header"><div class="section-num">06</div><h2>Infrastructure provisioned</h2></div>
+    <div class="section-header"><div class="section-num">07</div><h2>Infrastructure provisioned</h2></div>
 
     <div class="table-wrap"><table>
-      <thead><tr><th>Resource</th><th>Identifier</th><th>Cost/month</th><th>Status</th></tr></thead>
+      <thead><tr><th>Resource</th><th>Configuration</th><th>Cost</th></tr></thead>
       <tbody>
-        <tr><td>DigitalOcean Project</td><td class="mono">midas</td><td>—</td><td><span class="badge badge-green">Active</span></td></tr>
-        <tr><td>Kubernetes cluster</td><td class="mono">midas-prod (LON1, 3 nodes)</td><td>$72</td><td><span class="badge badge-green">Healthy</span></td></tr>
-        <tr><td>Managed PostgreSQL</td><td class="mono">midas-postgres (LON1, PG18)</td><td>$30.45</td><td><span class="badge badge-green">Healthy</span></td></tr>
-        <tr><td>Total running cost</td><td>—</td><td class="green">$102.45/month</td><td>—</td></tr>
+        <tr><td><code class="inline">midas-prod</code> (DOKS)</td><td>3× Premium Intel nodes, LON1, K8s 1.35.1-do.3</td><td>$72/mo</td></tr>
+        <tr><td><code class="inline">midas-postgres</code></td><td>PG18, 1 vCPU / 2 GB RAM / 30 GiB, LON1, locked to <code class="inline">midas-prod</code> VPC</td><td>$30.45/mo</td></tr>
+        <tr><td><strong>Total</strong></td><td>—</td><td><strong>$102.45/mo</strong> (well under $150 budget)</td></tr>
       </tbody>
     </table></div>
-
-    <div class="callout">
-      <strong>Budget check:</strong> Phase 1 estimated $100-150/month total. We're at $102.45 with cluster + Postgres. Redis (~$15) and load balancer (~$12) coming in later tasks will bring us to ~$130/month — still within budget.
-    </div>
   </div>
 
   <div class="section">
-    <div class="section-header"><div class="section-num">07</div><h2>Carried forward</h2></div>
+    <div class="section-header"><div class="section-num">08</div><h2>Carried forward</h2></div>
 
-    <h4>Open items not addressed tonight</h4>
+    <h4>Open items not addressed</h4>
     <ul class="bullets">
-      <li>Cross-DB denial check (verify oms_user gets denied on pms_db) — deferred to Phase 2 when service permissions are wired</li>
-      <li>Connection strings still in password manager only — will move into sealed-secrets in Phase 1 Task 8</li>
+      <li>Cross-DB denial check (verify <code class="inline">oms_user</code> denied on <code class="inline">pms_db</code>) — deferred to Phase 2 when service permissions are wired</li>
+      <li>Connection strings in password manager only — will move to sealed-secrets in Phase 1 Task 8</li>
       <li>API token rotation: DigitalOcean token expires in 90 days (set calendar reminder for ~July 27, 2026)</li>
-      <li>Cross-DB users for now have access to all databases; tightening to per-DB-only happens in Phase 2</li>
     </ul>
 
     <h4>Deferred decisions</h4>
     <ul class="bullets">
-      <li>Whether to add a separate <code class="inline">midas-deploy</code> repo for Kubernetes manifests, or keep them in main repo (Task 5)</li>
+      <li>Whether to add a separate <code class="inline">midas-deploy</code> repo for Kubernetes manifests (Task 5) — resolved 2026-05-04: stay in-tree at <code class="inline">deploy/</code></li>
       <li>Whether to use Helm or plain Kustomize for service manifests (Task 9-11)</li>
     </ul>
   </div>
 
   <div class="section">
-    <div class="section-header"><div class="section-num">08</div><h2>Collaboration notes</h2></div>
-    <p>Filippo drove the DigitalOcean web UI; Claude (chat) walked through every form field and verified before each Create button click. Peter was present but Filippo handled most clicks. Multiple times the UI auto-changed values when other fields were modified (region change reset machine type, switching CPU type reset plan tier) — every dropdown was re-verified after every other change to prevent surprises.</p>
+    <div class="section-header"><div class="section-num">09</div><h2>Collaboration notes</h2></div>
+    <p>Filippo drove the DigitalOcean web UI; Claude (chat) walked through every form field and verified before each Create button click. Peter was present and active. Multiple times the UI auto-changed values when other fields were modified (region change reset machine type, switching CPU type reset plan tier) — every dropdown was re-verified after every other change to prevent surprises.</p>
     <p>The session was longer than ideal (~3 hours) but produced more progress than expected. Two of twelve Phase 1 tasks complete, real infrastructure running, no regressions or rollbacks needed.</p>
     <p>One process change came up mid-session: 2FA on the DigitalOcean account was initially declined, then enabled when its absence was flagged again before high-trust operations. The lesson: surface security questions early, and don't fight on them — re-raise them at the natural moment when their absence becomes load-bearing.</p>
   </div>
 
   <div class="section">
-    <div class="section-header"><div class="section-num">09</div><h2>What "next session" looks like</h2></div>
+    <div class="section-header"><div class="section-num">10</div><h2>What "next session" looks like</h2></div>
     <p>Next session opens at <strong>Phase 1 Task 3 — provision managed Redis</strong>. Same pattern as Postgres: smallest tier, London region, locked to VPC, smallest plan (~$15/month). Then Task 4 (GitHub Actions CI), Task 5 (deploy repo decision), and onward.</p>
-    <p>The handoff document (PROJECT_HANDOFF.html) and TODO.md should be the first things read at the start of any new session. Together they capture current state, next steps, and any open questions.</p>
+    <p>The handoff document (<code class="inline">PROJECT_HANDOFF.html</code>) and <code class="inline">TODO.md</code> should be the first things read at the start of any new session.</p>
   </div>
 
 </div>
 
 <div class="footer">
-  Midas · Session Report · April 29, 2026 · 7 commits · github.com/bakerlunch-ai/midas
+  Midas · Session Report 2026-04-29 · Permanent record · Backfilled with "Why this matters" 2026-05-04 · github.com/bakerlunch-ai/midas
 </div>
 
 </body>
