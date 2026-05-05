@@ -97,6 +97,20 @@ If the file does not yet exist, doctl will create it. The context name inside th
 
 **Why separate:** the application repo defines what the code does; the deploy repo defines how it runs. They change for different reasons. Argo CD watches the deploy repo, not the app repo.
 
+**Decision recorded (2026-05-04): manifests in-tree, NOT a separate repo.**
+
+Kubernetes manifests will live in the `midas` monorepo under `deploy/` at the repo root. No separate `midas-deploy` repo. Reasoning:
+
+- **Two-person team.** Peter handles both code and deploys — no permission boundary needs to exist between app changes and infra changes.
+- **Architecture v2 doesn't mandate either pattern.** Section 11 is silent on the deploy-repo split, so this is a judgment call rather than a doc-binding choice.
+- **Splitting later is easy; merging back is painful.** If the team grows or we add an ops/eng separation, lifting `deploy/` into its own repo is a routine operation. Going the other way — re-merging two repos and reconciling divergent histories — is the kind of paper cut we'd rather not pay.
+- **Code and infra often change together.** Adding a new env var requires both a service code change and a deploy manifest change. In-tree means a single PR can carry both, reviewed as one unit. Two repos forces two coordinated PRs and weakens the review.
+- **Trade-off accepted:** deploy-only changes will trigger the same CI as code changes, slightly slowing pure-infra commits. Acceptable cost for a two-person team.
+
+Re-evaluate if (a) the team grows, (b) we hit an ops/eng permission boundary that needs enforcing, or (c) the CI cost of running on every infra commit becomes annoying.
+
+(Note: downstream task descriptions in this plan still reference "midas-deploy repo" — read those as "the `deploy/` directory in this repo" until they're rewritten in their respective sessions. Argo CD will watch `deploy/` in `bakerlunch-ai/midas`.)
+
 ---
 
 ### 6. Install Argo CD into the cluster

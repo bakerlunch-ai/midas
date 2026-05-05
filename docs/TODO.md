@@ -1,6 +1,6 @@
 # Midas — Living TODO
 
-> **Updated:** May 4, 2026 (mid-session 2, post-Task 4)
+> **Updated:** May 4, 2026 (mid-session 2, post-Task 5)
 > **Format:** Living checklist. Updated at end of every session.
 > **Aligned with:**
 > - The big picture → `Bot_Architecture_v2_Professional_Grade_April26_2026.html` Section 11 (8-phase migration roadmap)
@@ -11,7 +11,7 @@
 
 ## 🎯 Right now — Next session opens here
 
-- [ ] **Phase 1 Task 5** — Decide on the deploy-manifests location: separate `bakerlunch-ai/midas-deploy` repo vs. in-tree `midas/deploy/`. Document the decision in `docs/ARCHITECTURE.md` and create the chosen structure.
+- [ ] **Phase 1 Task 6** — Install Argo CD into `midas-prod`, point it at `deploy/` in this repo (per Task 5 decision), verify the dashboard is reachable via port-forward, configure RBAC.
 
 ---
 
@@ -20,7 +20,7 @@
 | Phase | Description | Duration estimate | Status |
 |---|---|---|---|
 | **Phase 0** | Keep the lights on (old bot paused) | ongoing | ✅ Active |
-| **Phase 1** | Infrastructure foundation | 2-4 weeks | 🟡 In progress (4/12 tasks) |
+| **Phase 1** | Infrastructure foundation | 2-4 weeks | 🟡 In progress (5/12 tasks) |
 | **Phase 2** | Core data layer (data, oms, pms services) | 3-4 weeks | ⚪ Pending |
 | **Phase 3** | First strategy end-to-end (paper) | 2-3 weeks | ⚪ Pending |
 | **Phase 4** | Go live with TIMELY only | 2-3 weeks | ⚪ Pending |
@@ -55,7 +55,7 @@
 
 ---
 
-## 🟡 Phase 1 — Infrastructure foundation (4/12 tasks complete)
+## 🟡 Phase 1 — Infrastructure foundation (5/12 tasks complete)
 
 > Goal: a functional empty cluster with all infrastructure running. No trading services yet. You can `kubectl apply` a hello-world service and see it appear in Grafana with logs and metrics.
 
@@ -98,17 +98,17 @@
 - [x] `uv.lock` now tracked in git (was in stock `.gitignore` — removed for reproducible CI builds)
 - [ ] Add branch protection on `main` requiring CI to pass before merge — **deferred**: requires GitHub Team plan ($16/mo) for private repos. Staying on free plan; relying on team discipline. Re-evaluate if team grows or if broken code lands on main.
 
-### ⚪ Task 5 — Decide on midas-deploy repo (next up)
+### ✅ Task 5 — Decide on midas-deploy repo (DONE)
 
-- [ ] Decision: separate `bakerlunch-ai/midas-deploy` for K8s manifests, OR keep in `midas/deploy/`
-- [ ] Document decision in `docs/ARCHITECTURE.md`
-- [ ] Create the chosen structure
+- [x] Decision recorded: **manifests in-tree at `deploy/`**, no separate `midas-deploy` repo. Reasoning captured in `docs/PHASE_1_PLAN.md` Task 5.
+- [x] `deploy/README.md` placeholder added explaining what lives there
+- [x] Re-evaluate trigger: team growth, ops/eng permission boundary, or CI-on-every-infra-commit cost becoming annoying
 
-### ⚪ Task 6 — Argo CD (GitOps)
+### ⚪ Task 6 — Argo CD (GitOps) (next up)
 
 - [ ] Install Argo CD into `midas-prod`
-- [ ] Point at deploy repo (whichever was chosen in Task 5)
-- [ ] Verify dashboard reachable
+- [ ] Point at `deploy/` in `bakerlunch-ai/midas` (per Task 5 decision)
+- [ ] Verify dashboard reachable (port-forward only — no public IP yet)
 - [ ] Configure RBAC
 
 ### ⚪ Task 7 — Sealed-secrets
@@ -248,7 +248,7 @@
 | DigitalOcean API token expires ~July 27, 2026 | If expired, doctl stops working | Set calendar reminder for ~July 20, 2026 |
 | Cross-DB denial check (oms_user → pms_db) | Verifies Postgres role isolation | Phase 2 (when wiring service permissions) |
 | Connection strings only in password manager | Risk of human error, hard to share | Phase 1 Task 8 (sealed-secrets) |
-| Decision: midas-deploy repo or in-tree manifests | Affects all of Tasks 5-11 | Phase 1 Task 5 |
+| ~~Decision: midas-deploy repo or in-tree manifests~~ | ~~Affects all of Tasks 5-11~~ | **Resolved 2026-05-04:** in-tree at `deploy/` |
 | Decision: Helm vs plain Kustomize | Affects manifest authoring style | Phase 1 Task 9-11 |
 | `docs/ARCHITECTURE.md` is a placeholder | Will fill as services come online | Phase 2+ (per service) |
 | CloudFlare tunnel setup | Referenced in arch v2 Phase 1 but not yet in PHASE_1_PLAN | Add to PHASE_1_PLAN as Task 13 |
@@ -271,12 +271,12 @@
 
 ## 📊 By the numbers (current)
 
-- **Commits on main:** 11 (will be 12 after this push lands)
+- **Commits on main:** 12 (will be 13 after this push lands)
 - **Current phase:** Phase 1 (infrastructure foundation)
-- **Phase 1 progress:** 4 / 12 tasks complete
+- **Phase 1 progress:** 5 / 12 tasks complete
 - **Overall progress:** 0 of 7 active phases complete
 - **Cloud cost:** $117.45 / month (target: <$150)
 - **Quality gates:** 4 / 4 passing (install, lint, test, CI on every push)
 - **Tests:** 5 passing
 - **Services running:** 0 (Phase 2 work)
-- **Last session:** April 29, 2026 (~3h, 2 tasks shipped); session 2 in progress (2026-05-04, Tasks 3+4 shipped)
+- **Last session:** April 29, 2026 (~3h, 2 tasks shipped); session 2 in progress (2026-05-04, Tasks 3+4+5 shipped)

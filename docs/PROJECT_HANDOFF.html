@@ -77,9 +77,9 @@
   <h1>Midas — Project Handoff</h1>
   <div class="header-sub">Master "current state" document. Read this first when opening any new Claude chat. Updated at the end of every working session.</div>
   <div class="header-meta">
-    <span class="meta-pill">Last updated: May 4, 2026 (post-Task 4)</span>
-    <span class="meta-pill green">11 commits on main</span>
-    <span class="meta-pill green">Phase 1: 4/12 tasks complete</span>
+    <span class="meta-pill">Last updated: May 4, 2026 (post-Task 5)</span>
+    <span class="meta-pill green">12 commits on main</span>
+    <span class="meta-pill green">Phase 1: 5/12 tasks complete</span>
     <span class="meta-pill">Cost: $117.45/month</span>
     <span class="meta-pill amber">Status: Building</span>
   </div>
@@ -211,6 +211,7 @@
       <tbody>
         <tr><td>Cloud provider</td><td>DigitalOcean Kubernetes (DOKS)</td></tr>
         <tr><td>Repo structure</td><td>Monorepo</td></tr>
+        <tr><td>K8s manifest location</td><td>In-tree at <code class="inline">deploy/</code> in this repo — no separate <code class="inline">midas-deploy</code> repo. Reasoning in <code class="inline">docs/PHASE_1_PLAN.md</code> Task 5. Re-evaluate if team grows or ops/eng permission boundary is needed.</td></tr>
         <tr><td>Python version</td><td>3.12</td></tr>
         <tr><td>Package manager</td><td>uv (with workspaces)</td></tr>
         <tr><td>Linter/formatter</td><td>ruff (replaces flake8, isort, black)</td></tr>
@@ -242,8 +243,8 @@
         <tr><td><strong>2</strong></td><td>Provision managed PostgreSQL</td><td><span class="badge badge-green">DONE (cross-DB denial check deferred to P2)</span></td></tr>
         <tr><td><strong>3</strong></td><td>Provision managed Redis</td><td><span class="badge badge-green">DONE</span></td></tr>
         <tr><td><strong>4</strong></td><td>GitHub Actions CI for the repo</td><td><span class="badge badge-green">DONE (branch protection deferred — needs Team plan)</span></td></tr>
-        <tr><td><strong>5</strong></td><td>Bootstrap midas-deploy repo (or decide against)</td><td><span class="badge badge-amber">NEXT</span></td></tr>
-        <tr><td><strong>6</strong></td><td>Install Argo CD (GitOps)</td><td><span class="badge badge-navy">Pending</span></td></tr>
+        <tr><td><strong>5</strong></td><td>Bootstrap midas-deploy repo (or decide against)</td><td><span class="badge badge-green">DONE — decided in-tree at deploy/</span></td></tr>
+        <tr><td><strong>6</strong></td><td>Install Argo CD (GitOps)</td><td><span class="badge badge-amber">NEXT</span></td></tr>
         <tr><td><strong>7</strong></td><td>Install sealed-secrets</td><td><span class="badge badge-navy">Pending</span></td></tr>
         <tr><td><strong>8</strong></td><td>Move credentials into sealed-secrets</td><td><span class="badge badge-navy">Pending</span></td></tr>
         <tr><td><strong>9</strong></td><td>Deploy NATS JetStream cluster</td><td><span class="badge badge-navy">Pending</span></td></tr>
@@ -268,8 +269,8 @@
       </ol>
     </div>
 
-    <h4>Phase 1 Task 5 — Decide on the deploy-manifests location</h4>
-    <p>Two options on the table: (a) a separate private repo <code class="inline">bakerlunch-ai/midas-deploy</code> for Kubernetes manifests (GitOps best practice — code repo and deploy repo change for different reasons; Argo CD watches the deploy repo, not the app repo), or (b) keep manifests in-tree at <code class="inline">midas/deploy/</code> (simpler, fewer moving parts). Document the decision in <code class="inline">docs/ARCHITECTURE.md</code>, then create the chosen structure (<code class="inline">clusters/prod/</code>, <code class="inline">clusters/paper/</code>, <code class="inline">infrastructure/</code>).</p>
+    <h4>Phase 1 Task 6 — Install Argo CD (GitOps)</h4>
+    <p>Install the Argo CD controller into the <code class="inline">midas-prod</code> cluster, point it at <code class="inline">deploy/</code> in this repo (per the Task 5 decision), and confirm the dashboard is reachable via <code class="inline">kubectl port-forward</code>. No public IP yet. Configure RBAC. After this lands, every deployment is "git commit → Argo applies → service updated" — no <code class="inline">kubectl apply</code> from a laptop.</p>
 
     <h4>Note on branch protection</h4>
     <p>Task 4 is closed but the branch-protection sub-item is deferred: GitHub requires the Team plan ($16/mo) to enforce protection rules on private repos. Decision: stay on the free plan, rely on team discipline. Re-evaluate if the team grows or if broken code lands on main despite discipline.</p>
@@ -279,7 +280,7 @@
       <li>DigitalOcean API token expires ~July 27, 2026 — set calendar reminder to rotate</li>
       <li>Cross-DB denial check deferred to Phase 2 (when service permissions are wired)</li>
       <li>Connection strings still only in password manager; will move to sealed-secrets in Task 8</li>
-      <li>Decision pending: separate <code class="inline">midas-deploy</code> repo for K8s manifests, or in-tree?</li>
+      <li>Decision recorded 2026-05-04: K8s manifests live in-tree at <code class="inline">deploy/</code> — no separate <code class="inline">midas-deploy</code> repo. See decisions table.</li>
     </ul>
   </div>
 
@@ -355,7 +356,7 @@ git push</div>
 </div>
 
 <div class="footer">
-  Midas · Project Handoff · Last updated May 4, 2026 (post-Task 4) · github.com/bakerlunch-ai/midas
+  Midas · Project Handoff · Last updated May 4, 2026 (post-Task 5) · github.com/bakerlunch-ai/midas
 </div>
 
 </body>
