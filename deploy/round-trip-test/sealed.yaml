@@ -1,0 +1,13 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: round-trip-test
+  namespace: default
+spec:
+  encryptedData:
+    test-key: AgAFDbj3pjo9wHM69dqq5gvIyu+St44HziojmV64Kudkp3w7bK6bdXnoSWLqZUTDA2c2JS9YXA8wmGV3FGx1km1NvEaDAPdVA/r5pXsq7ApmS48X8BwuepXJNOWohsE1KGz7JfexfojNx3KpExR1g2Eb/N+j20tMBGcdEiTkG5JdaCJIWTUtgtMj3mPdHaKcVmnsnRBymEUP/tXGDZiLAOY5BHrTdFLVEJ+hC6Y0ZQ6ATZOx3wMBoIz4CKERNJNtH6urARcioCIcaJN5ZpMXpgl6y+X4KdFJsCbVTXjTkaTnHI0M93V2qZZ5NqGqPi1h1Xu31QoeE7fomDySohRTvgKyZhX/4MMd880cWnA3+AnXeY1To4gK+zovHYDSb4pT41QxAQCR/HurTOBaBlV4uc2X4VLWiUpOC67bVsQIQjR7WS/tpL4PccMZA0N3RgKdVnZJwD+WcD8XE8luAdZBaWQlMWX5WxzaTU/uQBy1q3bYM5zVaH9zKw6XUcp/croRCLkmU1NVicWrBPzaAeM2J8zEpuM3YIbns+0Md9OqKYU87r+LEu0C9Ib/DgsFsrDKI2sjoOedKl+DW7TZMGwKN/purX6BuU0Ig0eFZQlFEoATqxvLPoKrncxwMipX6xE/gN0ezjK6vUjXBNEiBI9eeg2yErQN19GbJ7sNQiEznaC97CtDByHc5iM1qAEDq5s0JebFK2RnBIHDzSk04Q==
+  template:
+    metadata:
+      name: round-trip-test
+      namespace: default
