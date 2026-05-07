@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Midas Session Report — May 6, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0d1b2a;
+    --navy-mid: #1a2e44;
+    --green: #00c896;
+    --green-dim: #00a87a;
+    --amber: #f5a623;
+    --red: #e05252;
+    --cream: #f7f4ef;
+    --text: #1a1a2a;
+    --text-light: #5a6072;
+    --border: #e2ddd6;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+    --serif: 'DM Serif Display', serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--cream); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.7; }
+  .header { background: var(--navy); color: white; padding: 52px 60px 44px; position: relative; overflow: hidden; }
+  .header::before { content: ''; position: absolute; top: -80px; right: -80px; width: 320px; height: 320px; border-radius: 50%; border: 1px solid rgba(0,200,150,0.15); }
+  .header::after { content: ''; position: absolute; bottom: -40px; left: 200px; width: 180px; height: 180px; border-radius: 50%; border: 1px solid rgba(0,200,150,0.08); }
+  .header-tag { font-family: var(--mono); font-size: 11px; color: var(--green); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; }
+  .header h1 { font-family: var(--serif); font-size: 42px; font-weight: 400; line-height: 1.15; margin-bottom: 10px; }
+  .header-sub { font-size: 14px; color: rgba(255,255,255,0.5); font-weight: 300; margin-bottom: 28px; }
+  .header-meta { display: flex; gap: 12px; flex-wrap: wrap; }
+  .meta-pill { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); padding: 6px 14px; border-radius: 100px; font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.7); }
+  .meta-pill.green { border-color: rgba(0,200,150,0.4); color: var(--green); }
+  .meta-pill.amber { border-color: rgba(245,166,35,0.4); color: var(--amber); }
+  .container { max-width: 1000px; margin: 0 auto; padding: 48px 40px; }
+  .alert { background: rgba(245,166,35,0.1); border: 1px solid rgba(245,166,35,0.3); border-left: 3px solid var(--amber); padding: 14px 18px; border-radius: 6px; font-size: 13px; color: #7a5010; margin-bottom: 40px; }
+  .alert strong { color: #5a3a08; }
+  .section { margin-bottom: 52px; opacity: 0; transform: translateY(16px); animation: fadeUp 0.5s ease forwards; }
+  .section:nth-child(1) { animation-delay: 0.05s; } .section:nth-child(2) { animation-delay: 0.10s; } .section:nth-child(3) { animation-delay: 0.15s; } .section:nth-child(4) { animation-delay: 0.20s; } .section:nth-child(5) { animation-delay: 0.25s; } .section:nth-child(6) { animation-delay: 0.30s; } .section:nth-child(7) { animation-delay: 0.35s; } .section:nth-child(8) { animation-delay: 0.40s; } .section:nth-child(9) { animation-delay: 0.45s; } .section:nth-child(10) { animation-delay: 0.50s; } .section:nth-child(11) { animation-delay: 0.55s; } .section:nth-child(12) { animation-delay: 0.60s; } .section:nth-child(13) { animation-delay: 0.65s; }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+  .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .section-num { font-family: var(--mono); font-size: 11px; color: var(--green-dim); background: rgba(0,200,150,0.08); border: 1px solid rgba(0,200,150,0.2); width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 600; }
+  .section h2 { font-family: var(--serif); font-size: 22px; font-weight: 400; color: var(--navy); }
+  .section h3 { font-size: 13px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 8px; }
+  .section p { color: var(--text); margin-bottom: 12px; max-width: 720px; }
+  .table-wrap { overflow-x: auto; margin: 16px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { background: var(--navy); color: white; }
+  thead th { padding: 11px 14px; text-align: left; font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
+  tbody tr:nth-child(odd) { background: white; }
+  tbody tr:nth-child(even) { background: rgba(0,0,0,0.02); }
+  tbody tr:hover { background: rgba(0,200,150,0.04); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  td.mono { font-family: var(--mono); font-size: 12px; color: var(--navy-mid); }
+  td.green { color: var(--green-dim); font-weight: 600; }
+  td.amber { color: #b07010; font-weight: 500; }
+  td.red-text { color: var(--red); font-weight: 500; }
+  .bullets { list-style: none; padding: 0; margin: 10px 0; }
+  .bullets li { padding: 5px 0 5px 22px; position: relative; font-size: 13.5px; color: var(--text); border-bottom: 1px solid rgba(0,0,0,0.04); }
+  .bullets li::before { content: '→'; position: absolute; left: 0; color: var(--green-dim); font-family: var(--mono); font-size: 12px; }
+  .check-list { list-style: none; padding: 0; margin: 10px 0; }
+  .check-list li { padding: 6px 0 6px 28px; position: relative; font-size: 13.5px; color: var(--text); border-bottom: 1px solid rgba(0,0,0,0.04); }
+  .check-list li.done::before { content: '✓'; position: absolute; left: 0; color: var(--green-dim); font-weight: 700; font-size: 14px; }
+  .check-list li.partial::before { content: '◐'; position: absolute; left: 0; color: var(--amber); font-weight: 700; font-size: 14px; }
+  .check-list li.fail::before { content: '✕'; position: absolute; left: 0; color: var(--red); font-weight: 700; font-size: 14px; }
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .compare-box { border-radius: 8px; padding: 16px; border: 1px solid var(--border); }
+  .compare-box.before { background: rgba(224,82,82,0.04); border-color: rgba(224,82,82,0.2); }
+  .compare-box.after { background: rgba(0,200,150,0.04); border-color: rgba(0,200,150,0.2); }
+  .compare-label { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+  .compare-box.before .compare-label { color: var(--red); }
+  .compare-box.after .compare-label { color: var(--green-dim); }
+  .compare-box li { font-size: 13px; padding: 3px 0 3px 16px; position: relative; color: var(--text); list-style: none; }
+  .compare-box.before li::before { content: '✕'; position: absolute; left: 0; color: var(--red); font-size: 10px; top: 5px; }
+  .compare-box.after li::before { content: '✓'; position: absolute; left: 0; color: var(--green-dim); font-size: 10px; top: 5px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 100px; font-family: var(--mono); font-size: 10px; font-weight: 600; }
+  .badge-green { background: rgba(0,200,150,0.12); color: var(--green-dim); border: 1px solid rgba(0,200,150,0.3); }
+  .badge-amber { background: rgba(245,166,35,0.12); color: #8a6010; border: 1px solid rgba(245,166,35,0.3); }
+  .badge-red { background: rgba(224,82,82,0.1); color: var(--red); border: 1px solid rgba(224,82,82,0.25); }
+  .badge-navy { background: rgba(13,27,42,0.08); color: var(--navy-mid); border: 1px solid rgba(13,27,42,0.15); }
+  .code-block { background: var(--navy); color: #a8d8c8; font-family: var(--mono); font-size: 12.5px; padding: 16px 20px; border-radius: 8px; margin: 12px 0; line-height: 1.8; white-space: pre-wrap; word-break: break-all; }
+  .code-block .comment { color: rgba(168,216,200,0.4); }
+  .code-block .cmd { color: var(--green); }
+  code.inline { background: rgba(13,27,42,0.07); padding: 2px 6px; border-radius: 4px; font-family: var(--mono); font-size: 12px; color: var(--navy-mid); }
+  .callout { background: rgba(0,200,150,0.06); border-left: 3px solid var(--green); padding: 14px 18px; border-radius: 6px; font-size: 13.5px; margin: 16px 0; }
+  .callout.warn { background: rgba(245,166,35,0.08); border-left-color: var(--amber); }
+  .callout.bad { background: rgba(224,82,82,0.06); border-left-color: var(--red); }
+  .footer { background: var(--navy); color: rgba(255,255,255,0.4); text-align: center; padding: 24px 40px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.5px; margin-top: 40px; }
+  .footer a { color: var(--green); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-tag">Midas · Session Report</div>
+  <h1>Session Report<br>May 5–6, 2026</h1>
+  <div class="header-sub">Two-night working session · Phase 1 Tasks 7–10 · Sealed-secrets, real credentials, NATS JetStream, partial LGTM</div>
+  <div class="header-meta">
+    <span class="meta-pill">Sessions 3 + 4 (combined)</span>
+    <span class="meta-pill green">Phase 1: 9.5 / 12</span>
+    <span class="meta-pill green">7 commits landed</span>
+    <span class="meta-pill amber">kube-prometheus-stack stuck</span>
+    <span class="meta-pill">Cloud cost ≈ $130/mo</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="alert">
+    <strong>Note:</strong> This report covers two consecutive working sessions (May 5 evening + May 6 evening) treated as one continuous push because the May 5 session ended mid-Task-8 and May 6 picked up the same work. Combined session length: ~10 hours of focused work across two evenings.
+  </div>
+
+  <!-- 01 — Where we started -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <h2>Where we started</h2>
+    </div>
+    <p>
+      Coming into May 5, Phase 1 was at <strong>6/12 tasks complete</strong>. Cluster, Postgres, Redis, repo, GitHub Actions CI, and Argo CD were all running. The sealed-secrets controller was on the to-do list along with sealing real database credentials for use by future Phase 2 services. NATS JetStream and the LGTM observability stack were still pending.
+    </p>
+    <p>
+      Filippo and Peter both worked across both nights. Filippo drove the credential-handling work (he holds the password manager). Peter took the keyboard for the late-night debugging on May 6 to give Filippo a break.
+    </p>
+  </div>
+
+  <!-- 02 — Tasks completed -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <h2>Tasks completed</h2>
+    </div>
+
+    <h3>Task 7 — Sealed-secrets controller (May 5)</h3>
+    <ul class="check-list">
+      <li class="done">Installed sealed-secrets controller v0.36.6 via official Helm chart 2.18.5 (auto-detected as latest stable; my initial guess of 2.16.2 was outdated)</li>
+      <li class="done">Argo CD Application <code class="inline">deploy/applications/sealed-secrets.yaml</code> committed and synced to <code class="inline">sealed-secrets</code> namespace</li>
+      <li class="done">Installed <code class="inline">kubeseal</code> CLI v0.36.6 via Homebrew on Filippo's laptop</li>
+      <li class="done">Round-trip test: created a SealedSecret with <code class="inline">test-key=hello-midas</code>, committed to git, watched Argo CD apply it, verified the controller decrypted it into a usable Secret in the cluster</li>
+      <li class="done">Cleaned up the test artifacts (Application + SealedSecret + repo files)</li>
+    </ul>
+
+    <h3>Task 8 — Real credentials sealed (May 6)</h3>
+    <ul class="check-list">
+      <li class="done">Sealed Postgres connection strings for all three users (<code class="inline">oms_user/oms_db</code>, <code class="inline">pms_user/pms_db</code>, <code class="inline">reporting_user/reporting_db</code>) into <code class="inline">deploy/secrets/postgres-{oms,pms,reporting}.yaml</code></li>
+      <li class="done">Sealed Redis (Valkey) connection URI for the <code class="inline">default</code> user into <code class="inline">deploy/secrets/redis.yaml</code></li>
+      <li class="done">Each sealing verified by decoding the resulting cluster Secret and confirming structure (one line, password between <code class="inline">:</code> and <code class="inline">@</code>, correct host/port/database)</li>
+      <li class="done">All four sealed files committed in one commit (<code class="inline">0a142b3</code>)</li>
+    </ul>
+
+    <h3>Task 9 — NATS JetStream cluster (May 6)</h3>
+    <ul class="check-list">
+      <li class="done">Installed NATS Helm chart 2.12.6 via Argo CD Application — 3-replica cluster with JetStream enabled, file-store persistence, 10Gi PVC per replica</li>
+      <li class="done">All 3 NATS pods + nats-box client pod came up Running 2/2 within ~50 seconds (much faster than my 3–5 min estimate)</li>
+      <li class="done">JetStream health check returned <code class="inline">OK JetStream</code></li>
+      <li class="done">Created test stream <code class="inline">midas-test</code> with 3 replicas, published <code class="inline">hello midas</code>, read it back successfully</li>
+      <li class="done"><strong>Durability proof:</strong> deleted leader pod <code class="inline">nats-0</code>, Kubernetes restarted it in 42s, message was still readable from the surviving replicas after restart</li>
+      <li class="done">Cleaned up the test stream</li>
+    </ul>
+
+    <h3>Task 10 — LGTM observability stack (May 6, partial)</h3>
+    <ul class="check-list">
+      <li class="done">Loki 7.0.0 deployed and Running — single-binary mode, 30Gi PVC, log aggregation ready</li>
+      <li class="done">Tempo 1.24.4 deployed and Running — single-binary mode, 20Gi PVC, distributed tracing ready</li>
+      <li class="fail">kube-prometheus-stack 84.5.0 stuck OutOfSync / Degraded — only 3 of ~10 Prometheus CRDs installed before sync blocked. Operator pod, Prometheus, Grafana, Alertmanager all <strong>not</strong> running. Detail in section 04.</li>
+    </ul>
+  </div>
+
+  <!-- 03 — How this fits the architecture -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <h2>How this fits the v2 architecture (plain English)</h2>
+    </div>
+
+    <p>
+      Every task this session moved one specific piece of the <em>Bot Architecture v2</em> document from "designed on paper" to "running in the cluster." Here's the translation, in plain English, with the architecture v2 section reference for each piece.
+    </p>
+
+    <h3>The big picture, before this session</h3>
+    <p>
+      Imagine the bot v2 architecture as a <strong>professional kitchen with eight stations</strong> (the eight services in v2 §04 — data, oms, pms, strategy, risk, reporting, scheduler, mcp-gateway). For these stations to work, they need:
+    </p>
+    <ul class="bullets">
+      <li>A <strong>building</strong> with electricity and plumbing (the Kubernetes cluster — done in earlier sessions, v2 §07)</li>
+      <li>A <strong>locked supply room</strong> where ingredients (database passwords, API keys) live encrypted (sealed-secrets — Task 7, v2 §07)</li>
+      <li>A <strong>communication system</strong> so each station can shout "order up!" to the next without phoning each other directly (NATS JetStream — Task 9, v2 §05)</li>
+      <li><strong>Cameras and microphones</strong> in every station so the head chef can see what's happening (Loki + Tempo + Prometheus — Task 10, v2 §07)</li>
+      <li>A <strong>head chef who actually knows how to cook</strong> (the eight services themselves — Phase 2 onward, v2 §04)</li>
+    </ul>
+    <p>
+      This session built three of those four foundation pieces. The kitchen still has zero chefs. But the building is wired.
+    </p>
+
+    <h3>What each task corresponds to in v2</h3>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>What we did</th>
+            <th>v2 architecture reference</th>
+            <th>What it unlocks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Task 7</strong> — sealed-secrets controller installed and round-trip verified</td>
+            <td>v2 §07 — "Operational stack → Secrets management." The architecture explicitly recommends sealed-secrets over Vault or cloud secret managers because it lets us commit encrypted credentials to git, which fits the GitOps model.</td>
+            <td>Every Phase 2+ service can now read database/API credentials from Kubernetes Secrets. No more hardcoding, no more env-var copy-paste.</td>
+          </tr>
+          <tr>
+            <td><strong>Task 8</strong> — 4 real credentials sealed (3 Postgres users + Redis)</td>
+            <td>v2 §06 — "Data layer → PostgreSQL with logical separation by service." Each service (oms-svc, pms-svc, reporting-svc) gets its own database user with access only to its own logical DB.</td>
+            <td>Phase 2 services can connect to their respective databases on day one. Schema migrations and table creation happen inside each service's namespace; no cross-contamination.</td>
+          </tr>
+          <tr>
+            <td><strong>Task 9</strong> — NATS JetStream cluster with durability proven</td>
+            <td>v2 §05 — "The message bus." This is <em>the</em> backbone of the event-sourced architecture. Every action in the system is an event published to NATS. Every state-change is reconstructable from the event log.</td>
+            <td>Services can be added, removed, or replayed without coordination. <em>This is what makes binding constraint #1 ("bankroll only goes up — use event sourcing") possible.</em> Without JetStream, there's no event sourcing, and we'd be repeating the legacy bot's mutable-state mistake.</td>
+          </tr>
+          <tr>
+            <td><strong>Task 10 (Loki + Tempo done)</strong> — log aggregation + distributed tracing running</td>
+            <td>v2 §07 — "Observability stack." Loki = "what did the bot say?" Tempo = "when service A called service B which called service C, where did time get spent and where did it fail?"</td>
+            <td>When Phase 2 services start emitting events, every event will be searchable as a log line and every cross-service interaction will be traceable. We'll know <em>why</em> a strategy fired, not just <em>that</em> it fired.</td>
+          </tr>
+          <tr>
+            <td><strong>Task 10 (kps stuck)</strong> — Prometheus / Grafana / Alertmanager not running yet</td>
+            <td>v2 §07 — "Metrics + alerting." The "what is each service doing right now" dashboards.</td>
+            <td>Once fixed, we get cluster-wide CPU/RAM/network metrics, custom strategy-level metrics (win-rate, edge, P&amp;L), and alert rules ("if daily loss exceeds X, page someone"). Until then: Loki + Tempo cover most of what we need to debug Phase 2 services. <strong>kps is "nice to have" not "must have" for Phase 2 to start.</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Why this matters for the migration timeline</h3>
+    <p>
+      v2 §11 lays out an 8-phase migration roadmap. We're in <strong>Phase 1 (Infrastructure foundation)</strong>. Phase 1 has 12 tasks. After this session: <strong>9.5 of 12 done.</strong> The remaining 2.5 tasks are:
+    </p>
+    <ul class="bullets">
+      <li><strong>Task 10 finish</strong> — fix kube-prometheus-stack (or formally defer it; v2 says metrics are part of operational stack but not a blocker for service deployment)</li>
+      <li><strong>Task 11</strong> — hello-svc proof-of-life. This is the integration test that proves Phase 1 is actually done. A tiny service that connects to all four sealed credentials, talks to NATS, gets logs into Loki, traces into Tempo. If hello-svc works, every Phase 2 service can.</li>
+      <li><strong>Task 12</strong> — write the runbook (v2 §07 mentions ops documentation is part of the stack, not optional)</li>
+    </ul>
+    <p>
+      <strong>Translation:</strong> after one more session of similar quality, Phase 1 closes and Phase 2 begins. Phase 2 = the first three real services (data-svc, oms-svc, pms-svc, v2 §04). That's where Midas starts <em>looking like a bot</em> instead of <em>looking like infrastructure</em>.
+    </p>
+
+    <h3>What this session did NOT touch</h3>
+    <p>
+      To be honest about what's still abstract: tonight we built none of the eight services from v2 §04. We wrote no Python service code. No strategy logic. No risk gates. No order management. The bot still has zero ability to look at a market, decide anything, or place an order. Every Phase 2+ task is still ahead of us.
+    </p>
+    <p>
+      That's intentional and correct. v2 is explicit (§02, §11) that infrastructure-first is the right sequence — the legacy bot's biggest sin was building services on top of infrastructure that wasn't ready, which is what produced the bankroll-only-goes-up bug, the dead reconciliation, and the magic numbers everywhere. We're refusing to repeat that.
+    </p>
+
+    <div class="callout">
+      <strong>One-line summary:</strong> tonight we built the secret-storage system, the message bus, and half the observability stack — three of the four pillars from v2 §07 that every future service depends on. The kitchen is now wired for the chefs we'll hire in Phase 2.
+    </div>
+  </div>
+
+  <!-- 04 — Decisions made inline -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <h2>Decisions made inline</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Decision</th>
+            <th>Why</th>
+            <th>Reversible?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Pin sealed-secrets Helm chart at 2.18.5 (not 2.16.2 as originally planned)</td>
+            <td>2.18.5 was the actual latest stable; 2.16.2 was several minors behind</td>
+            <td class="green">Yes — bump targetRevision and resync</td>
+          </tr>
+          <tr>
+            <td>Defer App-of-Apps pattern; let Argo CD auto-create namespaces via <code class="inline">CreateNamespace=true</code></td>
+            <td>Adding App-of-Apps for one extra label on a namespace wasn't worth the complexity</td>
+            <td class="green">Yes — already on TODO carry list</td>
+          </tr>
+          <tr>
+            <td>After multiple failed clipboard-paste attempts, pivot to <code class="inline">doctl</code> CLI for fetching credentials</td>
+            <td>DigitalOcean's "Connection string" tab copy button was capturing hidden DOM state, not the real password. Manual selection had the same issue. CLI bypasses the UI entirely.</td>
+            <td class="green">Yes — pattern is now documented as the canonical approach</td>
+          </tr>
+          <tr>
+            <td>Use <code class="inline">doctl databases connection ... --format URI</code> for Redis instead of <code class="inline">user get</code></td>
+            <td><code class="inline">user get</code> returns 404 for Valkey clusters — "operation not supported for this cluster type". The full URI command DOES work and includes the password.</td>
+            <td class="green">Yes — Valkey-specific quirk, no impact on Postgres pattern</td>
+          </tr>
+          <tr>
+            <td>Use NATS Helm chart's defaults for <code class="inline">nats-box</code> (the included CLI client pod)</td>
+            <td>Free debugging tool. We used it for the durability test.</td>
+            <td class="green">Yes — can disable in values if it becomes noise</td>
+          </tr>
+          <tr>
+            <td>Use Path A for LGTM (kube-prometheus-stack bundles Grafana) rather than splitting Grafana into a separate Application</td>
+            <td>Simpler. One less file to manage. Grafana auto-configures Prometheus as a data source.</td>
+            <td class="green">Yes — split later if independent Grafana upgrades become important</td>
+          </tr>
+          <tr>
+            <td>Pre-emptively disable DOKS-incompatible scrapers in kube-prometheus-stack values (kubeEtcd, kubeControllerManager, kubeScheduler, kubeProxy)</td>
+            <td>DigitalOcean Managed Kubernetes doesn't expose those endpoints. Trying to scrape them produces noisy errors with no value.</td>
+            <td class="green">Yes — flip <code class="inline">enabled: true</code> if we ever migrate to a self-hosted control plane</td>
+          </tr>
+          <tr>
+            <td>Set Grafana <code class="inline">adminPassword: midas-admin-changeme</code> as plaintext placeholder</td>
+            <td>Grafana isn't running yet anyway. Once kps is fixed and Grafana boots, change the password via the UI on first login. No secret needed yet.</td>
+            <td class="green">Yes — flip to a sealed secret reference once we know what we want</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 04 — Issues discovered -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">05</div>
+      <h2>Issues discovered &amp; resolutions</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Issue</th>
+            <th>What happened</th>
+            <th>Resolution / status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Master key leak via terminal paste glitch</strong></td>
+            <td>While backing up the sealed-secrets master private key to a Word doc on Desktop, a stray <code class="inline">&gt;....</code> in the terminal triggered weird zsh behavior that dumped the file contents into chat. Key suffix <code class="inline">t6vkr</code> was leaked.</td>
+            <td class="green">Resolved. Followed full rotation procedure: deleted laptop copy, cleared clipboard, deleted active key Secret in cluster, deleted controller pod to force regeneration. New key suffix <code class="inline">2f279</code> active. Old key cryptographically dead.</td>
+          </tr>
+          <tr>
+            <td><strong>postgres-oms.yaml from May 4 was malformed</strong></td>
+            <td>Sanity-checked the existing OMS sealed file by decoding it. Discovered it contained the multi-line "Connection parameters" key=value format, not a URL. Would have failed at runtime. Same root cause as the failed pms attempts later — DigitalOcean's UI captures wrong content.</td>
+            <td class="green">Resolved. Deleted from cluster + repo. Redone correctly via <code class="inline">doctl</code> pattern.</td>
+          </tr>
+          <tr>
+            <td><strong>DigitalOcean "Connection string" copy button broken</strong></td>
+            <td>After clicking <em>show-password</em> in DO's UI, the password is visually revealed but the underlying clipboard API still copies the hidden placeholder. Triple-click selection had the same issue. Three different attempts to get the password into a file via the web UI all produced strings missing the password (file size 141 bytes vs ~170 expected).</td>
+            <td class="green">Worked around by using <code class="inline">doctl databases user get ... --format Password --no-header</code> for Postgres users and <code class="inline">doctl databases connection ... --format URI --no-header</code> for Redis. Fully documented as canonical pattern.</td>
+          </tr>
+          <tr>
+            <td><strong>doctl 404 for Valkey/Redis user</strong></td>
+            <td><code class="inline">doctl databases user get &lt;redis-uuid&gt; default</code> returns "operation not supported for this cluster type". Valkey clusters don't expose per-user password retrieval.</td>
+            <td class="green">Resolved by using <code class="inline">doctl databases connection ... --format URI</code> instead, which returns the full <code class="inline">rediss://</code> URI including password.</td>
+          </tr>
+          <tr>
+            <td><strong>First Redis sealed file had no password</strong></td>
+            <td>The first attempt used the <code class="inline">user get</code> path that returned 404 (above). Shell variable was empty. Sealed file got committed with <code class="inline">rediss://default:@host:25061</code> — broken.</td>
+            <td class="green">Resolved. Re-sealed with the URI pattern, applied to cluster (now <code class="inline">configured</code>, replacing broken version), verified password present in decoded URL.</td>
+          </tr>
+          <tr>
+            <td><strong>Sed regex too greedy</strong></td>
+            <td>While verifying sealed file structure, my redact regex <code class="inline">[A-Za-z0-9!@#$%^&amp;*()_+=-]\{6,\}</code> swallowed <code class="inline">@</code> into the REDACTED chunk, making structure look broken when it was actually fine. Caused 30 minutes of false-positive "missing @" panic.</td>
+            <td class="green">Resolved. New diagnostic regex omits <code class="inline">@</code> from the character class so it shows through the redaction. Documented for future credential verification.</td>
+          </tr>
+          <tr>
+            <td><strong>Argo CD didn't auto-prune Secret on Application deletion</strong></td>
+            <td>Round-trip test cleanup: deleted the round-trip-test Application via <code class="inline">kubectl delete</code>. The SealedSecret resource it managed wasn't cascaded-deleted (no finalizers configured).</td>
+            <td class="green">Resolved by manually deleting the SealedSecret, which cascaded to the unsealed Secret. Documented better cleanup pattern: remove files from git first → let Argo CD prune → then delete the Application.</td>
+          </tr>
+          <tr>
+            <td><strong>kube-prometheus-stack stuck OutOfSync / Degraded</strong></td>
+            <td>Argo CD installed only 3 of ~10 expected Prometheus CRDs (<code class="inline">prometheusagents</code>, <code class="inline">prometheuses</code>, <code class="inline">prometheusrules</code>). Missing: <code class="inline">servicemonitors</code>, <code class="inline">podmonitors</code>, <code class="inline">alertmanagers</code>, <code class="inline">alertmanagerconfigs</code>, <code class="inline">probes</code>, <code class="inline">scrapeconfigs</code>, <code class="inline">thanosrulers</code>. Without those CRDs, the Operator can't render dependent manifests, so Prometheus, Grafana, Alertmanager, kube-state-metrics, node-exporter all fail to start.</td>
+            <td class="amber">Plan A failed. Tried adding <code class="inline">SkipDryRunOnMissingResource=true</code> + <code class="inline">Replace=true</code> to syncOptions (commit <code class="inline">75aa2b8</code>). Did not unblock the install. <strong>Carried to next session for fresh-head fix.</strong> Plan B documented in section 06.</td>
+          </tr>
+          <tr>
+            <td><strong>Host fragment leaked in chat (low severity)</strong></td>
+            <td>While diagnosing the broken UI copy, Filippo pasted the Postgres host pattern in chat (with digits altered, but the host structure was legitimate).</td>
+            <td class="green">Logged. Host alone isn't a credential — VPC-only access plus password requirements mean no exploitable risk. Listed as a defense-in-depth carry item; rotating Postgres user passwords is optional, not urgent.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 05 — Commits pushed -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">06</div>
+      <h2>Commits pushed</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>SHA</th>
+            <th>Date</th>
+            <th>Message</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono">5d1b7c6</td>
+            <td>May 5</td>
+            <td>feat(deploy): add sealed-secrets controller Application (Helm chart 2.18.5)</td>
+          </tr>
+          <tr>
+            <td class="mono">96b22aa</td>
+            <td>May 5</td>
+            <td>test(deploy): round-trip test for sealed-secrets pipeline</td>
+          </tr>
+          <tr>
+            <td class="mono">8bad75a</td>
+            <td>May 5</td>
+            <td>chore(deploy): remove round-trip test now that sealed-secrets pipeline is verified</td>
+          </tr>
+          <tr>
+            <td class="mono">0a142b3</td>
+            <td>May 6</td>
+            <td>feat(deploy): seal Postgres + Redis credentials (Phase 1 Task 8)</td>
+          </tr>
+          <tr>
+            <td class="mono">e070de0</td>
+            <td>May 6</td>
+            <td>feat(deploy): add NATS JetStream Application (Helm chart 2.12.6)</td>
+          </tr>
+          <tr>
+            <td class="mono">a3d3ca5</td>
+            <td>May 6</td>
+            <td>feat(deploy): add LGTM observability stack (kube-prometheus-stack 84.5.0, loki 7.0.0, tempo 1.24.4)</td>
+          </tr>
+          <tr>
+            <td class="mono">75aa2b8</td>
+            <td>May 6</td>
+            <td>fix(deploy): add SkipDryRunOnMissingResource and Replace for kube-prometheus-stack CRD bootstrapping</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="font-size: 13px; color: var(--text-light); margin-top: 14px;">
+      <strong>Total: 7 commits.</strong> Repo went from <code class="inline">26572a9</code> at session start to <code class="inline">75aa2b8</code> at session end.
+    </p>
+  </div>
+
+  <!-- 06 — kps Plan B -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">07</div>
+      <h2>kube-prometheus-stack — Plan B for next session</h2>
+    </div>
+
+    <p>
+      Plan A added <code class="inline">SkipDryRunOnMissingResource=true</code> and <code class="inline">Replace=true</code> to syncOptions. Did not unblock the install. Plan B is more surgical:
+    </p>
+
+    <h3>Plan B steps</h3>
+    <ul class="bullets">
+      <li>Delete the current <code class="inline">kube-prometheus-stack</code> Argo CD Application (won't delete already-installed CRDs)</li>
+      <li>Create a new <code class="inline">kube-prometheus-stack-crds</code> Application that installs <strong>only</strong> the CRDs from <code class="inline">prometheus-community/prometheus-operator-crds</code> chart, with annotation <code class="inline">argocd.argoproj.io/sync-wave: "-1"</code></li>
+      <li>Modify the main <code class="inline">kube-prometheus-stack</code> Application to add <code class="inline">crds.enabled: false</code> in values, so it doesn't try to install CRDs again</li>
+      <li>Apply both Applications. Sync wave -1 forces the CRDs Application to fully sync before kps starts</li>
+      <li>If Plan B also fails: bypass Argo CD entirely for this chart, install via <code class="inline">helm install</code> directly to cluster, then write a stub Argo CD Application that tracks the existing release. Document in runbook as the chart-specific exception.</li>
+    </ul>
+
+    <div class="callout warn">
+      <strong>Time estimate next session:</strong> Plan B execution is 30–60 minutes with a fresh head. If Plan B also fails, the helm-install fallback is another 20 minutes. Worst case: kps observability is deferred entirely until after Phase 2 services land — they don't depend on it.
+    </div>
+  </div>
+
+  <!-- 07 — Working agreement updates -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">08</div>
+      <h2>Working agreement updates</h2>
+    </div>
+
+    <p>Three new rules added based on this session's pain.</p>
+
+    <h3>1. Credential sealing canonical pattern</h3>
+    <p>For every database credential going into a SealedSecret, use this exact flow:</p>
+    <div class="code-block"><span class="comment"># Postgres users (oms_user / pms_user / reporting_user):</span>
+<span class="cmd">doctl databases user get</span> &lt;cluster-uuid&gt; &lt;username&gt; --format Password --no-header &gt; /tmp/&lt;name&gt;-pw.txt
+HOST=$(<span class="cmd">doctl databases connection</span> &lt;cluster-uuid&gt; --private --format Host --no-header)
+PORT=$(<span class="cmd">doctl databases connection</span> &lt;cluster-uuid&gt; --private --format Port --no-header)
+PASSWORD=$(<span class="cmd">cat</span> /tmp/&lt;name&gt;-pw.txt | <span class="cmd">tr</span> -d '\n')
+<span class="cmd">echo</span> -n "postgresql://&lt;username&gt;:${PASSWORD}@${HOST}:${PORT}/&lt;db&gt;?sslmode=require" &gt; /tmp/&lt;name&gt;-conn.txt
+<span class="cmd">unset</span> HOST PORT PASSWORD
+
+<span class="comment"># Redis (Valkey) — user get returns 404, use connection URI instead:</span>
+<span class="cmd">doctl databases connection</span> &lt;cluster-uuid&gt; --private --format URI --no-header | <span class="cmd">tr</span> -d '\n' &gt; /tmp/redis-conn.txt</div>
+
+    <p>Never use the DigitalOcean web UI copy buttons. Never assemble connection strings manually in nano.</p>
+
+    <h3>2. Verify before next sealing</h3>
+    <p>After every <code class="inline">kubeseal</code>, apply the resulting file to the cluster, decode the resulting Secret, and confirm structure (single line, <code class="inline">@</code> visible between password and host) <strong>before</strong> moving to the next credential. Sealing without verification is what produced the broken May-4 OMS file that didn't get caught until tonight.</p>
+
+    <h3>3. 3-hour cap on credential-handling sessions</h3>
+    <p>Tonight's three credential mishaps (key leak, host fragment, broken Redis sealing) all happened past the 3-hour mark. Stopping earlier next time. If credential work hasn't finished by hour 3, save state and resume next session.</p>
+
+    <div class="callout">
+      <strong>Bonus rule:</strong> For diagnostic regexes that redact passwords, exclude <code class="inline">@</code> from the character class so the URL structure remains visible. Pattern: <code class="inline">[A-Za-z0-9!#$%^&amp;*()_+=-]\{6,\}</code>.
+    </div>
+  </div>
+
+  <!-- 08 — Before / After -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">09</div>
+      <h2>Before / After</h2>
+    </div>
+
+    <div class="compare">
+      <div class="compare-box before">
+        <div class="compare-label">Before (start of May 5)</div>
+        <ul>
+          <li>Phase 1: 6/12 tasks complete</li>
+          <li>No sealed-secrets pipeline</li>
+          <li>Database credentials only in Word doc</li>
+          <li>No durable message bus</li>
+          <li>No log aggregation, no distributed tracing</li>
+          <li>5 commits on main</li>
+          <li>Cloud cost: $117.45/month</li>
+        </ul>
+      </div>
+      <div class="compare-box after">
+        <div class="compare-label">After (end of May 6)</div>
+        <ul>
+          <li>Phase 1: 9.5/12 tasks complete</li>
+          <li>End-to-end sealed-secrets pipeline verified</li>
+          <li>4 real credentials sealed, applied, decoded clean</li>
+          <li>NATS JetStream cluster running, durability proven</li>
+          <li>Loki + Tempo running; kps deferred to next session</li>
+          <li>12 commits on main (5 → 12)</li>
+          <li>Cloud cost: ~$130/month (3 PVs for NATS + 2 PVs for Loki/Tempo)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 09 — Carry forward -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <h2>Carried forward to next session</h2>
+    </div>
+
+    <ul class="bullets">
+      <li><strong>Fix kube-prometheus-stack.</strong> Plan B (separate CRDs Application with sync wave -1) — see section 06.</li>
+      <li><strong>Phase 1 Task 11</strong> — hello-svc Python proof-of-life. Tiny FastAPI service that connects to Postgres + Redis + NATS using the sealed secrets, proves the whole stack works end to end. Highest-value remaining task in Phase 1.</li>
+      <li><strong>Phase 1 Task 12</strong> — write the Phase 1 runbook in <code class="inline">docs/RUNBOOK.md</code> (how to operate the cluster, common debug commands, where things are).</li>
+      <li><strong>Storage upgrade for password manager.</strong> Filippo's credentials currently live in a Word doc on Desktop. Move to a real password manager (1Password, Bitwarden) before Phase 2 services start touching production data. Filed as carry, not blocking Phase 1.</li>
+      <li><strong>App-of-Apps pattern</strong> — still on the long list. Defer until we have ~10 Applications and managing them individually starts to feel painful.</li>
+      <li><strong>Re-investigate <code class="inline">nats</code> Application showing OutOfSync</strong> in Argo CD. NATS pods are healthy and serving traffic but Argo CD thinks something has drifted. Low priority — Argo CD self-heal is on, won't cause harm.</li>
+    </ul>
+  </div>
+
+  <!-- 10 — Collaboration notes -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">11</div>
+      <h2>Collaboration notes</h2>
+    </div>
+
+    <p>
+      Two-night session with both teammates working in different modes. Filippo handled all the credential-touching work (he holds the Word doc). Peter took over for the late-night debugging of LGTM after Filippo got tired.
+    </p>
+
+    <p>
+      <strong>What went well:</strong> Switching drivers worked. Peter coming in fresh on May 6 with explicit "be a tool, no questions, just steps" framing got us through the kps debugging at a pace Filippo couldn't have sustained. The doctl pivot for sealing credentials was a real workaround — three failed UI-based approaches before that, and the CLI worked first try.
+    </p>
+
+    <p>
+      <strong>What was hard:</strong> Multiple credential-handling stumbles — master key leak via <code class="inline">cat | pbcopy</code>, host fragment in chat, broken-but-unnoticed sealed file from May 4, Redis password missing on first attempt. Each was caught and fixed, but the pattern of "sealing without verifying" cost us 30+ minutes when the May-4 oms file's flaw surfaced. The new "verify after every seal" rule should catch this category in future.
+    </p>
+
+    <p>
+      <strong>Tone management:</strong> Filippo asked Claude (this assistant) to stop pushing back so frequently when he was tired and adamant about continuing. The assistant complied with the agreed working pattern (push back once, accept the call, move on). Peter requested terse, tool-like responses for the late-night work — that lowered cognitive load meaningfully.
+    </p>
+  </div>
+
+  <!-- 11 — What next session looks like -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">12</div>
+      <h2>What next session looks like</h2>
+    </div>
+
+    <p>Open the chat. Paste in <code class="inline">PROJECT_HANDOFF.html</code>. Then in priority order:</p>
+
+    <ol style="margin: 14px 0 14px 22px; color: var(--text);">
+      <li style="margin-bottom: 6px;"><strong>Decide kps fate:</strong> attempt Plan B (~45 min) or skip and move on to Task 11. If LGTM observability isn't load-bearing yet (it isn't — no services are running), Task 11 is the higher-value next step.</li>
+      <li style="margin-bottom: 6px;"><strong>Task 11: hello-svc.</strong> Build a tiny FastAPI service in <code class="inline">services/hello-svc/</code> that on startup reads <code class="inline">DATABASE_URL</code> and <code class="inline">REDIS_URL</code> env vars (mounted from the sealed Secrets), connects to Postgres and Redis, and publishes a heartbeat message to NATS once a minute. Argo CD Application + sealed Secret reference + Helm chart from a custom local chart. This is the first piece of actual Python service code in Midas.</li>
+      <li style="margin-bottom: 6px;"><strong>Task 12: runbook.</strong> Document how to operate the cluster, where things live, how to seal new credentials, how to access Grafana once kps is fixed.</li>
+    </ol>
+
+    <p>Phase 1 closes when Task 11 is deployed and visible in the cluster. After that, Phase 2 begins — the first real services (data-svc, oms-svc, pms-svc).</p>
+  </div>
+
+  <!-- 12 — Honest tally -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">13</div>
+      <h2>Honest tally</h2>
+    </div>
+
+    <p>
+      Two consecutive nights, ~10 hours of work, three big foundation pieces shipped (sealed-secrets, real credentials, NATS), one stuck (kps). One security incident handled cleanly via key rotation. Five new working-agreement rules captured. Phase 1 went from <strong>50% to ~79%</strong> complete.
+    </p>
+
+    <p>
+      The kps failure is annoying but not bad — it's a known-pattern bug with a known fix path, on a component that's not load-bearing for any other work. Loki and Tempo running still gives us 50% of LGTM right now. The rest is a fresh-head problem.
+    </p>
+
+    <p style="margin-top: 18px; padding: 14px 18px; background: rgba(0,200,150,0.06); border-left: 3px solid var(--green); border-radius: 6px; font-size: 13.5px;">
+      <strong>Next session's first commit lands Phase 1: 10/12 or higher.</strong> Whether that's via fixing kps (Plan B success) or via shipping hello-svc (Task 11), either path is a win.
+    </p>
+  </div>
+
+</div>
+
+<div class="footer">
+  Midas · github.com/bakerlunch-ai/midas · Sessions 3+4 (May 5–6, 2026)
+</div>
+
+</body>
+</html>
