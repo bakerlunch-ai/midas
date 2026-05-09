@@ -9,6 +9,7 @@ dependencies = [
     "pydantic-settings>=2.6",
     "nats-py>=2.7",
     "asyncpg>=0.30",
+    "redis>=5",
     "bot-events",
 ]
 
