@@ -16,3 +16,11 @@ def settings_factory():
         return Settings(**(base | overrides))
 
     return _factory
+
+
+@pytest.fixture
+def env_settings(monkeypatch):
+    """Set the env vars Settings() requires when lifespan instantiates it at startup."""
+    monkeypatch.setenv("DATABASE_URL", "postgresql://test/test")
+    monkeypatch.setenv("REDIS_URL", "redis://test")
+    monkeypatch.setenv("NATS_URL", "nats://test:4222")
