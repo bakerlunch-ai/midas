@@ -23,7 +23,7 @@ ignore = [
 "tests/**" = ["S101"]
 
 [lint.isort]
-known-first-party = ["bot_events"]
+known-first-party = ["bot_events", "hello_svc"]
 
 [format]
 quote-style = "double"
