@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Midas Session Report — May 9, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0d1b2a;
+    --navy-mid: #1a2e44;
+    --green: #00c896;
+    --green-dim: #00a87a;
+    --amber: #f5a623;
+    --red: #e05252;
+    --cream: #f7f4ef;
+    --text: #1a1a2a;
+    --text-light: #5a6072;
+    --border: #e2ddd6;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+    --serif: 'DM Serif Display', serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--cream); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.7; }
+  .header { background: var(--navy); color: white; padding: 56px 60px 48px; position: relative; overflow: hidden; }
+  .header::before { content: ''; position: absolute; top: -80px; right: -80px; width: 320px; height: 320px; border-radius: 50%; border: 1px solid rgba(0,200,150,0.15); }
+  .header-tag { font-family: var(--mono); font-size: 11px; color: var(--green); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; }
+  .header h1 { font-family: var(--serif); font-size: 40px; font-weight: 400; line-height: 1.15; margin-bottom: 10px; }
+  .header-sub { font-size: 14px; color: rgba(255,255,255,0.55); font-weight: 300; margin-bottom: 28px; max-width: 720px; }
+  .header-meta { display: flex; gap: 12px; flex-wrap: wrap; }
+  .meta-pill { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); padding: 6px 14px; border-radius: 100px; font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.7); }
+  .meta-pill.green { border-color: rgba(0,200,150,0.4); color: var(--green); }
+  .container { max-width: 1080px; margin: 0 auto; padding: 48px 40px; }
+  .why-callout { background: rgba(0,200,150,0.08); border: 1px solid rgba(0,200,150,0.3); border-left: 4px solid var(--green); padding: 18px 22px; border-radius: 6px; margin: 0 0 40px; }
+  .why-callout h3 { font-family: var(--serif); font-size: 18px; font-weight: 400; color: var(--navy); margin-bottom: 8px; }
+  .why-callout p { color: #1a3028; font-size: 13.5px; margin-bottom: 8px; }
+  .why-callout p:last-child { margin-bottom: 0; }
+  .section { margin-bottom: 48px; }
+  .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .section-num { font-family: var(--mono); font-size: 11px; color: var(--green-dim); background: rgba(0,200,150,0.08); border: 1px solid rgba(0,200,150,0.2); width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 600; }
+  .section h2 { font-family: var(--serif); font-size: 24px; font-weight: 400; color: var(--navy); }
+  .section h3 { font-family: var(--serif); font-size: 18px; font-weight: 400; color: var(--navy); margin: 24px 0 8px; }
+  .section h4 { font-size: 13px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 8px; }
+  .section p { color: var(--text); margin-bottom: 12px; max-width: 820px; }
+  .why-it-matters { font-style: italic; color: var(--text-light); font-size: 13px; border-left: 3px solid var(--green); padding: 4px 0 4px 14px; margin: 6px 0 14px; max-width: 800px; }
+  .why-it-matters strong { color: var(--green-dim); font-style: normal; font-weight: 600; }
+  .table-wrap { overflow-x: auto; margin: 12px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { background: var(--navy); color: white; }
+  thead th { padding: 11px 14px; text-align: left; font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
+  tbody tr:nth-child(odd) { background: white; }
+  tbody tr:nth-child(even) { background: rgba(0,0,0,0.02); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  td.mono { font-family: var(--mono); font-size: 12px; color: var(--navy-mid); }
+  td.green { color: var(--green-dim); font-weight: 600; }
+  .bullets { list-style: none; padding: 0; margin: 8px 0; }
+  .bullets li { padding: 5px 0 5px 22px; position: relative; font-size: 13.5px; color: var(--text); border-bottom: 1px solid rgba(0,0,0,0.04); }
+  .bullets li::before { content: '→'; position: absolute; left: 0; color: var(--green-dim); font-family: var(--mono); font-size: 12px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 100px; font-family: var(--mono); font-size: 10px; font-weight: 600; }
+  .badge-green { background: rgba(0,200,150,0.12); color: var(--green-dim); border: 1px solid rgba(0,200,150,0.3); }
+  .badge-amber { background: rgba(245,166,35,0.12); color: #8a6010; border: 1px solid rgba(245,166,35,0.3); }
+  .badge-navy { background: rgba(13,27,42,0.08); color: var(--navy-mid); border: 1px solid rgba(13,27,42,0.15); }
+  .badge-v2 { background: rgba(13,27,42,0.06); color: var(--navy); border: 1px solid rgba(13,27,42,0.2); font-style: italic; }
+  .code-block { background: var(--navy); color: #a8d8c8; font-family: var(--mono); font-size: 12px; padding: 16px 20px; border-radius: 8px; margin: 12px 0; line-height: 1.6; overflow-x: auto; white-space: pre; }
+  .compare-box { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .compare-half { padding: 14px 18px; border-radius: 6px; font-size: 13.5px; }
+  .compare-half.before { background: rgba(224,82,82,0.06); border: 1px solid rgba(224,82,82,0.25); border-left: 3px solid var(--red); }
+  .compare-half.after { background: rgba(0,200,150,0.06); border: 1px solid rgba(0,200,150,0.25); border-left: 3px solid var(--green); }
+  .compare-label { font-family: var(--mono); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; font-weight: 600; }
+  .compare-half.before .compare-label { color: var(--red); }
+  .compare-half.after .compare-label { color: var(--green-dim); }
+  .footer { background: var(--navy); color: rgba(255,255,255,0.4); text-align: center; padding: 24px 40px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.5px; margin-top: 40px; }
+  code.inline { font-family: var(--mono); font-size: 12px; background: rgba(13,27,42,0.06); padding: 1px 5px; border-radius: 3px; color: var(--navy-mid); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-tag">Midas · Session Report · May 9, 2026</div>
+  <h1>Session Report<br>May 9, 2026</h1>
+  <div class="header-sub">hello-svc shipped end-to-end. First real Python service in Midas. The integration test for all of Phase 1's infrastructure — and it passed.</div>
+  <div class="header-meta">
+    <span class="meta-pill">Duration: ~7h</span>
+    <span class="meta-pill green">10 commits</span>
+    <span class="meta-pill green">Phase 1: 11/12</span>
+    <span class="meta-pill green">22 tests passing</span>
+    <span class="meta-pill">heartbeat verified on NATS</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="why-callout">
+    <h3>Why this session matters</h3>
+    <p>For a month we've been building the building's wiring — cluster, databases, message bus, observability, GitOps, sealed-secrets, CI/CD. Tonight a real Python service walked into the kitchen and tried to use everything at once. <strong>It worked.</strong></p>
+    <p>This session implements <strong>v2 §02</strong> (the first real service) on top of <strong>v2 §05–§10</strong> (everything Phase 1 has been laying down). The HeartbeatEvent flowing on <code class="inline">events.heartbeat.hello-svc</code> at the end is the proof that data-svc, oms-svc, and pms-svc — the services Phase 2 will build — have working ground to stand on.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">01</div><h2>Where we started</h2></div>
+    <p>Session 4 (May 6) ended with Phase 1 at 9.5/12: NATS deployed, LGTM stack deployed, kube-prometheus-stack template-not-found bug fixed, JOURNEY.md added. The remaining tasks were Task 11 (hello-svc, the integration test) and Task 12 (runbook).</p>
+    <p>Session 5 opened on Peter's Mac for the first time. Peter had Claude Code installed but no Midas dev tools — no kubectl, no doctl, no gh, no kubeconfig, no clone of the repo. The whole onboarding had to happen first before any code could be written. Filippo's laptop had been the only dev machine until tonight.</p>
+    <p>The original plan: build hello-svc cleanly, get CI green on a feature branch, stop, push, leave secrets and Argo deployment for "next session." The plan got partially flipped mid-session — once the branch was clean and pushed, Filippo decided to push through the credential session and Argo deploy in the same evening. We did.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">02</div><h2>Tasks completed</h2></div>
+
+    <h3>Task 1 — Peter's Mac fully bootstrapped</h3>
+    <p class="why-it-matters"><strong>Why it matters:</strong> a second dev machine on the team is no longer a planned thing — it's a real thing. Implements the team-redundancy implicit in <strong>v2 §11</strong>'s "small team" assumption: any session can run from either Mac without re-bootstrapping.</p>
+    <ul class="bullets">
+      <li>Installed Homebrew (interactive, real terminal because Claude Code's bash tool can't handle TTY prompts)</li>
+      <li>Installed via brew: kubectl 1.36.0, doctl 1.158.0, gh 2.92.0, kubeseal 0.36.6, OrbStack 2.1.1 (Docker daemon for local builds)</li>
+      <li>uv was already at <code class="inline">~/.local/bin/uv</code></li>
+      <li>Added <code class="inline">eval "$(/opt/homebrew/bin/brew shellenv)"</code> to <code class="inline">~/.zprofile</code> for future sessions</li>
+      <li>Authenticated <code class="inline">doctl</code> (interactive, real terminal) and saved kubeconfig at <code class="inline">~/.kube/config-midas</code> via <code class="inline">KUBECONFIG=~/.kube/config-midas doctl kubernetes cluster kubeconfig save midas-prod</code> (note: <code class="inline">--kubeconfig</code> flag was removed in doctl 1.158)</li>
+      <li>Authenticated <code class="inline">gh</code> as bakerlunch-ai (HTTPS, gist+repo+read:org+workflow scopes)</li>
+      <li>Cloned repo to <code class="inline">~/code/midas/</code></li>
+      <li>Verified end-to-end: <code class="inline">kubectl get nodes</code> returns 3 Ready nodes from Peter's Mac</li>
+    </ul>
+
+    <h3>Task 2 — HeartbeatEvent in bot-events package (commit 47e2ea7)</h3>
+    <p class="why-it-matters"><strong>Why it matters:</strong> implements <strong>v2 §04</strong> (bot-events package). HeartbeatEvent is the first BaseEvent subclass; the pattern locked in here is the pattern Phase 2's MarketTick / OrderPlaced / OrderFilled / etc. will copy.</p>
+    <ul class="bullets">
+      <li><code class="inline">HeartbeatEvent(BaseEvent)</code> with <code class="inline">event_type = "heartbeat"</code>, <code class="inline">event_version = "1.0"</code>, required <code class="inline">service_name: str</code> field</li>
+      <li>Reusable across any future heartbeat-emitting service (the NATS subject carries routing; service_name is the in-payload identifier)</li>
+      <li>7 unit tests: construction, frozen-instance, required field, extra-fields-forbidden, JSON serialization shape, event_type/event_version locked to class constants</li>
+    </ul>
+
+    <h3>Task 3 — hello-svc scaffold + /health (commit 7eb3e79)</h3>
+    <p class="why-it-matters"><strong>Why it matters:</strong> implements <strong>v2 §02</strong> service shape — pydantic-settings for config, FastAPI for HTTP, uv workspace member declaring bot-events as a workspace dep. Every Phase 2 service copies this skeleton.</p>
+    <ul class="bullets">
+      <li>uv workspace member at <code class="inline">services/hello-svc/</code>; deps: fastapi, uvicorn[standard], pydantic-settings, bot-events (workspace)</li>
+      <li><code class="inline">Settings</code> class with required <code class="inline">database_url</code>, <code class="inline">redis_url</code>, <code class="inline">nats_url</code> from env, optional <code class="inline">heartbeat_interval_seconds</code> (default 60) and <code class="inline">service_name</code> (default "hello-svc")</li>
+      <li>FastAPI app with <code class="inline">GET /health → {"ok": true}</code> — process-up liveness only (carry: split into /health + /ready before first real strategy)</li>
+      <li>1 test (TestClient against /health)</li>
+    </ul>
+
+    <h3>Task 4 — NATS heartbeat publisher (commit 73ed5f0)</h3>
+    <p class="why-it-matters"><strong>Why it matters:</strong> first real publisher to <strong>v2 §07</strong>'s NATS event bus. The shape — <code class="inline">async def publish_x(nc, settings)</code> taking the connection as a parameter — is the publisher pattern Phase 2 services will adopt.</p>
+    <ul class="bullets">
+      <li><code class="inline">publish_heartbeat(nc, settings)</code> serializes a HeartbeatEvent and publishes to <code class="inline">events.heartbeat.{service_name}</code></li>
+      <li>Tests use <code class="inline">unittest.mock.AsyncMock</code> + <code class="inline">asyncio.run()</code> (no pytest-asyncio dep added)</li>
+      <li>Solved a pytest basename collision (<code class="inline">test_heartbeat.py</code> existed in both bot-events and hello-svc) by adding <code class="inline">addopts = "--import-mode=importlib"</code> to root pyproject.toml — locks in a structural fix for Phase 2 services</li>
+      <li>Adds <code class="inline">nats-py>=2.7</code> to deps (resolved 2.14.0)</li>
+    </ul>
+
+    <h3>Task 5 — Postgres SELECT 1 startup check (commit a31102e)</h3>
+    <p class="why-it-matters"><strong>Why it matters:</strong> first real consumer of <strong>v2 §06</strong>'s managed Postgres. Pattern locked in: connect, run probe, close in <code class="inline">finally</code>, raise on unexpected. Same shape used for Postgres connection probes in oms-svc, pms-svc.</p>
+    <ul class="bullets">
+      <li><code class="inline">async def check_postgres(settings)</code>: connects via asyncpg, runs <code class="inline">SELECT 1</code>, raises RuntimeError on mismatch, closes in <code class="inline">finally</code></li>
+      <li>2 tests using mocked asyncpg (no real network in test path)</li>
+      <li>Extracted <code class="inline">_settings()</code> helper to <code class="inline">conftest.py</code> as <code class="inline">settings_factory</code> fixture (was duplicated in test_heartbeat.py and now test_postgres.py)</li>
+      <li>Adds <code class="inline">asyncpg>=0.30</code> to deps</li>
+    </ul>
+
+    <h3>Task 6 — Redis PING startup check (commit 025f5b7)</h3>
+    <p class="why-it-matters"><strong>Why it matters:</strong> first real consumer of <strong>v2 §06</strong>'s managed Redis. <code class="inline">hello_svc/redis.py</code> shadows the stdlib-style import path of redis-py — locked the pattern that this is fine in Python 3 absolute-import mode.</p>
+    <ul class="bullets">
+      <li><code class="inline">async def check_redis(settings)</code>: connects via redis.asyncio.Redis.from_url, runs PING, accepts True/b"PONG"/"PONG" responses (modern redis-py returns True), uses <code class="inline">aclose()</code> in <code class="inline">finally</code></li>
+      <li>2 tests with patched <code class="inline">Redis.from_url</code></li>
+      <li>Module shadowing was a non-issue: <code class="inline">from redis.asyncio import Redis</code> inside <code class="inline">hello_svc/redis.py</code> resolves cleanly to the third-party package</li>
+      <li>Adds <code class="inline">redis>=5</code> (resolved 7.4.0)</li>
+    </ul>
+
+    <h3>Task 7 — Wire it all into FastAPI lifespan (commit b6bed38)</h3>
+    <p class="why-it-matters"><strong>Why it matters:</strong> the most architecturally-significant code on the branch. Lifespan-managed dependencies = startup fail-fast, deterministic teardown order. Pattern: settings → checks → resource connections → spawn background tasks → yield → cancel tasks → close resources. Every Phase 2 service uses this template.</p>
+    <ul class="bullets">
+      <li>Settings instantiated at lifespan entry (NOT module import) — keeps tests that bypass lifespan from crashing on missing env vars</li>
+      <li>Startup order: <code class="inline">Settings()</code> → <code class="inline">check_postgres</code> → <code class="inline">check_redis</code> → <code class="inline">nats.connect</code> → <code class="inline">asyncio.create_task(_heartbeat_loop)</code></li>
+      <li>Shutdown order (reverse): cancel heartbeat task → await it → <code class="inline">nc.close()</code> — order matters so the task stops trying to publish before NATS closes</li>
+      <li><code class="inline">_heartbeat_loop</code> re-raises CancelledError; lifespan teardown swallows it via <code class="inline">contextlib.suppress(CancelledError)</code> — modern asyncio convention (task ends up marked Cancelled, not CompletedNormally)</li>
+      <li>3 tests using TestClient as context manager (which exercises lifespan): order verification, shutdown teardown verification, startup-failure propagation verification</li>
+      <li>Total: 22 tests passing (5 base + 7 heartbeat + 1 health + 2 publish_heartbeat + 2 postgres + 2 redis + 3 lifespan)</li>
+    </ul>
+
+    <h3>Task 8 — Multi-stage Dockerfile + .dockerignore (commit f24f8f8)</h3>
+    <p class="why-it-matters"><strong>Why it matters:</strong> first containerized Midas service. Builder/runtime split, <code class="inline">--no-editable</code> uv sync (real wheels not <code class="inline">.pth</code> files), non-root UID 1000, minimal runtime layer. Implements <strong>v2 §10</strong> image build pattern.</p>
+    <ul class="bullets">
+      <li>Builder: <code class="inline">ghcr.io/astral-sh/uv:python3.12-bookworm-slim</code> — uv preinstalled. Manifests-first COPY for layer caching, then source COPY, then second uv sync with <code class="inline">--no-editable</code> to install workspace packages as real wheels.</li>
+      <li>Runtime: <code class="inline">python:3.12-slim-bookworm</code>, non-root user UID 1000, only <code class="inline">.venv</code> copied from builder (no source files needed because no editable installs), <code class="inline">PATH</code> only (no PYTHONPATH override needed).</li>
+      <li>Image size: 290MB on disk, 61.9MB unique content. Verified locally on OrbStack with <code class="inline">docker run --rm hello-svc:local python -c "from hello_svc.main import app; print('imports ok')"</code> → "imports ok".</li>
+      <li><code class="inline">.dockerignore</code> at repo root (build context is repo root): excludes <code class="inline">**/.venv</code>, <code class="inline">**/__pycache__</code>, <code class="inline">**/tests</code>, <code class="inline">docs/</code>, <code class="inline">deploy/</code>, <code class="inline">session-archive/</code>, <code class="inline">.git/</code>, <code class="inline">.github/</code>, <code class="inline">ruff.toml</code>, <code class="inline">Makefile</code>, <code class="inline">.python-version</code>, <code class="inline">**/README.md</code>.</li>
+    </ul>
+
+    <h3>Task 9 — K8s manifests at deploy/hello-svc/ (commit 9a9a00b)</h3>
+    <p class="why-it-matters"><strong>Why it matters:</strong> first real deployment.yaml in Midas. Establishes the security baseline (runAsNonRoot UID 1000, readOnlyRootFilesystem, drop ALL caps) and resource shape (50m/128Mi requests, 200m/256Mi limits) for every future service. Implements <strong>v2 §09</strong> deploy pattern via raw YAML.</p>
+    <ul class="bullets">
+      <li>3 files: <code class="inline">namespace.yaml</code>, <code class="inline">deployment.yaml</code>, <code class="inline">service.yaml</code> — raw YAML, mirrors the existing hello-world precedent</li>
+      <li>Container name <code class="inline">app</code> (not service name) — avoids <code class="inline">kubectl logs hello-svc -c hello-svc</code> visual collision; convention locked for future services</li>
+      <li>Image: <code class="inline">ghcr.io/bakerlunch-ai/hello-svc:main</code>, <code class="inline">imagePullPolicy: Always</code> (anti-pattern, in carry-items)</li>
+      <li><code class="inline">envFrom</code> postgres-oms + redis sealed-secrets; <code class="inline">NATS_URL</code> hardcoded as plain env (NATS has no auth in Phase 1)</li>
+      <li>Liveness probe: /health every 30s; readiness probe: /health every 10s</li>
+      <li>Pod-level securityContext: <code class="inline">runAsNonRoot: true</code>, <code class="inline">runAsUser: 1000</code>, <code class="inline">runAsGroup: 1000</code>. Container-level: <code class="inline">readOnlyRootFilesystem: true</code>, <code class="inline">capabilities.drop: [ALL]</code>, <code class="inline">allowPrivilegeEscalation: false</code></li>
+      <li>Service: ClusterIP, port 80 → targetPort 8080</li>
+    </ul>
+
+    <h3>Task 10 — Argo CD Application + GHA build workflow (commit 484b69b)</h3>
+    <p class="why-it-matters"><strong>Why it matters:</strong> closes the GitOps loop. Argo CD watches the repo, GHA builds the image, GHCR stores it, cluster pulls it. Implements <strong>v2 §09 + §10</strong> together. The two files are the template every Phase 2 service copies.</p>
+    <ul class="bullets">
+      <li><code class="inline">deploy/applications/hello-svc.yaml</code> — Argo CD Application, mirrors <code class="inline">hello-world.yaml</code> exactly with a 3-line diff (name, path, namespace). <code class="inline">syncPolicy.automated.prune+selfHeal</code>, <code class="inline">syncOptions: ["CreateNamespace=true"]</code></li>
+      <li><code class="inline">.github/workflows/build-hello-svc.yml</code> — Docker build + push to GHCR. Triggers on main-branch changes to <code class="inline">services/hello-svc/**</code>, <code class="inline">packages/bot-events/**</code>, <code class="inline">.dockerignore</code>, or the workflow file. Plus <code class="inline">workflow_dispatch</code></li>
+      <li>Auth: <code class="inline">permissions: { contents: read, packages: write }</code> grants the workflow's GITHUB_TOKEN GHCR push scope for this run only — no PAT, no scope refresh on local gh</li>
+      <li>Tags pushed: <code class="inline">:main</code> (mutable, what deployment references) and <code class="inline">:sha-&lt;full-sha&gt;</code> (immutable, for rollback)</li>
+      <li>Buildx with <code class="inline">type=gha</code> cache. First main-branch build was 50s with no cache hit</li>
+      <li>Branch <code class="inline">feat/hello-svc</code> merged to main with <code class="inline">--ff-only</code> (linear history, no merge commit). 9 feat commits pushed.</li>
+    </ul>
+
+    <h3>Task 11 — Sealed-secrets for hello-svc namespace (commit 006929b)</h3>
+    <p class="why-it-matters"><strong>Why it matters:</strong> sealed-secrets strict scope is ns+name bound, so the existing default-namespace seals can't be re-used in another namespace. The stdin pipeline used here keeps plaintext off disk entirely. Pattern locked for Phase 2 services that each get their own namespace.</p>
+    <ul class="bullets">
+      <li>Re-sealed <code class="inline">DATABASE_URL</code> (postgres-oms) and <code class="inline">REDIS_URL</code> (redis) for the hello-svc namespace</li>
+      <li>Pipeline (no plaintext on disk):
+        <div class="code-block">printf '%s' "$(pbpaste)" | kubectl create secret generic &lt;name&gt; \
+  --namespace hello-svc --from-file=&lt;ENV_VAR&gt;=/dev/stdin \
+  --dry-run=client -o yaml | \
+  kubeseal --controller-namespace=sealed-secrets \
+  --controller-name=sealed-secrets-controller \
+  --format=yaml &gt; deploy/secrets/hello-svc/&lt;name&gt;.yaml</div>
+      </li>
+      <li><code class="inline">printf '%s' "$(pbpaste)"</code> strips trailing newlines from clipboard (the May 4 oms breakage mode)</li>
+      <li>Decoded byte verification: postgres-oms 144 bytes, redis 110 bytes — both no trailing newline</li>
+      <li>Both sealed-secrets applied; controller unsealed both cleanly</li>
+    </ul>
+
+    <h3>Task 12 — Apply Argo Application, watch the pod come up</h3>
+    <p class="why-it-matters"><strong>Why it matters:</strong> the moment the Phase 1 stack is proven end-to-end. Or stays unproven, depending on whether anything fails.</p>
+    <ul class="bullets">
+      <li><code class="inline">kubectl apply -f deploy/applications/hello-svc.yaml</code> → Argo registered the app</li>
+      <li>Argo synced: deployment + service created in hello-svc namespace</li>
+      <li>Pod scheduled to midas-pool-default-3noeuo, then stuck in ImagePullBackOff with <strong>401 Unauthorized</strong> — GHCR package was still private (default visibility)</li>
+      <li>Filippo flipped GHCR package visibility to public via the Danger Zone settings</li>
+      <li><code class="inline">kubectl delete pod ...</code> forced immediate retry; cluster pulled the image successfully on the next attempt (note: Filippo's local <code class="inline">docker manifest inspect</code> still returned 401, even though DOKS pulled fine — possible GHCR routing/cache quirk, in carry-items)</li>
+      <li>New pod went 1/1 Running. Logs showed clean uvicorn startup, "Application startup complete", and successful readiness probes every 10s</li>
+      <li>Ran <code class="inline">nats sub 'events.heartbeat.>' --count=1 --timeout=90s</code> from a nats-box pod in the nats namespace</li>
+      <li><strong>Heartbeat received within 60s on subject <code class="inline">events.heartbeat.hello-svc</code>:</strong>
+        <div class="code-block">{"event_type":"heartbeat","event_version":"1.0",
+ "event_id":"e0a37d2a-674b-4c68-93c9-903a0312be86",
+ "emitted_at":"2026-05-09T22:28:09.415871Z",
+ "emitted_by":"hello-svc","correlation_id":null,
+ "payload":{},"service_name":"hello-svc"}</div>
+      </li>
+      <li>Argo Application: Synced + Healthy ✅</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">03</div><h2>How this fits the v2 architecture (plain English)</h2></div>
+
+    <h3>The kitchen analogy</h3>
+    <p>Imagine the v2 architecture as a restaurant. The previous bot was a single chef in a kitchen with a hot plate and a knife — making everything from scratch in one pan, getting confused about what's medium-rare, dropping orders on the floor. Midas is the rebuild: separate stations (data prep, sauté, grill, plating) with proper tickets passing between them.</p>
+    <p>Phase 1 has been building the kitchen itself: the gas line (NATS), the walk-in fridges (Postgres, Redis), the surveillance cameras and order display (LGTM stack), the locked cabinet for sealed-secrets, the dumbwaiter (Argo CD) connecting orders to plates.</p>
+    <p>Tonight we hired a stagiaire — hello-svc — who isn't a real chef yet, but who has to walk into the kitchen, find the fridges, log into the cameras, send a "I'm here" ticket every minute, and not catch fire. The stagiaire passed. The kitchen works. Phase 2's actual chefs (data-svc, oms-svc, pms-svc) can start their shift knowing every station functions.</p>
+
+    <h3>What each task implements (translation table)</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Tonight's task</th><th>v2 reference</th><th>What it unlocks for Phase 2+</th></tr></thead>
+      <tbody>
+        <tr><td>HeartbeatEvent in bot-events</td><td><span class="badge badge-v2">v2 §04</span></td><td>The first concrete BaseEvent subclass. Pattern for MarketTick, OrderPlaced, etc.</td></tr>
+        <tr><td>Pydantic-settings config</td><td><span class="badge badge-v2">v2 §02</span></td><td>Standard service config shape: env vars → Settings instance → consumed at lifespan entry</td></tr>
+        <tr><td>FastAPI lifespan with composed dependency checks</td><td><span class="badge badge-v2">v2 §02</span></td><td>Standard service startup contract: fail-fast on dep unavailable, clean teardown order</td></tr>
+        <tr><td>asyncpg startup probe</td><td><span class="badge badge-v2">v2 §06</span></td><td>Pattern for any Postgres-using service. oms-svc/pms-svc copy this exactly.</td></tr>
+        <tr><td>redis-py startup probe</td><td><span class="badge badge-v2">v2 §06</span></td><td>Pattern for any Redis-using service.</td></tr>
+        <tr><td>NATS publisher</td><td><span class="badge badge-v2">v2 §07</span></td><td>First real publisher; pattern for emitting events from any service.</td></tr>
+        <tr><td>Multi-stage Dockerfile with --no-editable uv sync</td><td><span class="badge badge-v2">v2 §10</span></td><td>Build template every Midas Python service uses.</td></tr>
+        <tr><td>K8s manifests with security baseline</td><td><span class="badge badge-v2">v2 §09</span></td><td>Deployment template with the security posture every service inherits.</td></tr>
+        <tr><td>GHA build workflow → GHCR</td><td><span class="badge badge-v2">v2 §10</span></td><td>CI/CD per service. Phase 2 services each get a build-&lt;svc&gt;.yml.</td></tr>
+        <tr><td>Argo CD Application</td><td><span class="badge badge-v2">v2 §09</span></td><td>GitOps registration per service. 3-line copy-paste from hello-svc.yaml.</td></tr>
+        <tr><td>Per-namespace sealed-secrets</td><td><span class="badge badge-v2">v2 §09</span></td><td>Pattern for re-sealing credentials when each service gets its own namespace.</td></tr>
+        <tr><td>End-to-end heartbeat verification</td><td><span class="badge badge-v2">v2 §02 + §05–§10</span></td><td>The integration test for the entire Phase 1 stack. Passed.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>What this session did NOT touch</h3>
+    <p>Tonight didn't touch the LGTM observability stack — hello-svc emits stdout logs that Loki should be picking up automatically (via the daemonset Promtail), but no one looked at Grafana to verify. Didn't touch tracing (Tempo) — would need OpenTelemetry instrumentation in hello-svc, which is a Phase 2 concern. Didn't touch alerting rules in Prometheus alertmanager — Phase 6. And didn't touch the cross-DB denial check from Phase 1 Task 2, still deferred to Phase 2 when service permissions are wired.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">04</div><h2>Decisions made inline</h2></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Decision</th><th>Choice</th><th>Reason</th></tr></thead>
+      <tbody>
+        <tr><td>Manifest style</td><td>Raw YAML at <code class="inline">deploy/hello-svc/</code></td><td>Mirrors hello-world precedent. Helm waits until 2+ services share a template.</td></tr>
+        <tr><td>Sealed-secrets layout</td><td>Subdirectory <code class="inline">deploy/secrets/hello-svc/</code></td><td>Cleaner than flat-with-suffix as more services land</td></tr>
+        <tr><td>Secret count</td><td>postgres-oms + redis only (NOT all four DBs)</td><td>hello-svc only needs the two it actually probes</td></tr>
+        <tr><td>NATS auth</td><td>None — NATS_URL hardcoded in deployment.yaml</td><td>Phase 1 NATS has no auth; will revisit when JetStream auth lands</td></tr>
+        <tr><td>Image tag strategy (v1)</td><td><code class="inline">:main</code> + <code class="inline">imagePullPolicy: Always</code></td><td>Anti-pattern, accepted for hello-svc; carry-item to fix before first real strategy</td></tr>
+        <tr><td>HeartbeatEvent shape</td><td><code class="inline">event_type="heartbeat"</code> with required <code class="inline">service_name</code> field</td><td>Reusable across all future heartbeat-emitting services</td></tr>
+        <tr><td>Lifespan dependency order</td><td>Postgres → Redis → NATS → spawn heartbeat task</td><td>Fail-fast cheapest first; NATS connect last because it spawns a task we'll need to cancel</td></tr>
+        <tr><td>CancelledError convention</td><td>Loop re-raises; lifespan teardown swallows via <code class="inline">contextlib.suppress</code></td><td>Modern asyncio: tasks marked Cancelled, not CompletedNormally</td></tr>
+        <tr><td>Container name in pod</td><td><code class="inline">app</code> (not <code class="inline">hello-svc</code>)</td><td>Avoids <code class="inline">kubectl logs hello-svc -c hello-svc</code> visual collision</td></tr>
+        <tr><td>uv sync mode</td><td><code class="inline">--no-editable</code> on the second sync</td><td>Real wheels in .venv → no source files needed in runtime image → cleaner mental model</td></tr>
+        <tr><td>pytest import mode</td><td><code class="inline">--import-mode=importlib</code> in root pyproject.toml</td><td>Structural fix for test-file basename collisions; future-proofs Phase 2 services</td></tr>
+        <tr><td>GHCR auth strategy</td><td>Workflow GITHUB_TOKEN with <code class="inline">permissions: { packages: write }</code></td><td>No PAT to manage; CI scope automatic; local gh scope optional</td></tr>
+        <tr><td>GHCR package visibility</td><td>Public</td><td>hello-svc has no proprietary content; Phase 2's oms-svc revisits with imagePullSecret</td></tr>
+        <tr><td>Credential rotation tonight</td><td>Skipped (passwords leaked in chat via base64-encoded kubectl output)</td><td>VPC-only access mitigates; rotate in carry-items</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">05</div><h2>Issues + resolutions</h2></div>
+
+    <h4>Pytest basename collision (test_heartbeat.py in two packages)</h4>
+    <p><strong>Resolution:</strong> added <code class="inline">addopts = "--import-mode=importlib"</code> to root pyproject.toml. Structural fix; both files coexist cleanly. Future Phase 2 services can name files however they want.</p>
+
+    <h4>doctl 1.158.0 removed --kubeconfig flag</h4>
+    <p><strong>Resolution:</strong> use <code class="inline">KUBECONFIG=path doctl kubernetes cluster kubeconfig save midas-prod</code> instead. Documented in carry-items for the runbook.</p>
+
+    <h4>Credentials leaked in chat transcript</h4>
+    <p><strong>Issue:</strong> ran <code class="inline">kubectl get secret X -o jsonpath='{.data}'</code> to verify field names; this returned base64-encoded VALUES too, exposing the full Postgres + Redis connection strings (with passwords) into chat. <strong>Resolution:</strong> Filippo chose to skip rotation tonight (VPC-only access mitigates; not blocking). Better future command documented:
+    <code class="inline">kubectl get secret X -o go-template='{{range $k,$v := .data}}{{$k}}{{"\n"}}{{end}}'</code> — keys only, no values. Rotation added to carry items.</p>
+
+    <h4>GHCR package was private; pod stuck in ImagePullBackOff with 401</h4>
+    <p><strong>Resolution:</strong> Filippo flipped visibility to Public in GitHub Danger Zone. <code class="inline">kubectl delete pod -l app=hello-svc</code> forced an immediate retry; cluster pulled the image. Curious side note: Filippo's local <code class="inline">docker manifest inspect</code> still returned 401 even after the flip succeeded for DOKS — probable GHCR routing/cache quirk, deferred as a carry item.</p>
+
+    <h4>Two transient cluster API EOF errors during the Argo apply window</h4>
+    <p>Cluster events showed kube-scheduler, kube-controller-manager, and cluster-autoscaler all re-electing leaders ~20s before, suggesting a brief DOKS managed-control-plane reshuffle. Cluster API recovered on its own. <strong>Resolution:</strong> retried the kubectl call; worked. Not related to hello-svc.</p>
+
+    <h4>Pod scheduling took ~90s instead of expected ~5s</h4>
+    <p>Same root cause as above — managed control plane was mid-reshuffle. The kubelet picked it up once the scheduler's lease re-stabilized. <strong>Resolution:</strong> patience.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">06</div><h2>Commits pushed (10)</h2></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>SHA</th><th>Subject</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">47e2ea7</td><td>feat(bot-events): add HeartbeatEvent for service liveness signals</td></tr>
+        <tr><td class="mono">7eb3e79</td><td>feat(hello-svc): scaffold service with /health endpoint</td></tr>
+        <tr><td class="mono">73ed5f0</td><td>feat(hello-svc): add NATS heartbeat publisher</td></tr>
+        <tr><td class="mono">a31102e</td><td>feat(hello-svc): add Postgres SELECT 1 startup check</td></tr>
+        <tr><td class="mono">025f5b7</td><td>feat(hello-svc): add Redis PING startup check</td></tr>
+        <tr><td class="mono">b6bed38</td><td>feat(hello-svc): wire startup checks and heartbeat loop into FastAPI lifespan</td></tr>
+        <tr><td class="mono">f24f8f8</td><td>feat(hello-svc): add multi-stage Dockerfile and repo-root .dockerignore</td></tr>
+        <tr><td class="mono">9a9a00b</td><td>feat(hello-svc): add Kubernetes deployment manifests</td></tr>
+        <tr><td class="mono">484b69b</td><td>feat(hello-svc): add Argo CD Application and GHA build workflow</td></tr>
+        <tr><td class="mono">006929b</td><td>feat(secrets): seal postgres-oms and redis for hello-svc namespace</td></tr>
+      </tbody>
+    </table></div>
+    <p>All 10 on main. Branch <code class="inline">feat/hello-svc</code> preserved (not deleted) locally and remotely. <code class="inline">--ff-only</code> merge means linear history, no merge commits.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">07</div><h2>Before / After</h2></div>
+    <div class="compare-box">
+      <div class="compare-half before">
+        <div class="compare-label">Before (start of session 5)</div>
+        <ul class="bullets">
+          <li>Phase 1: 9.5/12</li>
+          <li><code class="inline">services/</code> directory: empty (.gitkeep only)</li>
+          <li>0 application services running in cluster</li>
+          <li>0 Python services hitting Postgres/Redis/NATS</li>
+          <li>Peter's Mac: no Midas dev tools, no kubeconfig, no clone</li>
+          <li>bot-events package: 1 class (BaseEvent), 5 tests</li>
+          <li>Sealed-secrets: 4 sealed for default namespace only</li>
+          <li>GHCR: no Midas images</li>
+        </ul>
+      </div>
+      <div class="compare-half after">
+        <div class="compare-label">After (end of session 5)</div>
+        <ul class="bullets">
+          <li>Phase 1: <strong>11/12</strong></li>
+          <li><code class="inline">services/hello-svc/</code> with full source + tests + Dockerfile</li>
+          <li><strong>hello-svc 1/1 Running, Argo Synced + Healthy</strong></li>
+          <li>Heartbeat verified flowing on <code class="inline">events.heartbeat.hello-svc</code></li>
+          <li>Peter's Mac: fully bootstrapped; team has 2 dev machines</li>
+          <li>bot-events: 2 classes (Base + Heartbeat), 12 tests</li>
+          <li>Sealed-secrets: 6 sealed (4 default + 2 hello-svc)</li>
+          <li>GHCR: <code class="inline">ghcr.io/bakerlunch-ai/hello-svc:main + :sha-...</code> public</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">08</div><h2>Carry items added this session</h2></div>
+    <ul class="bullets">
+      <li><strong>Postgres oms_user + Redis default passwords leaked May 9</strong> via <code class="inline">kubectl get secret -o jsonpath='{.data}'</code> base64 output — rotate when convenient; VPC-only access mitigates; use go-template form to print only keys next time</li>
+      <li>Local <code class="inline">gh</code> token missing read:packages / write:packages scopes — not blocking</li>
+      <li><code class="inline">/health</code> is dumb liveness only — split into <code class="inline">/health</code> (process up) + <code class="inline">/ready</code> (deps healthy) before first real strategy ships</li>
+      <li><code class="inline">nc.close()</code> vs <code class="inline">nc.drain()</code> in lifespan teardown — fine for fire-and-forget heartbeats; revisit when first request/reply consumer ships</li>
+      <li><code class="inline">imagePullPolicy: Always</code> + mutable <code class="inline">:main</code> tag — switch to per-SHA pinning + Argo Image Updater (or commit-bump) before first real strategy</li>
+      <li>Container-name <code class="inline">app</code> convention to avoid kubectl-logs collision — keep for future services</li>
+      <li>GHA actions on Node.js 20 — bump pins before June/Sep 2026 forced removal</li>
+      <li>NATS Argo app OutOfSync — cosmetic, still deferred</li>
+      <li><code class="inline">docker manifest inspect</code> from Mac returns 401 even though DOKS pulls fine — investigate once if public-vs-private question recurs</li>
+      <li>Future bot-events consumers each need own <code class="inline">paths</code> entry in their build workflow</li>
+      <li><code class="inline">doctl 1.158.0</code> removed <code class="inline">--kubeconfig</code> flag — document in runbook</li>
+      <li>Mac onboarding sequence (~45 min): brew, kubectl, doctl, gh, uv, OrbStack, kubeseal, kubeconfig generation</li>
+      <li>DO droplet limit at 3 (currently capped) — request bump before scaling cluster</li>
+      <li>DO account status "warning" — investigate in DO console</li>
+      <li>pytest basename collisions solved via <code class="inline">--import-mode=importlib</code></li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">09</div><h2>Working agreement updates</h2></div>
+    <p>One adjustment came up mid-session: Claude (Filippo's chat assistant) jumped to "session close" mode after Task 11 verified end-to-end, before Filippo had asked to wrap. This was a violation of working agreement #1 ("Filippo says when to stop. Claude does not ask"). Adjustment encoded in <code class="inline">PROJECT_HANDOFF.html</code> §03 behavioral rules: <em>"Don't spontaneously generate session-close docs just because a milestone hit. Wait for explicit 'wrap up' / 'session close' / 'we're done' trigger phrases."</em></p>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">10</div><h2>Collaboration notes</h2></div>
+    <ul class="bullets">
+      <li>This was the first session run on Peter's Mac. The Mac onboarding sequence (~45 min) is now documented as a carry-item; Task 12's runbook will codify it.</li>
+      <li>Claude Code's bash tool can't handle interactive TTY prompts (sudo password, OAuth browser flows). Pattern that works: Claude Code prepares the command, Filippo/Peter runs it in a real terminal, Claude Code resumes after the human-interactive step completes. This came up for: brew install (sudo), doctl auth init (token paste), gh auth login (browser OAuth), GHCR visibility flip (browser).</li>
+      <li>Strict TDD discipline (RED → GREEN, write failing tests before impl) was used throughout. Every commit had a real failing-test moment recorded before the implementation went in. 22 passing tests at end of session; no test was added retroactively to match working code.</li>
+      <li>Per-substep commit cadence (one logical commit per cohesive change, with a real test pass between each) made the diff history easy to read. <code class="inline">git log --oneline</code> tells the story.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">11</div><h2>What next session looks like</h2></div>
+    <p><strong>Phase 1 Task 12 — Document the runbook.</strong> Short session. Document daily check procedure, incident response, common operations (deploy a new service, scale, restart, rotate token), Mac onboarding sequence. After this lands, Phase 1 closes.</p>
+    <p>Then Phase 2 planning starts. The big unknown is the order of services: does data-svc come before oms-svc and pms-svc, or are they built in parallel? Probably data-svc first (Phase 2 needs market data flowing before there's anything to record), then oms-svc and pms-svc as paired event-sourced services. Worth a planning conversation at the start of the Phase 2 kickoff session.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">12</div><h2>Honest tally</h2></div>
+    <ul class="bullets">
+      <li><strong>Time:</strong> ~7 hours (longest session yet)</li>
+      <li><strong>Commits:</strong> 10 (more than every prior session combined)</li>
+      <li><strong>Tests added:</strong> 17 (5 → 22)</li>
+      <li><strong>Phase 1 advancement:</strong> 9.5 → 11 (one full task plus a half-task carry from session 4)</li>
+      <li><strong>Things that took longer than expected:</strong> Mac onboarding (45 min), credential session (extra tooling install for kubeseal), GHCR public-flip propagation (the local-vs-cluster 401 mystery), recovering from Filippo's Claude jumping to wrap-up early</li>
+      <li><strong>Things that went smoother than expected:</strong> the actual code (TDD on every substep meant zero rework), the Argo apply once secrets were correct, the sealed-secrets stdin pipeline (no plaintext exposure)</li>
+      <li><strong>The moment that mattered:</strong> when the nats-box subscriber printed the HeartbeatEvent JSON. Phase 1 stopped being theory.</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="footer">
+  Midas · Session Report · May 9, 2026 · github.com/bakerlunch-ai/midas
+</div>
+
+</body>
+</html>
