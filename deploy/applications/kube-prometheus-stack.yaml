@@ -32,6 +32,15 @@ spec:
             accessModes: ["ReadWriteOnce"]
           service:
             type: ClusterIP
+          additionalDataSources:
+            - name: Loki
+              type: loki
+              url: http://loki.monitoring.svc.cluster.local:3100
+              access: proxy
+            - name: Tempo
+              type: tempo
+              url: http://tempo.monitoring.svc.cluster.local:3200
+              access: proxy
         kubeEtcd:
           enabled: false
         kubeControllerManager:
