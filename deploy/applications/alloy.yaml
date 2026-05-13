@@ -15,6 +15,8 @@ spec:
         controller:
           type: daemonset
         alloy:
+          mounts:
+            varlog: true
           configMap:
             create: true
             content: |
@@ -59,9 +61,14 @@ spec:
                 }
               }
 
-              loki.source.kubernetes "pods" {
-                targets    = discovery.relabel.pod_logs.output
-                forward_to = [loki.write.default.receiver]
+              local.file_match "pod_logs" {
+                path_targets = discovery.relabel.pod_logs.output
+              }
+
+              loki.source.file "pod_logs" {
+                targets       = local.file_match.pod_logs.targets
+                forward_to    = [loki.write.default.receiver]
+                tail_from_end = true
               }
 
               loki.write "default" {
