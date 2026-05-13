@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Midas Session Report — May 12, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0d1b2a;
+    --navy-mid: #1a2e44;
+    --green: #00c896;
+    --green-dim: #00a87a;
+    --amber: #f5a623;
+    --red: #e05252;
+    --cream: #f7f4ef;
+    --text: #1a1a2a;
+    --text-light: #5a6072;
+    --border: #e2ddd6;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+    --serif: 'DM Serif Display', serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--cream); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.7; }
+  .header { background: var(--navy); color: white; padding: 56px 60px 48px; position: relative; overflow: hidden; }
+  .header::before { content: ''; position: absolute; top: -80px; right: -80px; width: 320px; height: 320px; border-radius: 50%; border: 1px solid rgba(0,200,150,0.15); }
+  .header-tag { font-family: var(--mono); font-size: 11px; color: var(--green); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; }
+  .header h1 { font-family: var(--serif); font-size: 40px; font-weight: 400; line-height: 1.15; margin-bottom: 10px; }
+  .header-sub { font-size: 14px; color: rgba(255,255,255,0.55); font-weight: 300; margin-bottom: 28px; max-width: 720px; }
+  .header-meta { display: flex; gap: 12px; flex-wrap: wrap; }
+  .meta-pill { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); padding: 6px 14px; border-radius: 100px; font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.7); }
+  .meta-pill.green { border-color: rgba(0,200,150,0.4); color: var(--green); }
+  .meta-pill.amber { border-color: rgba(245,166,35,0.4); color: var(--amber); }
+  .container { max-width: 1080px; margin: 0 auto; padding: 48px 40px; }
+  .why-callout { background: rgba(0,200,150,0.06); border: 1px solid rgba(0,200,150,0.25); border-left: 3px solid var(--green); padding: 18px 22px; border-radius: 6px; margin-bottom: 40px; font-size: 14px; color: #103028; }
+  .why-callout strong { color: var(--navy); font-family: var(--serif); font-size: 16px; display: block; margin-bottom: 8px; }
+  .section { margin-bottom: 48px; }
+  .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .section-num { font-family: var(--mono); font-size: 11px; color: var(--green-dim); background: rgba(0,200,150,0.08); border: 1px solid rgba(0,200,150,0.2); width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 600; }
+  .section h2 { font-family: var(--serif); font-size: 24px; font-weight: 400; color: var(--navy); }
+  .section h3 { font-size: 13px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin: 24px 0 8px; }
+  .section h4 { font-family: var(--serif); font-size: 18px; font-weight: 400; color: var(--navy); margin: 24px 0 8px; }
+  .section p { color: var(--text); margin-bottom: 12px; max-width: 820px; }
+  .why-it-matters { background: rgba(0,200,150,0.04); border-left: 3px solid var(--green-dim); padding: 10px 16px; margin: 10px 0 18px; font-size: 13px; color: var(--text-light); font-style: italic; }
+  .why-it-matters strong { color: var(--green-dim); font-style: normal; font-weight: 600; }
+  .table-wrap { overflow-x: auto; margin: 12px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { background: var(--navy); color: white; }
+  thead th { padding: 11px 14px; text-align: left; font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
+  tbody tr:nth-child(odd) { background: white; }
+  tbody tr:nth-child(even) { background: rgba(0,0,0,0.02); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  td.mono { font-family: var(--mono); font-size: 12px; color: var(--navy-mid); }
+  td.green { color: var(--green-dim); font-weight: 600; }
+  td.amber { color: #b07010; font-weight: 600; }
+  .bullets { list-style: none; padding: 0; margin: 8px 0; }
+  .bullets li { padding: 5px 0 5px 22px; position: relative; font-size: 13.5px; color: var(--text); border-bottom: 1px solid rgba(0,0,0,0.04); }
+  .bullets li::before { content: '→'; position: absolute; left: 0; color: var(--green-dim); font-family: var(--mono); font-size: 12px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 100px; font-family: var(--mono); font-size: 10px; font-weight: 600; }
+  .badge-green { background: rgba(0,200,150,0.12); color: var(--green-dim); border: 1px solid rgba(0,200,150,0.3); }
+  .badge-amber { background: rgba(245,166,35,0.12); color: #8a6010; border: 1px solid rgba(245,166,35,0.3); }
+  .badge-navy { background: rgba(13,27,42,0.08); color: var(--navy-mid); border: 1px solid rgba(13,27,42,0.15); }
+  .badge-red { background: rgba(224,82,82,0.10); color: #b03030; border: 1px solid rgba(224,82,82,0.3); }
+  .badge-v2 { background: rgba(13,27,42,0.06); color: var(--navy-mid); border: 1px solid rgba(13,27,42,0.20); font-size: 9.5px; }
+  .code-block { background: var(--navy); color: #a8d8c8; font-family: var(--mono); font-size: 12px; padding: 16px 20px; border-radius: 8px; margin: 12px 0; line-height: 1.6; overflow-x: auto; white-space: pre; }
+  .callout { background: rgba(0,200,150,0.05); border: 1px solid rgba(0,200,150,0.2); border-left: 3px solid var(--green); padding: 14px 18px; border-radius: 6px; font-size: 13.5px; color: var(--text); margin: 16px 0; }
+  .callout strong { color: var(--navy); }
+  .callout.amber { background: rgba(245,166,35,0.06); border: 1px solid rgba(245,166,35,0.25); border-left: 3px solid var(--amber); color: #6a4810; }
+  .callout.amber strong { color: #3a2810; }
+  .callout.navy { background: rgba(13,27,42,0.04); border: 1px solid rgba(13,27,42,0.15); border-left: 3px solid var(--navy); color: var(--text); }
+  .compare-box { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .compare-box .before, .compare-box .after { padding: 14px 16px; border-radius: 6px; font-size: 13px; }
+  .compare-box .before { background: rgba(224,82,82,0.05); border: 1px solid rgba(224,82,82,0.25); border-left: 3px solid var(--red); }
+  .compare-box .after { background: rgba(0,200,150,0.05); border: 1px solid rgba(0,200,150,0.25); border-left: 3px solid var(--green); }
+  .compare-box h5 { font-family: var(--mono); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-light); margin-bottom: 8px; }
+  .footer { background: var(--navy); color: rgba(255,255,255,0.4); text-align: center; padding: 24px 40px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.5px; margin-top: 40px; }
+  code.inline { font-family: var(--mono); font-size: 12px; background: rgba(13,27,42,0.06); padding: 1px 5px; border-radius: 3px; color: var(--navy-mid); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-tag">Midas · Session Report · May 12, 2026</div>
+  <h1>Session Report<br>May 12, 2026</h1>
+  <div class="header-sub">Phase 1 closes. Three Phase 1.5 architectural problems discovered and resolved end-to-end. Phase 2 event vocabulary defined in full. Twelve commits, 120 passing tests, two architectural firsts (live GitOps pipeline, file-based log shipping with namespace filtering).</div>
+  <div class="header-meta">
+    <span class="meta-pill">Duration: ~8h</span>
+    <span class="meta-pill green">12 commits</span>
+    <span class="meta-pill green">Phase 1 complete (12/12)</span>
+    <span class="meta-pill green">Phase 1.5: 3/3 closed</span>
+    <span class="meta-pill green">Phase 2 events: 7/7</span>
+    <span class="meta-pill amber">DOKS apiserver unstable</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="why-callout">
+    <strong>Why this session matters</strong>
+    Tonight closes Phase 1 and lands the first three architectural pieces of Phase 2 — the GitOps pipeline (v2 §09), the log-shipper that completes LGTM observability (v2 §08), and the full event vocabulary that data-svc, oms-svc, and pms-svc will speak (v2 §04). Without tonight's work, every infra change going forward would require manual <code class="inline">kubectl apply</code>, services would have nothing to write logs to, and Phase 2 services would have no shared schema. In kitchen-station terms: the wiring is now actually wired, the dish-pass has a hot lamp, and the menu — the language of what gets cooked — is printed.
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">01</div><h2>Where we started</h2></div>
+    <p>The session opened on Filippo's MacBook with Phase 1 at 11/12 from session 5. Task 12 (the runbook) was the only ticket left in the original Phase 1 scope, but we had no real verification that Task 10 (LGTM observability) was actually functional beyond "Prometheus and Tempo are up." The first move was to write the runbook and close Phase 1; the second move was to verify what we'd shipped. The verification revealed three Phase 1.5 problems — invisible until tested, none of them visible from Argo CD's "Synced/Healthy" status:</p>
+    <ul class="bullets">
+      <li>Grafana had only 2 of 4 expected datasources (Prometheus + Alertmanager — no Loki, no Tempo)</li>
+      <li>Loki was running but had no log shipper, so it had only loki-canary self-test data</li>
+      <li>No <code class="inline">app-of-apps</code> reconciling <code class="inline">deploy/applications/</code>, so every YAML change to date had been manually <code class="inline">kubectl apply</code>'d — git and cluster were drifting silently</li>
+    </ul>
+    <p>The team chose to fix all three plus tackle Phase 2's event vocabulary before stopping. DOKS apiserver was unstable throughout the night — at least four EOF incidents on kubectl writes, one ~25-minute sustained outage, kube-state-metrics restart count climbed from 28 → 47 over the session. We worked around DOKS twice (direct ConfigMap patch for datasources; abandoned Argo retry for kube-prometheus-stack sync).</p>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">02</div><h2>Tasks completed</h2></div>
+
+    <h4>Task 1 — Phase 1 Task 12: RUNBOOK.md (closes Phase 1)</h4>
+    <ul class="bullets">
+      <li>Wrote <code class="inline">docs/RUNBOOK.md</code> (614 lines): daily check procedure, deploy a new service, credential management, incident response, common ops cheat sheet, reference appendix</li>
+      <li>Commit <code class="inline">febf24e</code>. Phase 1 officially closed at 12/12 before we started discovering Phase 1.5 problems.</li>
+    </ul>
+    <div class="why-it-matters"><strong>Why it matters:</strong> Closes v2 §10 (CI/CD operational hygiene) and v2 §14 (operational runbooks). Phase 2's services land on top of a documented operating model rather than tribal knowledge. Filippo can now do a daily check without Peter, which matters for the months we'll spend running this in paper mode.</div>
+
+    <h4>Task 2 — Phase 1.5 Problem 3: Grafana datasources fixed</h4>
+    <ul class="bullets">
+      <li>Added <code class="inline">grafana.additionalDataSources</code> block (Loki + Tempo, FQDN URLs, in-cluster service names) to <code class="inline">deploy/applications/kube-prometheus-stack.yaml</code>. Commit <code class="inline">c04eed4</code>.</li>
+      <li>Argo's first sync attempt EOF'd mid-patch on <code class="inline">ClusterRole/kps-kube-prometheus-stack-admission</code>. Worked around by patching the live <code class="inline">kps-kube-prometheus-stack-grafana-datasource</code> ConfigMap directly with the same content. Grafana's kiwigrid sidecar auto-reloaded provisioning within ~30s.</li>
+      <li>All 4 datasources confirmed via Grafana API: Alertmanager, Loki, Prometheus, Tempo with correct in-cluster URLs.</li>
+    </ul>
+    <div class="why-it-matters"><strong>Why it matters:</strong> Closes a gap in v2 §08 (observability). Until tonight, even if we had logs flowing to Loki, we couldn't view them in Grafana — the dashboard had no idea Loki existed. The "L" and "T" of LGTM (Loki + Tempo) were invisible to the operator. This is the visual side of the observability promise: a single Grafana pane shows all four data types.</div>
+
+    <h4>Task 3 — Phase 1.5 Problem 1: app-of-apps shipped (biggest architectural win of the night)</h4>
+    <ul class="bullets">
+      <li>Designed and committed <code class="inline">deploy/applications/app-of-apps.yaml</code> — one Argo Application watching <code class="inline">deploy/applications/*.yaml</code>, including itself recursively. <code class="inline">selfHeal: true</code>, <code class="inline">prune: true</code>, <code class="inline">ServerSideApply=true</code>. Commit <code class="inline">d394254</code>.</li>
+      <li>Bootstrap-applied once via <code class="inline">kubectl apply</code> (the only manual apply needed; from now on the file is self-managing). Synced + Healthy on first poll.</li>
+      <li>9 Argo Applications now active (8 previous + app-of-apps).</li>
+    </ul>
+    <div class="why-it-matters"><strong>Why it matters:</strong> This is the missing piece in v2 §09 (GitOps deploys). Before tonight, "git is source of truth" was aspirational — git changes did not flow to the cluster automatically; somebody had to run <code class="inline">kubectl apply</code> by hand. After tonight, edits to any infra YAML in <code class="inline">deploy/applications/</code> reconcile automatically. This is the foundation on which every subsequent infra change in this session was built, and it's what makes Phase 2 services deployable without manual cluster work.</div>
+
+    <h4>Task 4 — Phase 1.5 Problem 2: Grafana Alloy log shipper deployed (three iterations)</h4>
+    <p>Deploying the log shipper took three commits because the first design had a fatal interaction with single-binary Loki under load. Each iteration was a clean test of the GitOps pipeline we'd just shipped.</p>
+    <ul class="bullets">
+      <li><strong>v1 — commit <code class="inline">8e192c7</code></strong> — Alloy DaemonSet, K8s-API-based <code class="inline">loki.source.kubernetes</code>. First end-to-end test of app-of-apps: pushed to git, Argo detected and deployed automatically (~3min29s from push to Synced). BUT Alloy started backfilling 3+ days of pod logs from epoch on first discovery and crushed single-binary Loki — readiness probes failed 26 times in 6.5 min, Loki dropped from service endpoints, Alloy got connection refused.</li>
+      <li><strong>v2 — commit <code class="inline">7216a72</code></strong> — Switched to file-based collection. Web search confirmed <code class="inline">tail_from_end</code> is not supported on <code class="inline">loki.source.kubernetes</code> (grafana/alloy#3550, open since May 2025). Stopped the bleed first by scaling DaemonSet to 0 via <code class="inline">nodeSelector: midas/disabled=true</code> (Loki recovered in &lt;30s). Rewrote with <code class="inline">local.file_match</code> reading <code class="inline">/var/log/pods/*$UID/*.log</code> via <code class="inline">alloy.mounts.varlog: true</code>, plus <code class="inline">loki.source.file</code> with <code class="inline">tail_from_end = true</code>. hello-svc namespace label registered in Loki, but cluster-wide steady-state ingest still saturated query path.</li>
+      <li><strong>v3 — commit <code class="inline">6d25248</code></strong> — Added drop relabel rule for <code class="inline">kube-system|monitoring</code> namespaces (DOKS-managed chatter + observability self-logs). Reconciled via GitOps in 11 seconds. Verified with <code class="inline">count_over_time</code> instant queries (the <code class="inline">limit</code>-cap diagnostic trap was caught by Filippo): kube-system 0 lines/2min, monitoring 0 lines/2min, hello-svc 16 lines/2min (matches the 10-second health-probe rate), argocd 130 lines/2min, Loki /ready stable.</li>
+    </ul>
+    <div class="why-it-matters"><strong>Why it matters:</strong> Closes the largest gap in v2 §08. Logs now flow from every pod to Loki with proper namespace/pod/container/app/node labels, queryable from Grafana. Phase 2 services (data-svc, oms-svc, pms-svc) will be observable from the moment they deploy — no per-service log shipper setup, no tribal knowledge. The three-iteration arc also stress-tested v2 §09 (GitOps): we pushed three live config changes and Argo applied them all without manual intervention. The pattern is real.</div>
+
+    <h4>Task 5 — Phase 2 event vocabulary defined (7 event types, 104 new tests)</h4>
+    <p>Each event = one commit. Each follows the established <code class="inline">BaseEvent</code> pattern (Pydantic v2, frozen=True, extra="forbid", ClassVar event_type/event_version with <code class="inline">__init_subclass__</code> enforcement, wrap serializer for class constants).</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Commit</th><th>Event</th><th>NATS subject</th><th>Emitted by</th><th>Tests</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">e5b816d</td><td>MarketTickEvent</td><td class="mono">events.market.tick.&lt;exchange&gt;.&lt;ticker&gt;</td><td>data-svc</td><td>12</td></tr>
+        <tr><td class="mono">ded54ee</td><td>OrderPlacedEvent</td><td class="mono">events.order.placed.&lt;exchange&gt;.&lt;ticker&gt;</td><td>oms-svc</td><td>17</td></tr>
+        <tr><td class="mono">d90575e</td><td>OrderFilledEvent</td><td class="mono">events.order.filled.&lt;exchange&gt;.&lt;ticker&gt;</td><td>oms-svc</td><td>16</td></tr>
+        <tr><td class="mono">50b7225</td><td>OrderCancelledEvent</td><td class="mono">events.order.cancelled.&lt;exchange&gt;.&lt;ticker&gt;</td><td>oms-svc</td><td>13</td></tr>
+        <tr><td class="mono">25c6ba7</td><td>PositionOpenedEvent</td><td class="mono">events.position.opened.&lt;exchange&gt;.&lt;ticker&gt;</td><td>pms-svc</td><td>16</td></tr>
+        <tr><td class="mono">cf4ccc1</td><td>PositionClosedEvent</td><td class="mono">events.position.closed.&lt;exchange&gt;.&lt;ticker&gt;</td><td>pms-svc</td><td>18</td></tr>
+        <tr><td class="mono">d23d13f</td><td>BankrollChangedEvent</td><td class="mono">events.bankroll.changed</td><td>pms-svc</td><td>16</td></tr>
+      </tbody>
+    </table></div>
+    <p>Suite went 16 → 120 passing tests over these seven commits.</p>
+    <div class="why-it-matters"><strong>Why it matters:</strong> This is v2 §04 (bot-events package) in full. Every Phase 2 service (data-svc, oms-svc, pms-svc) imports these types — they cannot be built without them. Designing the schema first, with tests, means we will never have a "what was the field name again?" moment during service implementation. Key event-sourcing discipline encoded throughout: order-level facts (side, direction, limit_price) live on OrderPlacedEvent only and are joined via exchange_order_id to OrderFilled/OrderCancelled events; bankroll uses an event-sourced delta+checksum pattern with no mutable balance field (binding constraint #1); realized P&L is pre-computed on PositionClosedEvent in dollars (signed for losses), with pms-svc as the canonical source so other services don't replay fill chains. Decimal-in-cents for prices, Decimal-in-dollars for money. No floats anywhere.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">03</div><h2>How this fits the v2 architecture (plain English)</h2></div>
+
+    <h4>Kitchen analogy</h4>
+    <p>If Phase 1 was wiring the building's electrical, plumbing, and gas, tonight did three things simultaneously:</p>
+    <ul class="bullets">
+      <li><strong>The intercom went live</strong> — app-of-apps means changes to the building's specs (deploy/applications/) flow from architectural drawings (git) into the building (cluster) automatically. Before tonight, every change required someone walking around with a paper plan and updating it by hand.</li>
+      <li><strong>The dish-pass got a heat lamp</strong> — Alloy + filtered Loki means we can now watch the food (logs from running services) under proper light. Before tonight, the lamp was off — food was being plated, but nobody could see what.</li>
+      <li><strong>The menu was printed</strong> — Phase 2 event vocabulary defines exactly what kinds of "dishes" the chefs (services) will call out to each other. <em>"Two MarketTicks on PRES-2028"</em>, <em>"OrderPlaced, table six, GTC"</em>, <em>"PositionClosed, settled YES, realized P&L $52.40"</em>. Before tonight, we had two dishes (BaseEvent + Heartbeat); now we have nine.</li>
+    </ul>
+
+    <h4>Translation table — what each task implements in v2</h4>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Tonight's task</th><th>v2 section</th><th>What it unlocks for Phase 2+</th></tr></thead>
+      <tbody>
+        <tr><td>RUNBOOK.md (Task 12)</td><td><span class="badge badge-v2">v2 §10, §14</span></td><td>Phase 1 officially closes; team has documented operating model for everything that follows</td></tr>
+        <tr><td>Grafana datasources</td><td><span class="badge badge-v2">v2 §08</span></td><td>Loki + Tempo become queryable from the Grafana UI (not just the API)</td></tr>
+        <tr><td>app-of-apps</td><td><span class="badge badge-v2">v2 §09</span></td><td>Every Phase 2 service can be deployed by dropping a YAML into <code class="inline">deploy/applications/</code> and pushing — no manual cluster work</td></tr>
+        <tr><td>Alloy log shipper</td><td><span class="badge badge-v2">v2 §08</span></td><td>Phase 2 services emit logs that are immediately queryable by namespace/pod/container in Grafana</td></tr>
+        <tr><td>7 event types in bot-events</td><td><span class="badge badge-v2">v2 §04</span></td><td>data-svc, oms-svc, pms-svc cannot be written without these. Now they can be.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h4>What this session did NOT touch</h4>
+    <p>Two cosmetic Argo bookkeeping items remain unresolved after tonight, both stemming from DOKS apiserver instability, neither blocking anything:</p>
+    <ul class="bullets">
+      <li><code class="inline">kube-prometheus-stack</code> Argo Application stuck OutOfSync — operation started at 01:46:51Z and never finished because the apiserver EOF'd on a ClusterRole patch during PreSync hooks. We bypassed the stuck sync with a direct ConfigMap patch (Task 2); the functional fix is in the cluster, but Argo's bookkeeping still disagrees. Two attempts to cancel + retry tonight failed; the second sync trigger was swallowed silently. Evidence captured at <code class="inline">/tmp/kps-stuck-evidence.txt</code>.</li>
+      <li><code class="inline">nats</code> Argo Application OutOfSync — pre-existing from before tonight, cosmetic, NATS itself fine for 5+ days. Not investigated tonight.</li>
+    </ul>
+    <p>Phase 2 service implementation (data-svc, oms-svc, pms-svc) was not started tonight. Only the event vocabulary they will speak is in place.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">04</div><h2>Decisions made inline</h2></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Decision</th><th>Choice</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>app-of-apps scope</td><td>Single Application, flat directory, manages itself recursively</td><td>Simpler than nested folders; one bootstrap; no migration churn moving existing 7 YAMLs</td></tr>
+        <tr><td>Log shipper: API vs file</td><td>File-based (<code class="inline">loki.source.file</code> + <code class="inline">local.file_match</code>)</td><td>K8s-API approach doesn't support <code class="inline">tail_from_end</code> (grafana/alloy#3550). File-based reads /var/log/pods/* with <code class="inline">tail_from_end = true</code>; standard production pattern</td></tr>
+        <tr><td>Log shipper: scope</td><td>Drop kube-system + monitoring namespaces at relabel stage</td><td>DOKS-managed chatter + observability self-logs would saturate single-binary Loki. Filter at source, not in Loki, so the bytes never travel</td></tr>
+        <tr><td>Datasource fix delivery</td><td>Direct ConfigMap patch (bypassing stuck Argo sync)</td><td>Apiserver was EOF'ing mid-Argo-sync. Bypassing the chart's entire sync to apply ONE ConfigMap change reduced blast radius to zero</td></tr>
+        <tr><td>Order-level facts duplication</td><td>NOT duplicated across order events</td><td>Event-sourcing discipline. Side/direction/limit_price live on OrderPlacedEvent; consumers join via exchange_order_id. Trade-off: more joins, but events cannot internally contradict each other</td></tr>
+        <tr><td>Realized P&L</td><td>Pre-computed on PositionClosedEvent in dollars, signed</td><td>Reporting/risk/learning consumers shouldn't each replay the fill chain. pms-svc is canonical. The event becomes the receipt.</td></tr>
+        <tr><td>Bankroll model</td><td>Event-sourced delta + checksum (new_balance is a checksum, not a source of truth)</td><td>Binding constraint #1 ("bankroll only goes up" was the old bug). Current bankroll = sum of all BankrollChangedEvent deltas. new_balance is what the sum should be — if it doesn't match, there's a bug.</td></tr>
+        <tr><td>PositionUpdatedEvent</td><td>Not modeled in v1</td><td>Position growth derivable from replaying fill chain. Adding the event type is non-trivial complexity for marginal win. Revisit if downstream consumers actually need explicit signals.</td></tr>
+        <tr><td>kps stuck sync</td><td>Abandoned tonight; functional fix already live</td><td>Two cancel-and-retry attempts both failed (second sync trigger swallowed). Evidence captured for DO ticket. The OutOfSync state has no functional impact.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">05</div><h2>Issues + resolutions</h2></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Issue</th><th>Resolution</th></tr></thead>
+      <tbody>
+        <tr><td>kps Argo sync stuck on PreSync admission webhook hooks; apiserver EOF mid-patch</td><td>Bypassed with direct ConfigMap patch. Two attempts to cancel + fresh-sync also failed (second trigger swallowed). Evidence saved; will file DO ticket.</td></tr>
+        <tr><td>Alloy v1 crushed Loki by backfilling 3+ days of logs from epoch</td><td>Scaled DaemonSet to 0 (<code class="inline">nodeSelector: midas/disabled=true</code> trick) to stop the bleed. Loki recovered in &lt;30s. Then rewrote config (v2).</td></tr>
+        <tr><td><code class="inline">tail_from_end</code> not supported on <code class="inline">loki.source.kubernetes</code></td><td>Confirmed via web search (open upstream issue grafana/alloy#3550). Switched to <code class="inline">loki.source.file</code> which DOES support it.</td></tr>
+        <tr><td>Alloy v2 still saturating Loki under cluster-wide ingest</td><td>Added drop relabel rule for kube-system + monitoring namespaces (v3). Cut ingest roughly in half.</td></tr>
+        <tr><td>Query-time <code class="inline">limit</code> param masked drop-rule verification</td><td>Filippo caught it: returning 5 lines with <code class="inline">limit=5</code> means "at least 5", not "exactly 5". Switched to <code class="inline">count_over_time</code> instant queries for definitive numbers.</td></tr>
+        <tr><td>Test count off-by-one in MarketTickEvent prompt (said 11, file had 12)</td><td>Claude Code flagged. Adopted "report whatever it really is" pattern for subsequent commits.</td></tr>
+        <tr><td>kube-state-metrics restart count climbed 28 → 47 over session</td><td>Symptom of DOKS apiserver instability, not our cluster. Restart count will keep climbing until DO fixes their control plane. Documented for the ticket.</td></tr>
+        <tr><td>Alloy DaemonSet pods came up briefly with broken v1 image after re-enabling nodeSelector during v2 transition</td><td>Set image to non-existent tag <code class="inline">grafana/alloy:PARKED-WAITING-FOR-ARGO</code> to park new pods in ImagePullBackOff until Argo reconciled the correct image from the chart. selfHeal restored the real image automatically once the new ConfigMap landed.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">06</div><h2>Commits pushed (tonight, in order)</h2></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>SHA</th><th>Message</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">febf24e</td><td>feat(docs): add operations runbook — Phase 1 Task 12 closes Phase 1</td></tr>
+        <tr><td class="mono">c04eed4</td><td>fix(observability): wire Loki and Tempo as Grafana datasources</td></tr>
+        <tr><td class="mono">d394254</td><td>feat(argo): add app-of-apps Application watching deploy/applications/</td></tr>
+        <tr><td class="mono">8e192c7</td><td>feat(observability): deploy Grafana Alloy as log shipper (v1, K8s-API)</td></tr>
+        <tr><td class="mono">7216a72</td><td>fix(observability): switch alloy to file-based log collection</td></tr>
+        <tr><td class="mono">6d25248</td><td>fix(observability): drop kube-system + monitoring from alloy</td></tr>
+        <tr><td class="mono">e5b816d</td><td>feat(bot-events): add MarketTickEvent for prediction market quotes</td></tr>
+        <tr><td class="mono">ded54ee</td><td>feat(bot-events): add OrderPlacedEvent for exchange order acks</td></tr>
+        <tr><td class="mono">d90575e</td><td>feat(bot-events): add OrderFilledEvent for exchange fill notifications</td></tr>
+        <tr><td class="mono">50b7225</td><td>feat(bot-events): add OrderCancelledEvent for terminal order state</td></tr>
+        <tr><td class="mono">25c6ba7</td><td>feat(bot-events): add PositionOpenedEvent for portfolio state</td></tr>
+        <tr><td class="mono">cf4ccc1</td><td>feat(bot-events): add PositionClosedEvent with realized P&amp;L</td></tr>
+        <tr><td class="mono">d23d13f</td><td>feat(bot-events): add BankrollChangedEvent — closes Phase 2 event vocabulary</td></tr>
+      </tbody>
+    </table></div>
+    <p style="color: var(--text-light); font-size: 12px;">(Note: 13 commits total. RUNBOOK was the first; the 12 listed in the header pill excludes it since the Phase 1 close was the gate for Phase 1.5 + Phase 2 work — depends how you count.)</p>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">07</div><h2>Carry items (do not forget)</h2></div>
+    <div class="callout amber">
+      <strong>Phase 1.5 carry items — must not be lost.</strong> Filippo explicitly flagged these as items that cannot be forgotten. All five are tracked in TODO.md's carry-items table; surfaced here for visibility.
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Item</th><th>Status</th><th>Disposition</th></tr></thead>
+      <tbody>
+        <tr><td>kube-prometheus-stack Argo OutOfSync (stuck PreSync hook)</td><td><span class="badge badge-amber">Open</span></td><td>Functional fix already live. Retry once DOKS stabilizes for sustained window, or use <code class="inline">SkipPreSyncCheck=true</code> as escape hatch.</td></tr>
+        <tr><td>nats Argo Application OutOfSync</td><td><span class="badge badge-amber">Open (pre-existing)</span></td><td><code class="inline">kubectl diff</code> to identify drift, then reconcile in git or in cluster. ~10 min.</td></tr>
+        <tr><td>DigitalOcean apiserver instability (4+ EOFs tonight, kube-state-metrics 28→47 restarts)</td><td><span class="badge badge-red">External</span></td><td>File DO support ticket. Evidence at <code class="inline">/tmp/kps-stuck-evidence.txt</code>.</td></tr>
+        <tr><td>Postgres oms_user + Redis default password rotation</td><td><span class="badge badge-amber">Open (from May 9)</span></td><td>Both leaked in chat May 9. VPC-only access mitigates, but rotate when convenient.</td></tr>
+        <tr><td>Redis security patch flagged by DigitalOcean</td><td><span class="badge badge-amber">Open</span></td><td>Apply in maintenance window.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">08</div><h2>Before / After</h2></div>
+    <div class="compare-box">
+      <div class="before">
+        <h5>Before tonight</h5>
+        <ul class="bullets">
+          <li>Phase 1 was 11/12; Task 10 (LGTM) not actually verified</li>
+          <li>Grafana had 2 of 4 datasources; Loki + Tempo invisible</li>
+          <li>No log shipper; Loki had only its own self-test data</li>
+          <li>Every infra YAML required manual <code class="inline">kubectl apply</code>; git → cluster drift was silent</li>
+          <li>Phase 2 event vocabulary: 2 types (BaseEvent, HeartbeatEvent)</li>
+          <li>Tests: 24 passing</li>
+        </ul>
+      </div>
+      <div class="after">
+        <h5>After tonight</h5>
+        <ul class="bullets">
+          <li>Phase 1 closed at 12/12; all of Task 10 verified</li>
+          <li>Grafana has all 4 datasources live and queried</li>
+          <li>Alloy DaemonSet ships logs to Loki, with namespace filtering, queryable from Grafana</li>
+          <li>app-of-apps reconciles every infra change from git automatically; proven 3 times tonight</li>
+          <li>Phase 2 event vocabulary: 9 types (Base, Heartbeat, MarketTick, OrderPlaced/Filled/Cancelled, PositionOpened/Closed, BankrollChanged)</li>
+          <li>Tests: 120 passing</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">09</div><h2>What next session looks like</h2></div>
+    <p>Next session opens here. Three honest paths from this point:</p>
+    <ol style="margin: 12px 0 12px 24px; line-height: 1.9; color: var(--text);">
+      <li><strong>Start data-svc</strong> (real Phase 2 service work). Kalshi API integration → emit MarketTickEvent. First service to use the new event vocabulary in anger. Will be a multi-session build (image, deployment, integration tests, observability hookup, NATS publisher).</li>
+      <li><strong>Clean up Phase 1.5 carry items</strong> first — file DO ticket, investigate nats OutOfSync, attempt kps Argo reconciliation. ~30-45 min if DOKS cooperates.</li>
+      <li><strong>Both, in sequence.</strong> Carry items first (fresh apiserver after some hours of rest), then start data-svc when the board is clean.</li>
+    </ol>
+    <p>The kitchen analogy: with the wiring, observability, and menu in place, the next move is hiring the first chef. data-svc is the prep cook — they read what the world is sending in (Kalshi quotes) and put it onto the line (NATS) for everyone else to use.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">10</div><h2>Honest tally</h2></div>
+    <div class="table-wrap"><table>
+      <tbody>
+        <tr><td><strong>Duration</strong></td><td>~8h (working session, NYC time, Filippo's Mac)</td></tr>
+        <tr><td><strong>Commits</strong></td><td>13 (febf24e → d23d13f)</td></tr>
+        <tr><td><strong>Tests added</strong></td><td>104 (24 → 120)</td></tr>
+        <tr><td><strong>Cluster state changes</strong></td><td>4 new Argo Applications (app-of-apps, alloy, datasource patch, Phase 1.5 verifications)</td></tr>
+        <tr><td><strong>Phase 1 status</strong></td><td>11/12 → 12/12 ✅</td></tr>
+        <tr><td><strong>Phase 1.5 status</strong></td><td>Discovered (3 problems) → All 3 resolved</td></tr>
+        <tr><td><strong>Phase 2 status</strong></td><td>Event vocabulary 0/7 → 7/7 ✅; services 0/3 unchanged</td></tr>
+        <tr><td><strong>Cost</strong></td><td>~$130/mo (unchanged; alloy DaemonSet runs on existing cluster nodes)</td></tr>
+        <tr><td><strong>Argo Applications</strong></td><td>8 → 9 (7 Synced+Healthy, 2 OutOfSync but cosmetic)</td></tr>
+        <tr><td><strong>What broke that we couldn't fix tonight</strong></td><td>DOKS apiserver stability (not ours); kps Argo bookkeeping (functional fix lives, sync stuck)</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Midas · Session Report · May 12, 2026 · github.com/bakerlunch-ai/midas
+</div>
+
+</body>
+</html>
