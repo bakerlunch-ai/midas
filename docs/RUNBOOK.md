@@ -612,3 +612,25 @@ See `docs/TODO.md` "Carry items" section for the live list. Most relevant for op
 When something changes in operations — a new service deployed, a new failure mode discovered, a credential rotation procedure refined — update this doc. It's living. The "Updated" date at the top is the source of truth for how fresh the content is.
 
 Don't let it go stale. The whole point is that future-you (or a new team member) can run Midas operations without spelunking through commit history.
+
+---
+
+## Why `make test` and `make install` unhide .pth files
+
+On macOS, `uv sync` (used internally by every `uv run`) sets the
+UF_HIDDEN file flag on the editable-install `.pth` files in
+`.venv/lib/python*/site-packages/`. Python's `site.py` explicitly
+skips hidden `.pth` files, so workspace packages (bot_events,
+data_svc, hello_svc) become un-importable and pytest fails
+collection with `ModuleNotFoundError`.
+
+The Makefile works around this two ways:
+  1. `_unhide-pth` runs `chflags nohidden` on the .pth files. No-op
+     on Linux where `chflags` doesn't exist.
+  2. `make test` calls `.venv/bin/pytest` directly, NOT `uv run pytest`,
+     because `uv run` re-hides the files on every invocation.
+
+If you ever see `ModuleNotFoundError: No module named 'bot_events'`
+during `uv run pytest`, the .pth files have been re-hidden. Run
+`make test` instead. First diagnosed 2026-05-13, see commit message
+for that day's data-svc main.py work for full root cause.
