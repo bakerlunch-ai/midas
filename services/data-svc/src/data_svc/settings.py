@@ -35,5 +35,6 @@ class Settings(BaseSettings):
 
     # NATS, Postgres, Redis — same shape as hello-svc; will be wired next session
     nats_url: str = "nats://nats.nats.svc.cluster.local:4222"
+    tick_poll_interval_seconds: int = 5
     postgres_dsn: str = ""
     redis_url: str = ""

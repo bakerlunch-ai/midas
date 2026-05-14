@@ -15,6 +15,10 @@ class MarketTickEvent(BaseEvent):
     where 50 = $0.50). The exchange's own timestamp is preserved in
     ``tick_at``; ``emitted_at`` (inherited) is when the bot observed it —
     the gap between the two is observable latency.
+
+    For data-svc poll-mode (v1), the /markets endpoint does not carry a
+    per-market broker timestamp; tick_at equals observation time. Will be
+    replaced with broker timestamp when we migrate to websocket (carry item).
     """
 
     event_type = "market.tick"

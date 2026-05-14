@@ -10,8 +10,9 @@ Mirrors hello-svc/main.py shape:
 - /health = dumb liveness, returns {"ok": True} regardless of dependency state
 """
 
+import asyncio
 from collections.abc import AsyncIterator
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, suppress
 
 import httpx
 import nats
@@ -20,6 +21,7 @@ from fastapi import FastAPI
 from data_svc.kalshi_client import KalshiClient
 from data_svc.nats_publisher import NATSPublisher
 from data_svc.settings import Settings
+from data_svc.tick_poller import tick_poll_loop
 
 
 @asynccontextmanager
@@ -38,14 +40,20 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     # unreachable, the pod crash-loops immediately instead of running
     # silently with no message bus. Mirrors hello-svc's pattern.
     nc = await nats.connect(settings.nats_url)
-    publisher = NATSPublisher(nc)  # noqa: F841 — used by piece #4 (tick poller)
+    publisher = NATSPublisher(nc)
     # Startup auth probe: one Kalshi read call. Same fail-loud spirit.
     # Bad credentials crash-loop the pod instead of silent failure.
     await kalshi.list_markets(limit=1)
+    poller_task = asyncio.create_task(
+        tick_poll_loop(kalshi, publisher, settings.tick_poll_interval_seconds)
+    )
     try:
         yield
     finally:
         # Shutdown in reverse order of construction.
+        poller_task.cancel()
+        with suppress(asyncio.CancelledError):
+            await poller_task
         await nc.close()
         await http_client.aclose()
 

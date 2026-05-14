@@ -1,0 +1,146 @@
+"""Tests for data-svc TickPoller.
+
+All tests use unittest.mock.AsyncMock for KalshiClient and NATSPublisher —
+no real network, no real broker.
+
+Covers:
+- _market_to_event converts a valid Kalshi market dict
+- _market_to_event skips markets with an empty book on any side
+- _market_to_event falls back through the three Kalshi volume field names
+- _poll_once publishes one event per valid market, counts skips correctly
+- tick_poll_loop propagates CancelledError so shutdown actually terminates
+"""
+
+from __future__ import annotations
+
+import asyncio
+from decimal import Decimal
+from typing import Any
+from unittest.mock import AsyncMock
+
+import pytest
+
+from data_svc.tick_poller import (
+    _market_to_event,
+    _poll_once,
+    tick_poll_loop,
+)
+
+# File-scoped marker — every test in this file is async (poller and its
+# helpers are all coroutines). Same pattern as test_nats_publisher.py.
+pytestmark = pytest.mark.asyncio
+
+
+def _valid_market_dict(**overrides: Any) -> dict[str, Any]:
+    """Canonical valid Kalshi /markets dict for tests.
+
+    Field names and values mirror what test_kalshi_api2.py in the legacy
+    bot observed against the real Kalshi API. Prices are integers in cents
+    (Kalshi convention, 0-100).
+    """
+    base: dict[str, Any] = {
+        "ticker": "KXPRES-2028-DEM",
+        "yes_bid": 47,
+        "yes_ask": 49,
+        "no_bid": 51,
+        "no_ask": 53,
+        "volume": 12_500,
+        "open_interest": 3_200,
+        "last_price": 48,
+    }
+    base.update(overrides)
+    return base
+
+
+async def test_market_to_event_converts_valid_market() -> None:
+    event = _market_to_event(_valid_market_dict())
+
+    assert event is not None
+    assert event.ticker == "KXPRES-2028-DEM"
+    assert event.exchange == "kalshi"
+    assert event.emitted_by == "data-svc"
+    assert event.yes_bid == Decimal("47")
+    assert event.yes_ask == Decimal("49")
+    assert event.no_bid == Decimal("51")
+    assert event.no_ask == Decimal("53")
+    assert event.volume_24h == 12_500
+    assert event.open_interest == 3_200
+    assert event.last_trade_price == Decimal("48")
+
+
+async def test_market_to_event_skips_empty_book() -> None:
+    """Empty book on any side -> None, not Decimal('0'). Emitting 0 for
+    a missing quote would look like a real price downstream — exactly
+    the silent-data-quality failure Lesson 8 warns about."""
+    # yes_bid = 0 (empty bid side of yes)
+    assert _market_to_event(_valid_market_dict(yes_bid=0)) is None
+    # no_ask = None (field missing entirely)
+    assert _market_to_event(_valid_market_dict(no_ask=None)) is None
+    # All four sides need a quote — verify each fails individually
+    for field in ("yes_bid", "yes_ask", "no_bid", "no_ask"):
+        assert _market_to_event(_valid_market_dict(**{field: 0})) is None
+
+
+async def test_market_to_event_falls_back_through_volume_field_names() -> None:
+    """Kalshi has historically returned 24h volume under three different
+    field names; the converter must try them in priority order:
+    volume -> volume_24h -> volume_fp."""
+    # Only volume_fp present -> uses it
+    market = _valid_market_dict()
+    del market["volume"]
+    market["volume_fp"] = 7_777
+    event = _market_to_event(market)
+    assert event is not None
+    assert event.volume_24h == 7_777
+
+    # Only volume_24h present -> uses it (preferred over volume_fp)
+    market = _valid_market_dict()
+    del market["volume"]
+    market["volume_24h"] = 3_333
+    event = _market_to_event(market)
+    assert event is not None
+    assert event.volume_24h == 3_333
+
+
+async def test_poll_once_publishes_one_event_per_valid_market() -> None:
+    """Three markets in (two valid, one with empty book) -> 2 published,
+    1 skipped. publish_market_tick called exactly twice."""
+    kalshi = AsyncMock()
+    kalshi.list_markets = AsyncMock(return_value=[
+        _valid_market_dict(ticker="GOOD-1"),
+        _valid_market_dict(ticker="GOOD-2"),
+        _valid_market_dict(ticker="BAD", yes_bid=0),
+    ])
+    publisher = AsyncMock()
+    publisher.publish_market_tick = AsyncMock()
+
+    published, skipped = await _poll_once(kalshi, publisher)
+
+    assert published == 2
+    assert skipped == 1
+    assert publisher.publish_market_tick.await_count == 2
+    # Verify the two published tickers (order preserved)
+    published_tickers = [
+        call.args[0].ticker
+        for call in publisher.publish_market_tick.await_args_list
+    ]
+    assert published_tickers == ["GOOD-1", "GOOD-2"]
+
+
+async def test_tick_poll_loop_cancels_cleanly() -> None:
+    """Loop must propagate CancelledError so the task actually terminates
+    on shutdown. If we swallow it, the lifespan finally block would hang
+    forever waiting for a task that won't exit."""
+    kalshi = AsyncMock()
+    kalshi.list_markets = AsyncMock(return_value=[])
+    publisher = AsyncMock()
+
+    task = asyncio.create_task(
+        tick_poll_loop(kalshi, publisher, interval_seconds=10)
+    )
+    # Let the loop start its first iteration.
+    await asyncio.sleep(0.05)
+    task.cancel()
+    with pytest.raises(asyncio.CancelledError):
+        await task
+    assert task.done()
