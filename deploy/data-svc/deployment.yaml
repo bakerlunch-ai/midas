@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-svc
+  namespace: data-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data-svc
+  template:
+    metadata:
+      labels:
+        app: data-svc
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+      containers:
+        - name: app
+          image: ghcr.io/bakerlunch-ai/data-svc:main
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: http
+          envFrom:
+            - secretRef:
+                name: kalshi-credentials
+          env:
+            - name: DATA_SVC_NATS_URL
+              value: nats://nats.nats.svc.cluster.local:4222
+            - name: DATA_SVC_KALSHI_BASE_URL
+              value: https://api.elections.kalshi.com/trade-api/v2
+            - name: DATA_SVC_TICK_POLL_INTERVAL_SECONDS
+              value: "5"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 200m
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
