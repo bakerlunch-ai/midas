@@ -2,8 +2,11 @@
 
 - /health endpoint returns {"ok": True} regardless of dependencies
 - Startup probe runs exactly one Kalshi GET
-- Shutdown closes the httpx client
+- Startup connects to NATS exactly once
+- Shutdown closes the httpx client and NATS connection (reverse order)
 """
+
+from __future__ import annotations
 
 from unittest.mock import AsyncMock, patch
 
@@ -35,9 +38,22 @@ def env_with_kalshi(test_private_pem: str, monkeypatch: pytest.MonkeyPatch) -> N
         "DATA_SVC_KALSHI_BASE_URL",
         "https://api.elections.kalshi.com/trade-api/v2",
     )
+    monkeypatch.setenv("DATA_SVC_NATS_URL", "nats://test-broker:4222")
 
 
-def test_health_endpoint_returns_ok(env_with_kalshi: None) -> None:
+@pytest.fixture
+def mocked_nats():
+    """Replace data_svc.main.nats.connect with an AsyncMock returning a
+    fake NATS client. Yields (connect_mock, client_mock) so tests can
+    assert on either."""
+    client_mock = AsyncMock()
+    client_mock.is_connected = True
+    connect_mock = AsyncMock(return_value=client_mock)
+    with patch("data_svc.main.nats.connect", connect_mock):
+        yield connect_mock, client_mock
+
+
+def test_health_endpoint_returns_ok(env_with_kalshi: None, mocked_nats) -> None:
     """/health returns {"ok": True} without touching Kalshi after startup."""
     def handler(request: httpx.Request) -> httpx.Response:
         return httpx.Response(200, json={"markets": []})
@@ -51,7 +67,7 @@ def test_health_endpoint_returns_ok(env_with_kalshi: None) -> None:
             assert response.json() == {"ok": True}
 
 
-def test_lifespan_runs_startup_probe(env_with_kalshi: None) -> None:
+def test_lifespan_runs_startup_probe(env_with_kalshi: None, mocked_nats) -> None:
     """Startup runs exactly one list_markets call (fail-loud on bad creds)."""
     probe_calls: list[httpx.Request] = []
 
@@ -70,7 +86,7 @@ def test_lifespan_runs_startup_probe(env_with_kalshi: None) -> None:
         assert "/markets" in str(probe_calls[0].url)
 
 
-def test_lifespan_closes_httpx_on_shutdown(env_with_kalshi: None) -> None:
+def test_lifespan_closes_httpx_on_shutdown(env_with_kalshi: None, mocked_nats) -> None:
     """Shutdown calls aclose() on the httpx client."""
     aclose_mock = AsyncMock()
 
@@ -86,3 +102,42 @@ def test_lifespan_closes_httpx_on_shutdown(env_with_kalshi: None) -> None:
             pass
 
         aclose_mock.assert_awaited_once()
+
+
+def test_lifespan_connects_to_nats(env_with_kalshi: None, mocked_nats) -> None:
+    """Startup calls nats.connect exactly once with the configured URL.
+    NATS connect failure is a fail-loud startup probe — same spirit as
+    the Kalshi auth probe. We assert the call happens; the failure path
+    is exercised implicitly by lifespan propagating exceptions."""
+    connect_mock, _ = mocked_nats
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, json={"markets": []})
+
+    mocked = httpx.AsyncClient(transport=httpx.MockTransport(handler), timeout=15.0)
+    with patch("data_svc.main.httpx.AsyncClient", return_value=mocked):
+        from data_svc.main import app
+        with TestClient(app):
+            pass
+
+        assert connect_mock.await_count == 1
+        url_arg = connect_mock.await_args.args[0]
+        assert url_arg == "nats://test-broker:4222"
+
+
+def test_lifespan_closes_nats_on_shutdown(env_with_kalshi: None, mocked_nats) -> None:
+    """Shutdown calls close() on the NATS client. Confirms the reverse-
+    order shutdown ran the NATS half — pair with the httpx test above
+    to confirm both halves of the lifespan close cleanly."""
+    _, client_mock = mocked_nats
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, json={"markets": []})
+
+    mocked = httpx.AsyncClient(transport=httpx.MockTransport(handler), timeout=15.0)
+    with patch("data_svc.main.httpx.AsyncClient", return_value=mocked):
+        from data_svc.main import app
+        with TestClient(app):
+            pass
+
+        client_mock.close.assert_awaited_once()

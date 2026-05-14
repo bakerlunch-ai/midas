@@ -14,16 +14,18 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
 import httpx
+import nats
 from fastapi import FastAPI
 
 from data_svc.kalshi_client import KalshiClient
+from data_svc.nats_publisher import NATSPublisher
 from data_svc.settings import Settings
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    """Startup: settings → httpx → KalshiClient → Kalshi auth probe.
-    Shutdown: close httpx."""
+    """Startup: settings -> httpx -> KalshiClient -> NATS -> probes.
+    Shutdown: close NATS, close httpx (reverse order)."""
     settings = Settings()
     http_client = httpx.AsyncClient(timeout=15.0)
     kalshi = KalshiClient(
@@ -32,12 +34,19 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         base_url=settings.kalshi_base_url,
         http_client=http_client,
     )
-    # Startup auth probe: one read call. Failure here crash-loops the pod
-    # rather than running for hours with bad credentials.
+    # NATS connect IS a startup fail-loud probe. If the broker is
+    # unreachable, the pod crash-loops immediately instead of running
+    # silently with no message bus. Mirrors hello-svc's pattern.
+    nc = await nats.connect(settings.nats_url)
+    publisher = NATSPublisher(nc)  # noqa: F841 — used by piece #4 (tick poller)
+    # Startup auth probe: one Kalshi read call. Same fail-loud spirit.
+    # Bad credentials crash-loop the pod instead of silent failure.
     await kalshi.list_markets(limit=1)
     try:
         yield
     finally:
+        # Shutdown in reverse order of construction.
+        await nc.close()
         await http_client.aclose()
 
 
