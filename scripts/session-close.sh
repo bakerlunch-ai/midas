@@ -20,6 +20,9 @@ for f in PROJECT_HANDOFF.html TODO.md JOURNEY.md SESSION_HISTORY.md "SESSION_REP
 done
 echo "    all five present"
 
+echo "==> Pulling latest from origin/main with rebase (in case Peter pushed)"
+git pull --rebase origin main
+
 echo "==> Creating archive folder session-archive/${DATE}/"
 mkdir -p "session-archive/${DATE}"
 
@@ -54,9 +57,6 @@ git status --short
 echo ""
 read -p "==> Proceed with commit and push? [y/N] " ok
 [[ "$ok" == "y" || "$ok" == "Y" ]] || { echo "Aborted. Nothing committed."; exit 1; }
-
-echo "==> Pulling latest from origin/main with rebase (in case Peter pushed)"
-git pull --rebase origin main
 
 echo "==> Committing"
 git commit -m "docs: session close ${DATE} — ${MSG}"
