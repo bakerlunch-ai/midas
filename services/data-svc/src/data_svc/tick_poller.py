@@ -40,6 +40,26 @@ _EMITTED_BY = "data-svc"
 _EXCHANGE = "kalshi"
 
 
+def _dollars_to_cents(raw: Any) -> Decimal | None:
+    """Parse a Kalshi dollar string to cents Decimal, or None on bad input."""
+    if raw is None:
+        return None
+    try:
+        return Decimal(str(raw)) * 100
+    except (InvalidOperation, TypeError, ValueError):
+        return None
+
+
+def _fp_to_int(raw: Any) -> int:
+    """Parse a Kalshi *_fp string to int, or 0 on bad input."""
+    if raw is None:
+        return 0
+    try:
+        return int(Decimal(str(raw)))
+    except (InvalidOperation, TypeError, ValueError):
+        return 0
+
+
 def _market_to_event(market: dict[str, Any]) -> MarketTickEvent | None:
     """Convert a Kalshi /markets dict to MarketTickEvent.
 
@@ -47,16 +67,21 @@ def _market_to_event(market: dict[str, Any]) -> MarketTickEvent | None:
     book on any side, or fails Pydantic validation. The None path is
     expected and routine; the caller logs aggregate skip counts, not
     per-market warnings.
+
+    The live Kalshi API sends prices as dollar strings with ``*_dollars``
+    suffixed field names (e.g. ``yes_bid_dollars: "0.3830"``), volume and
+    open interest as ``*_fp`` string fields. MarketTickEvent stores prices
+    as Decimal cents (0-100), so we convert dollars * 100.
     """
     try:
         ticker = market.get("ticker")
         if not ticker:
             return None
 
-        yes_bid = market.get("yes_bid")
-        yes_ask = market.get("yes_ask")
-        no_bid = market.get("no_bid")
-        no_ask = market.get("no_ask")
+        yes_bid = _dollars_to_cents(market.get("yes_bid_dollars"))
+        yes_ask = _dollars_to_cents(market.get("yes_ask_dollars"))
+        no_bid = _dollars_to_cents(market.get("no_bid_dollars"))
+        no_ask = _dollars_to_cents(market.get("no_ask_dollars"))
 
         # Skip empty books — emitting Decimal("0") for a missing quote
         # is exactly the silent-data-quality failure Lesson 8 warns about.
@@ -64,25 +89,22 @@ def _market_to_event(market: dict[str, Any]) -> MarketTickEvent | None:
             if px is None or px == 0:
                 return None
 
-        volume_24h = market.get(
-            "volume",
-            market.get("volume_24h", market.get("volume_fp", 0)),
-        )
-        open_interest = market.get("open_interest", 0)
-        last_price = market.get("last_price")
+        volume_24h = _fp_to_int(market.get("volume_fp"))
+        open_interest = _fp_to_int(market.get("open_interest_fp"))
+        last_price = _dollars_to_cents(market.get("last_price_dollars"))
 
         return MarketTickEvent(
             emitted_by=_EMITTED_BY,
             exchange=_EXCHANGE,
             ticker=ticker,
             tick_at=datetime.now(timezone.utc),
-            yes_bid=Decimal(str(yes_bid)),
-            yes_ask=Decimal(str(yes_ask)),
-            no_bid=Decimal(str(no_bid)),
-            no_ask=Decimal(str(no_ask)),
-            volume_24h=int(volume_24h),
-            open_interest=int(open_interest),
-            last_trade_price=Decimal(str(last_price)) if last_price else None,
+            yes_bid=yes_bid,
+            yes_ask=yes_ask,
+            no_bid=no_bid,
+            no_ask=no_ask,
+            volume_24h=volume_24h,
+            open_interest=open_interest,
+            last_trade_price=last_price,
         )
     except (KeyError, ValueError, TypeError, InvalidOperation, ValidationError):
         return None

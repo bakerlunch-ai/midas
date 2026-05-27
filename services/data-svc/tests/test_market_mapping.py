@@ -23,20 +23,6 @@ from typing import Any
 
 from data_svc.tick_poller import _market_to_event
 
-import pytest
-
-# These tests are a TEST-FIRST SPEC for the Kalshi field-mapping fix
-# (next-session PR). They fail against current tick_poller.py by design.
-# strict=True means: once the fix lands and they PASS, pytest reports
-# xpass as a FAILURE — the signal to remove this marker. Until then the
-# suite stays green and CI keeps gating.
-pytestmark = pytest.mark.xfail(
-    reason="Kalshi field mapping not yet fixed: API sends *_dollars/*_fp "
-           "string fields; _market_to_event reads bare names. Fix is a "
-           "separate tested PR (see commit adding this file).",
-    strict=True,
-)
-
 
 def _real_kalshi_market(**overrides: Any) -> dict[str, Any]:
     """A market dict shaped like the LIVE Kalshi /markets response.
