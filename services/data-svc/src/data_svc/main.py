@@ -11,6 +11,7 @@ Mirrors hello-svc/main.py shape:
 """
 
 import asyncio
+import logging
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager, suppress
 
@@ -22,6 +23,14 @@ from data_svc.kalshi_client import KalshiClient
 from data_svc.nats_publisher import NATSPublisher
 from data_svc.settings import Settings
 from data_svc.tick_poller import tick_poll_loop
+
+# Configure root logger so application loggers (data_svc.*) emit to stdout.
+# Without this, only uvicorn.* loggers have handlers and logger.info() calls
+# in tick_poller / nats_publisher are silently dropped.
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(name)s %(levelname)s %(message)s",
+)
 
 
 @asynccontextmanager
