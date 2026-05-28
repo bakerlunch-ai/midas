@@ -209,10 +209,12 @@ def test_lifespan_cancels_tick_poller_on_shutdown(
         return httpx.Response(200, json={"markets": []})
 
     mocked = httpx.AsyncClient(transport=httpx.MockTransport(handler), timeout=15.0)
-    with patch("data_svc.main.httpx.AsyncClient", return_value=mocked):
-        with patch("data_svc.main.tick_poll_loop", fake_poller):
-            from data_svc.main import app
-            with TestClient(app):
-                pass
+    with (
+        patch("data_svc.main.httpx.AsyncClient", return_value=mocked),
+        patch("data_svc.main.tick_poll_loop", fake_poller),
+    ):
+        from data_svc.main import app
+        with TestClient(app):
+            pass
 
     assert cancelled == [True]
