@@ -5,7 +5,6 @@ from pydantic import Field
 
 from bot_events.base import BaseEvent
 
-
 CancelReason = Literal[
     "user_requested",
     "market_closed",

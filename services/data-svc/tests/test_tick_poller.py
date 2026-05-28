@@ -19,7 +19,6 @@ from typing import Any
 from unittest.mock import AsyncMock
 
 import pytest
-
 from data_svc.tick_poller import (
     _market_to_event,
     _poll_once,

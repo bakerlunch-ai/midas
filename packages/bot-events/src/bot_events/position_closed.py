@@ -7,7 +7,6 @@ from pydantic import Field
 
 from bot_events.base import BaseEvent
 
-
 CloseReason = Literal[
     "trade",
     "settled_yes",

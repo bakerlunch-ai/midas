@@ -11,18 +11,18 @@ Covers:
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from decimal import Decimal
 from unittest.mock import AsyncMock
 
 import pytest
-
-from bot_events.market_tick import MarketTickEvent
 from data_svc.nats_publisher import (
     MARKET_TICK_SUBJECT_PREFIX,
     NATSPublisher,
     market_tick_subject,
 )
+
+from bot_events.market_tick import MarketTickEvent
 
 # File-scoped marker — every test in this file is async (NATSPublisher
 # is an async collaborator). More explicit than repo-wide asyncio_mode.
@@ -39,7 +39,7 @@ def _sample_tick() -> MarketTickEvent:
         emitted_by="data-svc",
         exchange="kalshi",
         ticker="PRES-2028-DEM",
-        tick_at=datetime(2026, 5, 13, 22, 0, 0, tzinfo=timezone.utc),
+        tick_at=datetime(2026, 5, 13, 22, 0, 0, tzinfo=UTC),
         yes_bid=Decimal("47"),
         yes_ask=Decimal("49"),
         no_bid=Decimal("51"),

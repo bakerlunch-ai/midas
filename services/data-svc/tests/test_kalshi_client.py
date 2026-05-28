@@ -7,14 +7,12 @@ Three categories:
 """
 
 import inspect
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import rsa
 
 import httpx
 import pytest
-
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import rsa
 from data_svc.kalshi_client import KalshiClient
-
 
 # ----------------------------------------------------------------------
 # Fixture: a real, throwaway RSA key for signature tests

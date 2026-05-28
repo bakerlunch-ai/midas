@@ -4,7 +4,6 @@ from uuid import UUID
 
 from bot_events.base import BaseEvent
 
-
 ChangeReason = Literal[
     "deposit",
     "withdrawal",

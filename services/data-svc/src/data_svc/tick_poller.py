@@ -22,7 +22,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from decimal import Decimal, InvalidOperation
 from typing import TYPE_CHECKING, Any
 
@@ -97,7 +97,7 @@ def _market_to_event(market: dict[str, Any]) -> MarketTickEvent | None:
             emitted_by=_EMITTED_BY,
             exchange=_EXCHANGE,
             ticker=ticker,
-            tick_at=datetime.now(timezone.utc),
+            tick_at=datetime.now(UTC),
             yes_bid=yes_bid,
             yes_ask=yes_ask,
             no_bid=no_bid,
