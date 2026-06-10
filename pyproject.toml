@@ -18,3 +18,12 @@ dev = [
 
 [tool.pytest.ini_options]
 addopts = "--import-mode=importlib"
+# Inject workspace src dirs directly so collection never depends on the editable
+# .pth files. Those live in .venv inside iCloud-synced ~/Desktop, and the iCloud
+# File Provider daemon re-applies UF_HIDDEN to them, which makes Python's site.py
+# silently skip them (ModuleNotFoundError on bot_events/data_svc/hello_svc).
+pythonpath = [
+    "packages/bot-events/src",
+    "services/data-svc/src",
+    "services/hello-svc/src",
+]
