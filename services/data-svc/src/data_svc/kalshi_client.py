@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import base64
 import datetime
+import logging
 from typing import Any
 from urllib.parse import urlparse
 
@@ -25,6 +26,8 @@ import httpx
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding, rsa
+
+logger = logging.getLogger(__name__)
 
 
 def _load_private_key_from_pem(pem_text: str) -> rsa.RSAPrivateKey:
@@ -122,3 +125,55 @@ class KalshiClient:
         """Fetch a single market by ticker."""
         data = await self._get(f"/markets/{ticker}")
         return data.get("market", data)
+
+    async def list_all_markets(
+        self,
+        status: str = "open",
+        page_size: int = 1000,
+        max_pages: int = 20,
+    ) -> list[dict[str, Any]]:
+        """Paginate ALL markets by following Kalshi's cursor.
+
+        Caps at ``max_pages``. If the cap is hit while a cursor remains, logs
+        a WARNING that NAMES what is being truncated (page cap, page size,
+        count paginated so far) — never truncates silently to empty.
+        """
+        out: list[dict[str, Any]] = []
+        cursor: str | None = None
+        for _ in range(max_pages):
+            params: dict[str, Any] = {"status": status, "limit": page_size}
+            if cursor:
+                params["cursor"] = cursor
+            data = await self._get("/markets", params)
+            out.extend(data.get("markets", []))
+            cursor = data.get("cursor") or None
+            if not cursor:
+                break
+        else:
+            # Loop exhausted with a cursor still pending: we capped.
+            logger.warning(
+                "discovery hit max_pages=%d (page_size=%d); paginated %d "
+                "markets, more may exist on Kalshi; selected_universe may be "
+                "incomplete",
+                max_pages,
+                page_size,
+                len(out),
+            )
+        return out
+
+    async def list_markets_by_tickers(
+        self,
+        tickers: list[str],
+        batch_size: int = 100,
+    ) -> list[dict[str, Any]]:
+        """Fetch markets for an explicit ticker set, batched into chunks of
+        ``batch_size``. No HTTP call is made for an empty set."""
+        if not tickers:
+            return []
+        out: list[dict[str, Any]] = []
+        for start in range(0, len(tickers), batch_size):
+            batch = tickers[start : start + batch_size]
+            params: dict[str, Any] = {"tickers": ",".join(batch), "limit": len(batch)}
+            data = await self._get("/markets", params)
+            out.extend(data.get("markets", []))
+        return out
