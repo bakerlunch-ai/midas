@@ -17,6 +17,7 @@ import httpx
 import pytest
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
+from data_svc.discovery import DiscoveryResult
 from fastapi.testclient import TestClient
 
 
@@ -66,6 +67,24 @@ def mocked_poller():
         yield poller_mock
 
 
+@pytest.fixture
+def mocked_discovery():
+    """Mock discover_once + discovery_loop so lifespan tests don't run a real
+    full-market scan. discover_once returns an empty DiscoveryResult; the loop
+    mock never actually loops. Yields (once_mock, loop_mock)."""
+    once_mock = AsyncMock(
+        return_value=DiscoveryResult(
+            selected=frozenset(), scanned=0, by_series={}, by_tier={}
+        )
+    )
+    loop_mock = AsyncMock()
+    with (
+        patch("data_svc.main.discover_once", once_mock),
+        patch("data_svc.main.discovery_loop", loop_mock),
+    ):
+        yield once_mock, loop_mock
+
+
 def test_health_endpoint_returns_ok(
     env_with_kalshi: None, mocked_nats, mocked_poller
 ) -> None:
@@ -83,9 +102,12 @@ def test_health_endpoint_returns_ok(
 
 
 def test_lifespan_runs_startup_probe(
-    env_with_kalshi: None, mocked_nats, mocked_poller
+    env_with_kalshi: None, mocked_nats, mocked_poller, mocked_discovery
 ) -> None:
-    """Startup runs exactly one list_markets call (fail-loud on bad creds)."""
+    """Startup runs exactly one list_markets call (fail-loud on bad creds).
+
+    Discovery is mocked, so the only GET that reaches the transport is the
+    auth probe — the await-first discovery scan does not add HTTP here."""
     probe_calls: list[httpx.Request] = []
 
     def handler(request: httpx.Request) -> httpx.Response:
@@ -166,12 +188,15 @@ def test_lifespan_closes_nats_on_shutdown(
         client_mock.close.assert_awaited_once()
 
 
-def test_lifespan_spawns_tick_poller(
-    env_with_kalshi: None, mocked_nats, mocked_poller
+def test_lifespan_spawns_both_loops(
+    env_with_kalshi: None, mocked_nats, mocked_poller, mocked_discovery
 ) -> None:
-    """Startup calls tick_poll_loop exactly once with (kalshi, publisher,
-    interval). Interval comes from settings.tick_poll_interval_seconds,
-    default 5."""
+    """Startup spawns BOTH the discovery loop and the tick poller. The tick
+    poller is called with the new signature
+    (kalshi, publisher, universe, config, interval, batch_size); interval is
+    settings.tick_poll_interval_seconds (default 5)."""
+    _once, loop_mock = mocked_discovery
+
     def handler(request: httpx.Request) -> httpx.Response:
         return httpx.Response(200, json={"markets": []})
 
@@ -181,16 +206,18 @@ def test_lifespan_spawns_tick_poller(
         with TestClient(app):
             pass
 
+        # discovery loop spawned once
+        loop_mock.assert_called_once()
+        # tick poller spawned once with the new signature
         mocked_poller.assert_called_once()
         args = mocked_poller.call_args.args
-        # tick_poll_loop(kalshi, publisher, interval_seconds)
-        assert len(args) == 3
-        interval = args[2]
-        assert interval == 5  # default from Settings
+        # (kalshi, publisher, universe, config, interval, batch_size)
+        assert len(args) >= 5
+        assert args[4] == 5  # interval, default from Settings
 
 
 def test_lifespan_cancels_tick_poller_on_shutdown(
-    env_with_kalshi: None, mocked_nats
+    env_with_kalshi: None, mocked_nats, mocked_discovery
 ) -> None:
     """Shutdown cancels the poller task. Uses a fake poller that sleeps
     indefinitely and observes its own CancelledError, so we can assert
