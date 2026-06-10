@@ -14,7 +14,12 @@ format:
 test: _unhide-pth
 	.venv/bin/pytest
 
-# Unhide editable-install .pth files (macOS-only; uv sets UF_HIDDEN on them,
-# which makes Python's site.py skip them silently. No-op on Linux.)
+# Unhide editable-install .pth files. macOS iCloud's File Provider daemon
+# continuously re-hides .pth files inside iCloud-synced directories
+# (~/Desktop, ~/Documents). pytest collection no longer depends on these
+# flags (cd93039 added explicit pythonpath in pyproject.toml), but we
+# still chflags them so editor/IDE tooling that reads .pth works cleanly.
+# Fail loud on macOS: if chflags errors, we want to know. No-op on Linux
+# (chflags absent; the leading - tells make to ignore exit status there).
 _unhide-pth:
-	@chflags nohidden .venv/lib/python*/site-packages/*.pth 2>/dev/null || true
+	-chflags nohidden .venv/lib/python*/site-packages/*.pth
