@@ -40,12 +40,27 @@ spec:
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 30
+            timeoutSeconds: 5
           readinessProbe:
             httpGet:
               path: /health
               port: 8080
             initialDelaySeconds: 5
             periodSeconds: 10
+            timeoutSeconds: 5
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            # Await-first discovery scan can take ~100s on a cold start
+            # (paginating the full Kalshi universe). startupProbe suspends
+            # liveness until the app is serving, giving it a 5-min grace
+            # window (periodSeconds 10 x failureThreshold 30) instead of
+            # liveness's ~90s budget killing it mid-startup.
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 30
           resources:
             requests:
               cpu: 50m
