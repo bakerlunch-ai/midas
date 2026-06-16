@@ -11,8 +11,10 @@ Design choices:
     Carry item: replace with broker timestamp when we migrate to websocket.
   - Empty universe -> no-op cycle (logs published=0 skipped=0); the loop
     stays blind until discovery populates the universe.
-  - Markets with a missing/zero quote are skipped, not emitted as 0
-    (Lesson 8: don't fabricate data that looks real).
+  - Publishability is decided by is_publishable_book, shared with
+    market_selection: a missing side (None) is missing data -> skip; a real 0
+    is a truthful one-sided book (heavy favorite) -> publish. NO is mirror
+    algebra (no_ask=100-yes_bid) and is DERIVED, never read from the dict.
   - Parsing helpers are shared with market_selection — one parse impl.
   - Top-level loop errors are logged and the loop continues. Only
     CancelledError breaks out (propagated for clean shutdown).
@@ -23,7 +25,7 @@ from __future__ import annotations
 import asyncio
 import logging
 from datetime import UTC, datetime
-from decimal import InvalidOperation
+from decimal import Decimal, InvalidOperation
 from typing import TYPE_CHECKING, Any
 
 from pydantic import ValidationError
@@ -35,6 +37,7 @@ from data_svc.market_selection import (
     dollars_to_cents,
     evaluate,
     fp_to_int,
+    is_publishable_book,
     summarize_skips,
 )
 
@@ -47,13 +50,20 @@ logger = logging.getLogger(__name__)
 
 _EMITTED_BY = "data-svc"
 _EXCHANGE = "kalshi"
+_CENTS_CEILING = Decimal("100")  # NO is mirror algebra: no_X = 100 - yes_X (cents)
 
 
 def _market_to_event(market: dict[str, Any]) -> MarketTickEvent | None:
-    """Convert a Kalshi /markets dict to MarketTickEvent, or None if the
-    market is missing required fields, has an empty book on any side, or
-    fails Pydantic validation. The None path is expected and routine. Parsing
-    helpers are shared with market_selection so there is one parse impl.
+    """Convert a Kalshi /markets dict to MarketTickEvent, or None if the book
+    is not publishable or Pydantic validation fails. The None path is expected
+    and routine.
+
+    The book is two real numbers, b=yes_bid and a=yes_ask (cents); the same
+    is_publishable_book predicate evaluate() uses decides publishability
+    (Lesson 5: one place). NO is mirror algebra and is DERIVED, never read from
+    the dict: no_ask = 100 - yes_bid, no_bid = 100 - yes_ask. Deriving it means
+    evaluate() and this function depend only on b,a and can never disagree, and
+    every emitted event carries internally-consistent NO fields by construction.
     """
     try:
         ticker = market.get("ticker")
@@ -61,11 +71,9 @@ def _market_to_event(market: dict[str, Any]) -> MarketTickEvent | None:
             return None
         yes_bid = dollars_to_cents(market.get("yes_bid_dollars"))
         yes_ask = dollars_to_cents(market.get("yes_ask_dollars"))
-        no_bid = dollars_to_cents(market.get("no_bid_dollars"))
-        no_ask = dollars_to_cents(market.get("no_ask_dollars"))
-        for px in (yes_bid, yes_ask, no_bid, no_ask):
-            if px is None or px == 0:
-                return None
+        if not is_publishable_book(yes_bid, yes_ask):
+            return None
+        assert yes_bid is not None and yes_ask is not None  # narrowed by guard
         return MarketTickEvent(
             emitted_by=_EMITTED_BY,
             exchange=_EXCHANGE,
@@ -73,8 +81,8 @@ def _market_to_event(market: dict[str, Any]) -> MarketTickEvent | None:
             tick_at=datetime.now(UTC),
             yes_bid=yes_bid,
             yes_ask=yes_ask,
-            no_bid=no_bid,
-            no_ask=no_ask,
+            no_bid=_CENTS_CEILING - yes_ask,
+            no_ask=_CENTS_CEILING - yes_bid,
             volume_24h=fp_to_int(market.get("volume_fp")),
             open_interest=fp_to_int(market.get("open_interest_fp")),
             last_trade_price=dollars_to_cents(market.get("last_price_dollars")),

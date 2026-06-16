@@ -105,16 +105,26 @@ def test_evaluate_passes_sports_market_when_genuinely_liquid() -> None:
 
 # --- skip reasons ------------------------------------------------------
 
-def test_evaluate_skips_no_book_when_any_quote_missing() -> None:
-    m = _market()
-    del m["no_ask_dollars"]
-    result = evaluate(m, _config())
-    assert result.passed is False
-    assert result.reason == SkipReason.NO_BOOK
+def test_evaluate_book_decision_ignores_missing_no_side() -> None:
+    """Option X: NO is mirror algebra, never inspected. A missing NO field does
+    not affect publishability (it is derived downstream); a missing YES field
+    is missing data -> NO_BOOK."""
+    missing_no = _market(ticker="KXFED-25DEC-T3.00")
+    del missing_no["no_ask_dollars"]
+    assert evaluate(missing_no, _config()).passed is True
+
+    missing_yes = _market(ticker="KXFED-25DEC-T3.00")
+    del missing_yes["yes_ask_dollars"]
+    assert evaluate(missing_yes, _config()).reason == SkipReason.NO_BOOK
 
 
-def test_evaluate_skips_no_book_when_any_quote_zero() -> None:
-    result = evaluate(_market(yes_bid_dollars="0.0000"), _config())
+def test_evaluate_skips_no_book_when_book_is_dead() -> None:
+    """A genuinely dead book (both yes sides zero) skips NO_BOOK. A single zero
+    with a live opposite side is a publishable one-sided book — see
+    test_evaluate_passes_one_sided_favorite."""
+    result = evaluate(
+        _market(yes_bid_dollars="0.0000", yes_ask_dollars="0.0000"), _config()
+    )
     assert result.passed is False
     assert result.reason == SkipReason.NO_BOOK
 
@@ -188,9 +198,15 @@ def test_evaluate_applies_lower_volume_floor_to_tight_than_default() -> None:
 
 # --- precedence + tier-on-skip ----------------------------------------
 
-def test_evaluate_reports_no_book_before_spread_when_both_fail() -> None:
-    """A zero quote makes spread meaningless; NO_BOOK must win precedence."""
-    m = _market(ticker="KXFED-X", yes_ask_dollars="0.0000")
+def test_evaluate_reports_no_book_before_other_reasons_when_book_dead() -> None:
+    """NO_BOOK has precedence: a dead book is skipped as NO_BOOK even when
+    volume is also below floor."""
+    m = _market(
+        ticker="KXFED-X",
+        yes_bid_dollars="0.0000",
+        yes_ask_dollars="0.0000",
+        volume_fp="1.00",
+    )
     assert evaluate(m, _config()).reason == SkipReason.NO_BOOK
 
 
@@ -228,6 +244,11 @@ def test_summarize_selected_by_series_groups_named_and_other() -> None:
 # The book is two real numbers b=yes_bid, a=yes_ask (cents); NO is mirror
 # algebra and is never inspected. Publishable iff at least one side carries a
 # real (non-zero) quote; a missing side (None) is missing DATA, not a zero.
+#
+# NOTE (failing-first): is_publishable_book does not exist yet. The import is
+# LOCAL to each test so the expected ImportError is isolated to these 7 cases
+# and does not break collection of the rest of the module. It moves to the
+# top-level import block when the predicate is implemented.
 
 def test_is_publishable_book_skips_when_both_none() -> None:
     from data_svc.market_selection import is_publishable_book
@@ -274,3 +295,99 @@ def test_is_publishable_book_passes_when_both_present() -> None:
     from data_svc.market_selection import is_publishable_book
 
     assert is_publishable_book(Decimal("48"), Decimal("49")) is True
+
+
+# --- one-sided heavy-favorite books (OR semantics) ---------------------
+
+def test_evaluate_passes_one_sided_favorite() -> None:
+    """yes_bid=0 with a real yes_ask is a publishable one-sided book; NO is
+    mirror algebra. Today this wrongly skips as NO_BOOK. volume_fp=5000 keeps
+    the test on the BOOK path (>= default floor 1000)."""
+    m = _market(
+        ticker="KXMVESPORTSMULTIGAMEEXTENDED-S2026ABC",
+        yes_bid_dollars="0.0000",
+        yes_ask_dollars="0.0200",
+        no_bid_dollars="0.9800",  # mirror: 1 - yes_ask
+        no_ask_dollars="1.0000",  # mirror: 1 - yes_bid
+        volume_fp="5000.00",
+    )
+    result = evaluate(m, _config())
+    assert result.passed is True
+    assert result.reason is None
+    assert result.tier == Tier.DEFAULT
+
+
+def test_evaluate_one_sided_favorite_bypasses_spread() -> None:
+    """A one-sided book has no round-trip, so SPREAD_TOO_WIDE must not apply.
+
+    Uses a=6c on the DEFAULT tier (cap 5c): if spread were (wrongly) measured
+    as a-b it would be 6c > 5c and fail. Asserting passed=True is what proves
+    the bypass has teeth. (Deviates from the matrix's a=2c, which is < cap and
+    so would never exercise the bypass; flagged for review.)"""
+    m = _market(
+        ticker="KXMVESPORTSMULTIGAMEEXTENDED-S2026DEF",
+        yes_bid_dollars="0.0000",
+        yes_ask_dollars="0.0600",  # a-b would be 6c > default 5c if measured
+        no_bid_dollars="0.9400",
+        no_ask_dollars="1.0000",
+        volume_fp="5000.00",
+    )
+    result = evaluate(m, _config())
+    assert result.passed is True
+    assert result.reason is None
+
+
+def test_evaluate_still_skips_dead_book() -> None:
+    """Both sides zero -> genuinely no book -> NO_BOOK (preserved)."""
+    m = _market(
+        ticker="KXMVE-DEAD",
+        yes_bid_dollars="0.0000",
+        yes_ask_dollars="0.0000",
+        no_bid_dollars="1.0000",
+        no_ask_dollars="1.0000",
+        volume_fp="5000.00",
+    )
+    result = evaluate(m, _config())
+    assert result.passed is False
+    assert result.reason == SkipReason.NO_BOOK
+
+
+def test_evaluate_still_skips_missing_side() -> None:
+    """A missing YES quote (None, not 0) is missing data -> NO_BOOK (preserved)."""
+    m = _market(ticker="KXMVE-MISSING", volume_fp="5000.00")
+    del m["yes_bid_dollars"]
+    result = evaluate(m, _config())
+    assert result.passed is False
+    assert result.reason == SkipReason.NO_BOOK
+
+
+def test_evaluate_two_sided_wide_still_spread_skips() -> None:
+    """A real two-sided book with a wide spread still skips SPREAD_TOO_WIDE:
+    the OR/bypass change must not weaken spread enforcement for round-trips."""
+    m = _market(
+        ticker="KXFED-WIDE",
+        yes_bid_dollars="0.4000",
+        yes_ask_dollars="0.5500",  # 15c spread > tight 2c
+        no_bid_dollars="0.4500",
+        no_ask_dollars="0.6000",
+        volume_fp="5000.00",
+    )
+    result = evaluate(m, _config())
+    assert result.passed is False
+    assert result.reason == SkipReason.SPREAD_TOO_WIDE
+
+
+def test_evaluate_one_sided_favorite_below_volume_still_skips() -> None:
+    """The book fix must NOT bypass the volume gate: a publishable one-sided
+    book with sub-floor volume still skips VOLUME_TOO_LOW (today: NO_BOOK)."""
+    m = _market(
+        ticker="KXMVESPORTSMULTIGAMEEXTENDED-S2026LOWVOL",
+        yes_bid_dollars="0.0000",
+        yes_ask_dollars="0.0200",
+        no_bid_dollars="0.9800",
+        no_ask_dollars="1.0000",
+        volume_fp="10.00",  # < default 1000
+    )
+    result = evaluate(m, _config())
+    assert result.passed is False
+    assert result.reason == SkipReason.VOLUME_TOO_LOW

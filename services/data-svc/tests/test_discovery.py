@@ -61,7 +61,9 @@ async def test_discover_once_selects_only_passing_tickers() -> None:
     kalshi.list_all_markets = AsyncMock(return_value=[
         _market("KXFED-A"),                            # tight, passes
         _market("KXNBA-A", volume_fp="5000.00"),       # default, passes
-        _market("KXNBA-B", yes_bid_dollars="0.0000"),  # no book, skipped
+        _market(  # dead book (both yes sides zero) -> no book, skipped
+            "KXNBA-B", yes_bid_dollars="0.0000", yes_ask_dollars="0.0000"
+        ),
     ])
     result = await discover_once(kalshi, _config())
     assert "KXFED-A" in result.selected
@@ -106,7 +108,9 @@ async def test_discover_once_paginates_all_open_markets() -> None:
 async def test_discover_once_returns_empty_when_no_markets_pass() -> None:
     kalshi = AsyncMock()
     kalshi.list_all_markets = AsyncMock(return_value=[
-        _market("KXNBA-A", yes_bid_dollars="0.0000"),
+        _market(  # dead book (both yes sides zero) -> nothing passes
+            "KXNBA-A", yes_bid_dollars="0.0000", yes_ask_dollars="0.0000"
+        ),
     ])
     result = await discover_once(kalshi, _config())
     assert result.selected == frozenset()

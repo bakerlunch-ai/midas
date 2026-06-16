@@ -23,7 +23,7 @@ from unittest.mock import AsyncMock
 
 import pytest
 from data_svc.discovery import SelectedUniverse
-from data_svc.market_selection import SelectionConfig, SkipReason
+from data_svc.market_selection import SelectionConfig, SkipReason, evaluate
 from data_svc.tick_poller import (
     _market_to_event,
     _poll_once,
@@ -87,14 +87,21 @@ async def test_market_to_event_converts_valid_market() -> None:
     assert event.last_trade_price == Decimal("48.00")
 
 
-async def test_market_to_event_skips_empty_book() -> None:
-    """Empty book on any side -> None, not Decimal('0') (Lesson 8)."""
-    assert _market_to_event(_valid_market_dict(yes_bid_dollars="0.0000")) is None
-    assert _market_to_event(_valid_market_dict(no_ask_dollars=None)) is None
-    for field in (
-        "yes_bid_dollars", "yes_ask_dollars", "no_bid_dollars", "no_ask_dollars",
-    ):
-        assert _market_to_event(_valid_market_dict(**{field: "0.0000"})) is None
+async def test_market_to_event_skips_dead_book_only() -> None:
+    """Only a genuinely dead book (both yes sides zero) -> None. A single zero
+    with a live opposite side is a publishable one-sided book; NO fields are
+    derived (Option X), so a missing/zero NO side never causes a skip."""
+    # dead book -> None
+    assert (
+        _market_to_event(
+            _valid_market_dict(yes_bid_dollars="0.0000", yes_ask_dollars="0.0000")
+        )
+        is None
+    )
+    # one-sided favorite (yes_bid=0, real yes_ask) -> builds
+    assert _market_to_event(_valid_market_dict(yes_bid_dollars="0.0000")) is not None
+    # a missing NO side is irrelevant — derived from the mirror -> builds
+    assert _market_to_event(_valid_market_dict(no_ask_dollars=None)) is not None
 
 
 async def test_market_to_event_reads_volume_fp() -> None:
@@ -164,7 +171,9 @@ async def test_poll_once_skips_and_counts_reason_when_selected_market_goes_illiq
     skip at publish time (re-evaluation), not be published as junk."""
     kalshi = AsyncMock()
     kalshi.list_markets_by_tickers = AsyncMock(return_value=[
-        _valid_market_dict(ticker="KXFED-A", yes_bid_dollars="0.0000"),
+        _valid_market_dict(
+            ticker="KXFED-A", yes_bid_dollars="0.0000", yes_ask_dollars="0.0000"
+        ),
     ])
     publisher = AsyncMock()
     universe = SelectedUniverse()
@@ -180,7 +189,9 @@ async def test_poll_once_skips_and_counts_reason_when_selected_market_goes_illiq
 async def test_poll_once_aggregates_skip_reason_counts() -> None:
     kalshi = AsyncMock()
     kalshi.list_markets_by_tickers = AsyncMock(return_value=[
-        _valid_market_dict(ticker="KXFED-A", yes_bid_dollars="0.0000"),  # no_book
+        _valid_market_dict(  # dead book -> no_book
+            ticker="KXFED-A", yes_bid_dollars="0.0000", yes_ask_dollars="0.0000",
+        ),
         _valid_market_dict(  # 5c spread > tight 2c -> spread
             ticker="KXFED-B", yes_bid_dollars="0.4000", yes_ask_dollars="0.4500",
         ),
@@ -259,3 +270,60 @@ async def test_tick_poll_loop_cancels_cleanly() -> None:
     with pytest.raises(asyncio.CancelledError):
         await task
     assert task.done()
+
+
+# ---------------------------------------------------------------------------
+# _market_to_event — one-sided heavy-favorite books (OR semantics)
+# ---------------------------------------------------------------------------
+
+async def test_market_to_event_builds_one_sided_favorite() -> None:
+    """Heavy favorite (yes_bid=0, real yes_ask) now maps to an event carrying
+    yes_bid == Decimal(0) (schema allows ge=0). Today it returns None."""
+    event = _market_to_event(
+        _valid_market_dict(
+            ticker="KXMVESPORTSMULTIGAMEEXTENDED-S2026ABC",
+            yes_bid_dollars="0.0000",
+            yes_ask_dollars="0.0200",
+            no_bid_dollars="0.9800",
+            no_ask_dollars="1.0000",
+        )
+    )
+    assert event is not None
+    assert event.yes_bid == Decimal("0")
+    assert event.yes_ask == Decimal("2.00")
+
+
+async def test_market_to_event_still_skips_dead_book() -> None:
+    """Both yes sides zero -> no book -> None (preserved)."""
+    assert (
+        _market_to_event(
+            _valid_market_dict(
+                yes_bid_dollars="0.0000",
+                yes_ask_dollars="0.0000",
+                no_bid_dollars="1.0000",
+                no_ask_dollars="1.0000",
+            )
+        )
+        is None
+    )
+
+
+# ---------------------------------------------------------------------------
+# Consolidation (Lesson 5): one shared book predicate -> evaluate() and
+# _market_to_event() must reach the SAME verdict
+# ---------------------------------------------------------------------------
+
+async def test_evaluate_and_market_to_event_agree_on_favorite() -> None:
+    """The book check is one shared predicate, so evaluate() and
+    _market_to_event() must agree on a one-sided favorite — both ACCEPT.
+    Today both reject, so they 'agree' falsely; this pins the accept side."""
+    favorite = _valid_market_dict(
+        ticker="KXMVESPORTSMULTIGAMEEXTENDED-S2026ABC",
+        yes_bid_dollars="0.0000",
+        yes_ask_dollars="0.0200",
+        no_bid_dollars="0.9800",
+        no_ask_dollars="1.0000",
+        volume_fp="5000.00",
+    )
+    assert evaluate(favorite, _config()).passed is True
+    assert _market_to_event(favorite) is not None

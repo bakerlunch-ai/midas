@@ -134,23 +134,24 @@ def evaluate(market: dict[str, Any], config: SelectionConfig) -> SelectionResult
 
     yes_bid = dollars_to_cents(market.get("yes_bid_dollars"))
     yes_ask = dollars_to_cents(market.get("yes_ask_dollars"))
-    no_bid = dollars_to_cents(market.get("no_bid_dollars"))
-    no_ask = dollars_to_cents(market.get("no_ask_dollars"))
 
-    # NO_BOOK: any side missing or zero. Emitting a 0 quote is the silent
-    # data-quality failure Lesson 8 warns about — skip instead.
-    for px in (yes_bid, yes_ask, no_bid, no_ask):
-        if px is None or px == 0:
-            return SelectionResult(passed=False, reason=SkipReason.NO_BOOK, tier=tier)
+    # NO_BOOK: the book is two real numbers, b=yes_bid and a=yes_ask (cents).
+    # A missing side (None) is missing data -> skip. A real 0 is a truthful
+    # one-sided book (heavy favorite: no yes-bid, real yes-ask) -> publish.
+    # NO is mirror algebra (no_ask=100-yes_bid) and is never inspected. (No
+    # lesson prohibits a one-sided book; verified against LESSONS_FROM_OLD_BOT.)
+    if not is_publishable_book(yes_bid, yes_ask):
+        return SelectionResult(passed=False, reason=SkipReason.NO_BOOK, tier=tier)
+    assert yes_bid is not None and yes_ask is not None  # narrowed by the guard
 
-    # SPREAD_TOO_WIDE: yes-side spread in cents (no/yes spreads mirror on a
-    # binary market; the yes side is the convention).
-    assert yes_ask is not None and yes_bid is not None  # narrowed by the loop
-    spread = yes_ask - yes_bid
-    if spread > max_spread:
-        return SelectionResult(
-            passed=False, reason=SkipReason.SPREAD_TOO_WIDE, tier=tier
-        )
+    # SPREAD_TOO_WIDE: only a two-sided book has a round-trip to measure. A
+    # one-sided book (exactly one of b,a is 0) has no spread -> bypasses this.
+    if yes_bid > 0 and yes_ask > 0:
+        spread = yes_ask - yes_bid
+        if spread > max_spread:
+            return SelectionResult(
+                passed=False, reason=SkipReason.SPREAD_TOO_WIDE, tier=tier
+            )
 
     # VOLUME_TOO_LOW
     volume = fp_to_int(market.get("volume_fp"))
