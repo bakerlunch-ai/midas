@@ -66,11 +66,15 @@ async def discover_once(
     markets = await kalshi.list_all_markets()
     selected: set[str] = set()
     by_tier: dict[Tier, int] = {}
-    for market in markets:
+    for i, market in enumerate(markets):
         result = evaluate(market, config)
         if result.passed:
             selected.add(market.get("ticker") or "")
             by_tier[result.tier] = by_tier.get(result.tier, 0) + 1
+        # Yield every 1000 markets: this scan is otherwise await-free and would
+        # block the event loop (and /health) for the full universe.
+        if (i + 1) % 1000 == 0:
+            await asyncio.sleep(0)
     return DiscoveryResult(
         selected=frozenset(selected),
         scanned=len(markets),

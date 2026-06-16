@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import logging
 from typing import Any
+from unittest.mock import AsyncMock, patch
 
 import httpx
 import pytest
@@ -222,3 +223,36 @@ async def test_list_markets_by_tickers_returns_empty_when_no_tickers(
 
     assert markets == []
     assert calls["n"] == 0  # no HTTP call for an empty ticker set
+
+
+# --- cooperative scheduling: yield to the event loop between pages -----
+
+async def test_list_all_markets_yields_between_pages(test_private_pem: str) -> None:
+    """The per-page JSON parse is synchronous CPU work; without a yield, a long
+    paginated scan starves /health on the shared event loop. list_all_markets
+    must await asyncio.sleep(0) once per page (here 3 pages -> 3 yields).
+
+    Spy on the GLOBAL asyncio.sleep (not module-qualified: pre-impl the module
+    has no asyncio attribute, which would AttributeError at patch setup). Count
+    only sleep(0) calls so any incidental httpx-internal sleeps don't inflate it.
+    """
+    pages = [
+        {"markets": _markets("A", "B"), "cursor": "p2"},
+        {"markets": _markets("C", "D"), "cursor": "p3"},
+        {"markets": _markets("E"), "cursor": ""},
+    ]
+    calls = {"n": 0}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        body = pages[calls["n"]]
+        calls["n"] += 1
+        return httpx.Response(200, json=body)
+
+    transport = httpx.MockTransport(handler)
+    with patch("asyncio.sleep", new_callable=AsyncMock) as sleep_spy:
+        async with httpx.AsyncClient(transport=transport) as http:
+            client = _client(http, test_private_pem)
+            await client.list_all_markets()
+
+    zero_yields = [c for c in sleep_spy.await_args_list if c.args == (0,)]
+    assert len(zero_yields) == 3  # one yield per page

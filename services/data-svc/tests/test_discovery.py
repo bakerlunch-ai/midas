@@ -6,7 +6,7 @@ import asyncio
 import logging
 from decimal import Decimal
 from typing import Any
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, patch
 
 import pytest
 from data_svc.discovery import (
@@ -114,6 +114,44 @@ async def test_discover_once_returns_empty_when_no_markets_pass() -> None:
     ])
     result = await discover_once(kalshi, _config())
     assert result.selected == frozenset()
+
+
+# --- cooperative scheduling: yield to the event loop during the scan ---
+
+@pytest.mark.asyncio
+async def test_discover_once_yields_to_event_loop_during_scan() -> None:
+    """The evaluate loop scans up to 20k markets with NO awaits — it must yield
+    every 1000 markets so /health stays responsive during a discovery cycle.
+    Cadence (i+1) % 1000 == 0 -> a 2000-market scan yields exactly twice.
+
+    Spy on the GLOBAL asyncio.sleep; count only sleep(0) calls.
+    """
+    kalshi = AsyncMock()
+    kalshi.list_all_markets = AsyncMock(
+        return_value=[_market(f"KXNBA-{i}") for i in range(2000)]
+    )
+    with patch("asyncio.sleep", new_callable=AsyncMock) as sleep_spy:
+        await discover_once(kalshi, _config())
+
+    zero_yields = [c for c in sleep_spy.await_args_list if c.args == (0,)]
+    assert len(zero_yields) == 2  # 2000 / 1000
+
+
+@pytest.mark.asyncio
+async def test_discover_once_does_not_yield_below_cadence_threshold() -> None:
+    """Guard: fewer than 1000 markets -> no yield. Pins 'every 1000', not
+    'every iteration'. NOTE: green even pre-impl (0 == 0) — a STAY-green guard,
+    not a failing-first test. The meaningful red is the 2000-market case above.
+    """
+    kalshi = AsyncMock()
+    kalshi.list_all_markets = AsyncMock(
+        return_value=[_market(f"KXNBA-{i}") for i in range(500)]
+    )
+    with patch("asyncio.sleep", new_callable=AsyncMock) as sleep_spy:
+        await discover_once(kalshi, _config())
+
+    zero_yields = [c for c in sleep_spy.await_args_list if c.args == (0,)]
+    assert len(zero_yields) == 0
 
 
 # --- discovery_loop ----------------------------------------------------

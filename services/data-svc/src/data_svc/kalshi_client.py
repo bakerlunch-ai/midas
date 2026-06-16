@@ -16,6 +16,7 @@ Signature scheme (unchanged from old bot, matches Kalshi docs):
 
 from __future__ import annotations
 
+import asyncio
 import base64
 import datetime
 import logging
@@ -146,6 +147,10 @@ class KalshiClient:
                 params["cursor"] = cursor
             data = await self._get("/markets", params)
             out.extend(data.get("markets", []))
+            # Yield after each page: the JSON parse above is synchronous CPU
+            # work, and a long paginated scan must not starve /health on the
+            # shared event loop.
+            await asyncio.sleep(0)
             cursor = data.get("cursor") or None
             if not cursor:
                 break
