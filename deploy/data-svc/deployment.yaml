@@ -40,7 +40,7 @@ spec:
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 30
-            timeoutSeconds: 5
+            timeoutSeconds: 10
           readinessProbe:
             httpGet:
               path: /health
@@ -63,11 +63,16 @@ spec:
             failureThreshold: 30
           resources:
             requests:
-              cpu: 50m
+              # Provisional (session 11): bumped to stabilize under the
+              # current publish load (~481 events/cycle). The 200m CPU
+              # limit caused a liveness-kill restart loop — even process
+              # spawn took ~31s under throttling. Right-size DOWN after the
+              # flood-vs-favorites selection fix reduces per-cycle load.
+              cpu: 500m
               memory: 256Mi
             limits:
-              cpu: 200m
-              memory: 512Mi
+              cpu: 1000m
+              memory: 768Mi
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
