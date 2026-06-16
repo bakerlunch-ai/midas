@@ -91,6 +91,22 @@ def series_of(ticker: str) -> str:
     return ticker.split("-", 1)[0]
 
 
+def is_publishable_book(b: Decimal | None, a: Decimal | None) -> bool:
+    """The one shared book predicate (Lesson 5: one place).
+
+    The book is two real numbers: ``b`` = yes_bid, ``a`` = yes_ask (cents). NO
+    is mirror algebra (no_ask = 100 - b, no_bid = 100 - a) and is never
+    inspected here. Publishable iff at least one side carries a real quote:
+
+      - ``b`` is None or ``a`` is None -> False  (missing data, not a zero)
+      - ``b`` == 0 and ``a`` == 0      -> False  (genuinely dead book)
+      - else (b > 0 or a > 0)          -> True   (two-sided, or one-sided favorite)
+    """
+    if b is None or a is None:
+        return False
+    return not (b == 0 and a == 0)
+
+
 def _tier_of(ticker: str, config: SelectionConfig) -> Tier:
     return (
         Tier.TIGHT

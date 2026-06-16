@@ -222,3 +222,55 @@ def test_summarize_selected_by_series_groups_named_and_other() -> None:
     assert counts["KXFED"] == 2
     assert counts["KXPRES"] == 1
     assert counts["other"] == 2
+
+
+# --- is_publishable_book: the shared book predicate (Lesson 5, OR semantics) --
+# The book is two real numbers b=yes_bid, a=yes_ask (cents); NO is mirror
+# algebra and is never inspected. Publishable iff at least one side carries a
+# real (non-zero) quote; a missing side (None) is missing DATA, not a zero.
+
+def test_is_publishable_book_skips_when_both_none() -> None:
+    from data_svc.market_selection import is_publishable_book
+
+    assert is_publishable_book(None, None) is False
+
+
+def test_is_publishable_book_skips_when_bid_none() -> None:
+    """A missing side is missing data, not a tradeable zero -> not publishable."""
+    from data_svc.market_selection import is_publishable_book
+
+    assert is_publishable_book(None, Decimal("5")) is False
+
+
+def test_is_publishable_book_skips_when_ask_none() -> None:
+    from data_svc.market_selection import is_publishable_book
+
+    assert is_publishable_book(Decimal("5"), None) is False
+
+
+def test_is_publishable_book_skips_when_both_zero() -> None:
+    """Both sides zero -> genuinely dead book -> not publishable."""
+    from data_svc.market_selection import is_publishable_book
+
+    assert is_publishable_book(Decimal("0"), Decimal("0")) is False
+
+
+def test_is_publishable_book_passes_when_only_ask() -> None:
+    """Heavy favorite: no yes-bid, a real yes-ask. The market we set out to
+    keep (OR semantics)."""
+    from data_svc.market_selection import is_publishable_book
+
+    assert is_publishable_book(Decimal("0"), Decimal("0.6")) is True
+
+
+def test_is_publishable_book_passes_when_only_bid() -> None:
+    """Mirror case: a real yes-bid, no yes-ask -> one real quote -> publishable."""
+    from data_svc.market_selection import is_publishable_book
+
+    assert is_publishable_book(Decimal("0.6"), Decimal("0")) is True
+
+
+def test_is_publishable_book_passes_when_both_present() -> None:
+    from data_svc.market_selection import is_publishable_book
+
+    assert is_publishable_book(Decimal("48"), Decimal("49")) is True
